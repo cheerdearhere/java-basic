@@ -1,4 +1,4 @@
-# IV. 변수(Variable) - [코드 보기](../../src/chapter01_Variable/Var1.java)
+# IV. 변수(Variable) - [코드 보기](../../src/chapter01_variable/Var1.java)
 ## A. 변수를 사용하면 좋은 점
 - 코드 수정시 변경이 용이하고 오입력 가능성을 낮춤.
 - 변수 명 자체가 용도를 표시하므로 코드의 가독성을 높임.
@@ -33,7 +33,7 @@
 - javascript에서는 undefinited 또는 null이 표기 됨
 - 이런 오류를 방지하기위해 라이브러리와 프레임워크에서 사용하는 상수는 값을 미리 초기화해놓는다.
 
-## C. 변수 타입 [실습 코드](../../src/chapter01_Variable/Var2_type.java)
+## C. 변수 타입 [실습 코드](../../src/chapter01_variable/Var2_type.java)
 ```java
 //        기본단위 8bit
 byte    b       = 125;            // -128 ~ 127
@@ -97,7 +97,7 @@ class ClassName (){
      System.out.println(4-3);
      System.out.println(4*3);
 ```
-[문제1 풀이](../../src/chapter01_Variable/ex/VarEx1Question.java)
+[문제1 풀이](../../src/chapter01_variable/ex/VarEx1Question.java)
 ```dockerfile
     문제2: 다음과 같은 작업을 수행하는 프로그램을 작성하세요.
       1. 변수 num1을 선언하고 이에 10을 할당하세요.
@@ -105,9 +105,9 @@ class ClassName (){
       3. 두 변수의 합을 구하고, 그 결과를 새로운 변수 sum에 저장하세요.
       4. sum 변수의 값을 출력하세요.
 ```
-[문제2 풀이](../../src/chapter01_Variable/ex/VarEx2Question.java)
+[문제2 풀이](../../src/chapter01_variable/ex/VarEx2Question.java)
 ```dockerfile
     문제 3: long 타입의 변수를 선언하고 그 변수를 100억으로 초기화한 후 출력하는 프로그램을 작성하세요.
         boolean 타입의 변수를 선언하고 그 변수를 true로 초기화한 후 출력하는 프로그램을 작성하세요.
 ```
-[문제3 풀이](../../src/chapter01_Variable/ex/VarEx3Question.java)
+[문제3 풀이](../../src/chapter01_variable/ex/VarEx3Question.java)
