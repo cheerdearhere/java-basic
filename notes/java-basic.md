@@ -58,4 +58,7 @@ ____
 각 OS에 맞춰 JVM이 명령어가 세팅되어있으므로 운영체제에 얽매이지 않고 Java에만 맞춰 작성하면 됨.
 
 # IV. 변수
-[노트](Variable/variable.md)로 이동
+[노트](basic/01variable)로 이동
+
+# V. 연산자
+[노트](basic/02operater)로 이동
