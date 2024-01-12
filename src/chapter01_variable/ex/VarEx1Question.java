@@ -1,4 +1,4 @@
-package chapter01_Variable.ex;
+package chapter01_variable.ex;
 
 public class VarEx1Question {
     public static void main(String[] args){

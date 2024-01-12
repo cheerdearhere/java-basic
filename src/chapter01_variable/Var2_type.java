@@ -1,4 +1,4 @@
-package chapter01_Variable;
+package chapter01_variable;
 
 public class Var2_type {
     public static void main(String[] args){
