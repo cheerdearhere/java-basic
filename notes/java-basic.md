@@ -62,3 +62,12 @@ ____
 
 # V. 연산자
 [노트](basic/02operater)로 이동
+
+# VI. 조건문
+[노트](basic/03conditional)로 이동
+
+# VII. 반복문
+[노트](basic/04loop.md)
+
+# IIX. 스코프와 형변환
+[노트](basic/05scope&conversion.md)
