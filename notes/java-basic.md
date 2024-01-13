@@ -64,7 +64,7 @@ ____
 [노트](basic/02operater)로 이동
 
 # VI. 조건문
-[노트](basic/03conditional)로 이동
+[노트](basic/03conditional.md)로 이동
 
 # VII. 반복문
 [노트](basic/04loop.md)
