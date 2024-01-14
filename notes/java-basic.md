@@ -67,7 +67,7 @@ ____
 [노트](basic/03conditional.md)로 이동
 
 # VII. 반복문
-[노트](basic/04loop.md)
+[노트](basic/04loop.md)로 이동
 
 # IIX. 스코프와 형변환
-[노트](basic/05scope&conversion.md)
+[노트](basic/05scope&conversion.md)로 이동
