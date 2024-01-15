@@ -12,7 +12,8 @@ public class Condition6Question {
         Random r = new Random();
         int a = r.nextInt();
         int b = r.nextInt();
+        int max = a>b?a:b;
         System.out.println("a:"+a+"/ b:"+b);
-        System.out.println(a>b?a:b);
+        System.out.println("더 큰 숫자는 "+max+"입니다.");
     }
 }

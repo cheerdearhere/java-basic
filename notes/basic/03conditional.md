@@ -142,3 +142,9 @@ else if는 여러 조건을 사용할 경우 불필요한 조건 검사를 줄�
     두개의 임의의 정수 a, b가 주어질때 삼항연산자를 사용해 두 수중 더 큰 숫자를 출력하는 코드를 작성하기
 ```
 [실습](../../src/chapter03_condition/ex/Condition6Question.java)
+```dockerfile
+    문제7.홀수, 짝수 찾기
+    임의의 정수 x가 주어졌을때
+    x가 짝수면 "짝수"를 홀수면 "홀수를 출력"
+```
+[실습](../../src/chapter03_condition/ex/Condition7Question.java)
