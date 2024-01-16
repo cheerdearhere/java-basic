@@ -132,6 +132,8 @@ for(int i=1;i<=9;i++){
         2-3
             ...
 ```
+- 중첩이 두번 이상인 경우 로직을 점검해보는 것이 좋다. 
+
 [실습](../../src/chapter04_loop/Loop5.java)
 ## F. 연습문제
 ```dockerfile
@@ -163,7 +165,6 @@ int rows 를 선언해라.
         ***
         ****
         *****
-        ******
         ...
 ```
 [실습](../../src/chapter04_loop/ex/Loop4Question.java)

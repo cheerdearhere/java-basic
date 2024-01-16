@@ -12,7 +12,6 @@ public class Loop4Question {
         ***
         ****
         *****
-        ******
         ...
      */
     public static void main(String[] args) {
