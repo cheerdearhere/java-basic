@@ -70,4 +70,4 @@ ____
 [노트](basic/04loop.md)로 이동
 
 # IIX. 스코프와 형변환
-[노트](basic/05scope&conversion.md)로 이동
+[노트](basic/05scope&casting)로 이동
