@@ -71,3 +71,12 @@ ____
 
 # IIX. 스코프와 형변환
 [노트](basic/05scope&casting)로 이동
+
+# IX. 훈련(Scanner)
+[노트](basic/06scanner.md)
+
+# X. 배열
+[노트](basic/07Array.md)
+
+# XI. 메서드
+[노트](basic/08Method.md)
