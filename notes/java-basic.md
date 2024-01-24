@@ -41,12 +41,12 @@ ____
 - javac라는 프로그램을 사용해 .java를 .class파일로 변환하면서 바이트코드로 번역과 함께 문법 오류를 체크한다. 
 ```dockerfile
     # 원래는 cmd를 통해 명령해야하지만 IDE가 자동으로 처리
-    javac HelloJava.java
+    javac step01_beginner.HelloJava.java
 ```
 - 프로그램을 실행(Runtime)하면 자바 가상 머신(JVM)이 동작. 그 위에 소스코드가 동작
 ```dockerfile
     # 실행도 마찬가지. IDE가 처리
-    java HelloJava
+    java step01_beginner.HelloJava
 ```
 
 ## C. 자바의 운영체제 독립성
@@ -57,26 +57,40 @@ ____
 
 각 OS에 맞춰 JVM이 명령어가 세팅되어있으므로 운영체제에 얽매이지 않고 Java에만 맞춰 작성하면 됨.
 
-# IV. 변수
-[노트](basic/01variable)로 이동
+# IV. 입문
+[변수 노트](01beginner/01variable)로 이동
 
-# V. 연산자
-[노트](basic/02operater)로 이동
+[연산자 노트](01beginner/02operater)로 이동
 
-# VI. 조건문
-[노트](basic/03conditional.md)로 이동
+[조건문 노트](01beginner/03conditional.md)로 이동
 
-# VII. 반복문
-[노트](basic/04loop.md)로 이동
+[반복문 노트](01beginner/04loop.md)로 이동
 
-# IIX. 스코프와 형변환
-[노트](basic/05scope&casting)로 이동
+[스코프와 형변환 노트](01beginner/05scope&casting)로 이동
 
-# IX. 훈련(Scanner)
-[노트](basic/06scanner.md)
+[Scanner 적용 훈련 노트](01beginner/06scanner.md)
 
-# X. 배열
-[노트](basic/07Array.md)
+[배열 노트](01beginner/07Array.md)로 이동
 
-# XI. 메서드
-[노트](basic/08Method.md)
+[메서드 노트](01beginner/08Method.md)로 이동
+
+# V. 기본
+[클래스 노트](02basic/01class.md)
+
+[변수 노트](02basic/02variable.md)
+
+[객체지향 노트](02basic/03oop)
+
+[생성자 노트](02basic/04constructor.md)
+
+[패키지 노트](02basic/05package.md)
+
+[접근제어자 노트](02basic/06modifier.md)
+
+[메모리 관리와 static 노트](02basic/07virtualMachine)
+
+[final 노트](02basic/08final.md)
+
+[상속 노트](02basic/09extends)
+
+[다형성 노트](02basic/10polymorphism.md)
