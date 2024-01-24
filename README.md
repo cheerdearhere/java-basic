@@ -1,4 +1,7 @@
-[Java 강의](https://inf.run/2zsZz)
+[Java 입문 강의](https://inf.run/2zsZz)
+
+[Java 기초 강의](https://inf.run/YQbQJ)
+
 ____
 # 1. 개요
 - 복습용 자바 기초 강의
