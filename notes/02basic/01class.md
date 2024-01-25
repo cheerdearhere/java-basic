@@ -128,6 +128,7 @@ java
     영화 제목: "어바웃 타임", 리뷰: "인생 시간 영화!
 ```
 [실습](../../src/step02_basic/chapter01_class/ex/Class1Question.java)
+[MovieReview](../../src/step02_basic/chapter01_class/ex/MovieReview.java)
 ```dockerfile
     문제2: 영화 리뷰 관리하기2
     기존 문제에 배열을 도입하고, 영화 리뷰를 배열에 관리하자.
@@ -171,3 +172,4 @@ java
     총 결제 금액: 12000
 ```
 [실습](../../src/step02_basic/chapter01_class/ex/Class3Question.java)
+[ProductOrder](../../src/step02_basic/chapter01_class/ex/ProductOrder.java)
