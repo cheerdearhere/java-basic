@@ -253,11 +253,3 @@ public class MainClass{
     총 결제 금액: 12000
 ```
 [실습](../../src/step02_basic/chapter02_variable/ex/variable1Question)
-```dockerfile
-문제2: 상품 주문 시스템 개발 - 사용자 입력
-요구 사항: 아래 입력, 출력 예시를 참고해서 다음 사항을 적용하자.
-
-입력, 출력 예시
-
-```
-[실습](../../src/step02_basic/chapter02_variable/ex/variable2Question)
