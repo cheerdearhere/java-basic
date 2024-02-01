@@ -64,18 +64,17 @@ public class PackageMain {
 [실습](../../src/step02_basic/chapter05_package/package1/a/PackageMain.java)
 
 ## C. 실습해보기
-```dockerfile
-전체 구조도
-    com.helloshop
-        user
-            User
-            UserService
-        product
-            Product
-            ProductService
-        order
-            Order
-            OrderService
-            OrderHistory
-```
+전체 구조도: 
+- com.helloshop
+  - user
+    - User
+    - UserService
+  - product
+    - Product
+    - ProductService
+  - order
+    - Order
+    - OrderService
+    - OrderHistory
+
 [실습](../../src/step02_basic/chapter05_package/package2/com/helloshop)
