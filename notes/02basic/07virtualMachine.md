@@ -144,3 +144,110 @@ public class Data {
 | class/static <br/>variable              | 멤버 변수 중 한 종류. 클래스가 관리하는 변수로 클래스 데이터와 함께 메서드 영역에 저장한다. | 메서드 영역은 해당 클래스가 JVM에 로딩되는 순간 생성되는데, JVM은 자바 프로그램이 시작하면 전체 클래스를 컴파일링하기에 JVM과 생명주기를 공유한다. 정적 변수 역시 이와 함께한다 |
 
 ## E. static method
+### 1. 사용처
+- 멤버 변수가 없고 단순히 기능만 제공하는 메서드인 경우 매번 인스턴스를 생성하는 것이 의미가 없다. 
+```java
+public class DecoUtil{
+  public String decoStr(String str){
+    return "*"+str+"*";
+  }
+}
+
+public static void main(String[] args) {
+    String str = "hello";
+    DecoUtill decoUtil1 = new DecoUtil();
+    decoUtill1.decoStr(str);
+    DecoUtill decoUtil2 = new DecoUtil();
+    decoUtill2.decoStr(str);
+    DecoUtill decoUtil3 = new DecoUtil(); 
+    decoUtill3.decoStr(str);
+}
+```
+- method에 static을 붙이면 정적 메서드가 되면서 인스턴스 변수 없이 클래스로 호출해 바로 사용이 가능하다. 
+
+[실습](../../src/step02_basic/chapter07_virtalMachine/javaMemory4/static_method1/DecoMain.java)
+- 변수와 마찬가지로 
+  - 클래스 변수는 접근제어자 뒤에 'static'을 사용
+  - 메서드 영역의 클래스에서 관리하므로 클래스로 호출
+  - 인스턴스를 사용하거나 반환하지 않음
+  - static이 없는 메서드를 인스턴스 메서드라고한다. 
+
+### 2. static과 istance
+- static method는 static method나 static variable만 사용할 수 있다. 
+  - 참조주소를 지닌 객체(포인터) 지정없이 대상을 참조하는 일이 되어 시스템을 중단시킨다. 
+  - 다만 인스턴스 메서드에서는 정적 메서드나 정적 변수를 사용하는 것은 무관하다
+- 사용하고 싶다면 값을 매개변수로 전달해서 사용
+  - ```java
+    public static void useInstance(DecoData decoData){
+        decoData.instanceValue+="\n    value";
+        decoData.instanceMethod();
+    }
+  ```
+- 자주 호출하는 static method나 해당 클래스가 있다면 import 시켜서 사용
+```java
+//method가 여럿포함된 클래스
+import static static_method2.DecoData.*;
+//method 하나인 경우
+import static static_method2.DecoData.staticCall;
+```
+[실습](../../src/step02_basic/chapter07_virtalMachine/javaMemory4/static_method2/DecoMain.java)
+
+### 3. main()
+- 인스턴스 없이 사용하는 대표적인 정적메서드
+```java
+public static void main(String[] args) { }
+```
+
+## F. 연습문제
+```dockerfile
+문제1: 구매한 자동차 수
+다음 코드를 참고해서 생성한 차량 수를 출력하는 프로그램을 작성하자.
+Car 클래스를 작성하자.
+
+    public class CarMain {
+     public static void main(String[] args) {
+     Car car1 = new Car("K3");
+     Car car2 = new Car("G80");
+     Car car3 = new Car("Model Y");
+     Car.showTotalCars(); //구매한 차량 수를 출력하는 static 메서드
+     }
+    }
+
+실행 결과 
+    차량 구입, 이름: K3
+    차량 구입, 이름: G80
+    차량 구입, 이름: Model Y
+    구매한 차량 수: 3
+```
+[실습](../../src/step02_basic/chapter07_virtalMachine/ex/javaMemory1Question/CarMain.java)
+```dockerfile
+문제2: 수학 유틸리티 클래스
+다음 기능을 제공하는 배열용 수학 유틸리티 클래스( MathArrayUtils )를 만드세요.
+    sum(int[] array) : 배열의 모든 요소를 더하여 합계를 반환합니다.
+    average(int[] array) : 배열의 모든 요소의 평균값을 계산합니다.
+    min(int[] array) : 배열에서 최소값을 찾습니다.
+    max(int[] array) : 배열에서 최대값을 찾습니다.
+요구사항
+    MathArrayUtils 은 객체를 생성하지 않고 사용해야 합니다. 누군가 실수로 MathArrayUtils 의 인스턴스
+    를 생성하지 못하게 막으세요.
+    실행 코드에 static import 를 사용해도 됩니다.
+    실행 코드와 실행 결과를 참고하세요.
+실행 코드 
+    public class MathArrayUtilsMain {
+     public static void main(String[] args) {
+     int[] values = {1, 2, 3, 4, 5};
+     System.out.println("sum=" + MathArrayUtils.sum(values));
+     System.out.println("average=" + MathArrayUtils.average(values));
+     System.out.println("min=" + MathArrayUtils.min(values));
+     System.out.println("max=" + MathArrayUtils.max(values));
+     }
+    }
+
+실행 결과 
+    sum=15
+    average=3.0
+    min=1
+    max=5
+```
+[실습](../../src/step02_basic/chapter07_virtalMachine/ex/javaMemory2Question/MathArrayUtilsMain.java)
+
