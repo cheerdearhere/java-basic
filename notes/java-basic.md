@@ -87,10 +87,10 @@ ____
 
 [접근제어자 노트](02basic/06modifier.md)
 
-[메모리 관리와 static 노트](02basic/07virtualMachine)
+[메모리 관리와 static 노트](02basic/07virtualMachine.md)
 
 [final 노트](02basic/08final.md)
 
-[상속 노트](02basic/09extends)
+[상속 노트](02basic/09extends.md)
 
 [다형성 노트](02basic/10polymorphism.md)
