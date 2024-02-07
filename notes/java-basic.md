@@ -93,4 +93,8 @@ ____
 
 [상속 노트](02basic/09extends.md)
 
-[다형성 노트](02basic/10polymorphism.md)
+[다형성 노트 1: 다형성](02basic/10-1polymorphism.md)
+
+[다형성 노트 2: 추상클래스와 인터페이스](02basic/10-1polymorphism.md)
+
+[다형성 노트 3: 다형성과 설계](02basic/10-3polymorphism&architecture.md)
