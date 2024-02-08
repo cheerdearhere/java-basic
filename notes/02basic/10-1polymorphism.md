@@ -52,7 +52,7 @@
 ```java
 ((Child)poly).childMethod();
 ```
-[실습](../../src/step02_basic/chapter10_polymorphism/polymorphism1/PolymorphismMain.java)
+[실습](../../src/step02_basic/chapter10_1_polymorphism/polymorphism1/PolymorphismMain.java)
 
 #### b. Up-Casting(업캐스팅)
 - 업캐스팅은 자식 타입 변수를 부모 타입으로 변경할때 일어난다. 
@@ -80,7 +80,7 @@ Parent parent2 = child;//생략 권장
 ```java
     Child child2 = (Child)parent2;
 ```
-[실습](../../src/step02_basic/chapter10_polymorphism/polymorphism2/PolymorphismMain.java)
+[실습](../../src/step02_basic/chapter10_1_polymorphism/polymorphism2/PolymorphismMain.java)
 ### 3. instanceof:인스턴스 타입 체크하기
 - 어떤 인스턴스를 참조하고 있는지 확인을 하고 나서 다운캐스팅을 하면 더 안전한 프로그래밍이 가능하다.
 ```java
@@ -103,7 +103,7 @@ if(parent instanceof Child childVariable) {
     childVariable.childMethod();
 }
 ```
-[실습](../../src/step02_basic/chapter10_polymorphism/polymorphism3/PolymorphismMain.java)
+[실습](../../src/step02_basic/chapter10_1_polymorphism/polymorphism3/PolymorphismMain.java)
 
 ## C. 메서드 오버라이딩
 - 메서드 재정의는 다형성과 함께 사용하는 경우가 많다. 
@@ -118,7 +118,7 @@ if(parent instanceof Child childVariable) {
 ```
 - 오버라이딩된 메서드의 우선권은 생각보다 강력하다.
 
-[실습](../../src/step02_basic/chapter10_polymorphism/polymorphism4/PolymorphismMain.java)
+[실습](../../src/step02_basic/chapter10_1_polymorphism/polymorphism4/PolymorphismMain.java)
 ```dockerfile
 # 실습 코드 콘솔 내용
 C -> C
@@ -151,7 +151,7 @@ Child.method
   caw.sound();
   System.out.println("동물 소리 테스트 종료");
 ```
-[실습1](../../src/step02_basic/chapter10_polymorphism/ex/polimorph1Question/Main.java): 다형성을 사용하면 여러 타입의 변수를 한번에 처리해 코드 중복을 줄일 수 있다.
+[실습1](../../src/step02_basic/chapter10_1_polymorphism/ex/polimorph1Question/Main.java): 다형성을 사용하면 여러 타입의 변수를 한번에 처리해 코드 중복을 줄일 수 있다.
 - 코드가 변하는 부분은 main에 변하지 않는 부분은 다른 곳에... 이 둘을 분리하는 것이 좋다. 
 - 새로운 동물이 추가될때마다 양이 늘어난다. 다형성은 변하는 내용을 최소량만 만든다.
 
