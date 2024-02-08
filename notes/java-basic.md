@@ -5,8 +5,8 @@ ____
 - 자바 복습 후 다른 과정 진행 예정
 
 # II. 맛 보기
-## A. Hallo Java - [예제 파일](../src/HelloJava.java)
-## B. 주석(comment) - [예제 파일](../src/Comment.java)
+## A. Hallo Java - [예제 파일](../src/step01_beginner/HelloJava.java)
+## B. 주석(comment) - [예제 파일](../src/step01_beginner/Comment.java)
 ### 1. 사용처
 - 소스 코드가 복잡한경우 이해를 도울 때
 - 특정 코드를 지우지 않고 잠시 실행을 막아두고 싶을때
@@ -58,15 +58,15 @@ ____
 각 OS에 맞춰 JVM이 명령어가 세팅되어있으므로 운영체제에 얽매이지 않고 Java에만 맞춰 작성하면 됨.
 
 # IV. 입문
-[변수 노트](01beginner/01variable)로 이동
+[변수 노트](01beginner/01variable.md)로 이동
 
-[연산자 노트](01beginner/02operater)로 이동
+[연산자 노트](01beginner/02operater.md)로 이동
 
 [조건문 노트](01beginner/03conditional.md)로 이동
 
 [반복문 노트](01beginner/04loop.md)로 이동
 
-[스코프와 형변환 노트](01beginner/05scope&casting)로 이동
+[스코프와 형변환 노트](01beginner/05scope&casting.md)로 이동
 
 [Scanner 적용 훈련 노트](01beginner/06scanner.md)
 
@@ -79,7 +79,7 @@ ____
 
 [변수 노트](02basic/02variable.md)
 
-[객체지향 노트](02basic/03oop)
+[객체지향 노트](02basic/03oop.md)
 
 [생성자 노트](02basic/04constructor.md)
 
@@ -95,6 +95,6 @@ ____
 
 [다형성 노트 1: 다형성](02basic/10-1polymorphism.md)
 
-[다형성 노트 2: 추상클래스와 인터페이스](02basic/10-1polymorphism.md)
+[다형성 노트 2: 추상클래스와 인터페이스](02basic/10-2Abstract.md)
 
 [다형성 노트 3: 다형성과 설계](02basic/10-3polymorphism&architecture.md)
