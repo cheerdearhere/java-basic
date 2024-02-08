@@ -1,8 +1,7 @@
-package step02_basic.chapter10_polymorphism.ex.polimorph1Question;
+package step02_basic.chapter10_1_polymorphism.ex.polimorph1Question;
 
-import step02_basic.chapter10_polymorphism.ex.polimorph1Question.Animal.*;
+import step02_basic.chapter10_1_polymorphism.ex.polimorph1Question.Animal.*;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class AnimalSoundMain {

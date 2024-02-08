@@ -1,4 +1,4 @@
-package step02_basic.chapter10_polymorphism.polymorphism1;
+package step02_basic.chapter10_1_polymorphism.polymorphism1;
 
 public class Grandson extends Child{
     public void grandsonMethod() {

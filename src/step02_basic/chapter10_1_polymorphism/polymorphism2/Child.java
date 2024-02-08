@@ -1,4 +1,4 @@
-package step02_basic.chapter10_polymorphism.polymorphism2;
+package step02_basic.chapter10_1_polymorphism.polymorphism2;
 
 public class Child extends Parent {
     public void childMethod(){

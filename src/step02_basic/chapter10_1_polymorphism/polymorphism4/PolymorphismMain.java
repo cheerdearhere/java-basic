@@ -1,4 +1,4 @@
-package step02_basic.chapter10_polymorphism.polymorphism4;
+package step02_basic.chapter10_1_polymorphism.polymorphism4;
 
 public class PolymorphismMain {
     public static void main(String[] args) {
