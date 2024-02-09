@@ -113,3 +113,5 @@ public class ZooClass extends Animal implements Fly, Swim{
 ```
 ![img.png](../img/polymorph_implementAndExtend.png)
 [실습](../../src/step02_basic/chapter10_2_abstract/abstract3/AnimalMain.java)
+
+[다형성과 설계](10-3polymorphism&architecture.md)로 이동
