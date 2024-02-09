@@ -75,26 +75,37 @@ ____
 [메서드 노트](01beginner/08Method.md)로 이동
 
 # V. 기본
-[클래스 노트](02basic/01class.md)
+[클래스 노트](02basic/01class.md): C언어의 구조체. 클래스와 데이터만 이해하기
 
-[변수 노트](02basic/02variable.md)
+[변수 노트](02basic/02variable.md): 기본형과 참조형에 대한 이해. 특히 참조형
 
-[객체지향 노트](02basic/03oop.md)
+[객체지향 노트](02basic/03oop.md): 객체 지향에 대한 이해. 클래스, 변수 하나로 이해하기
 
 [생성자 노트](02basic/04constructor.md)
 
 [패키지 노트](02basic/05package.md)
 
-[접근제어자 노트](02basic/06modifier.md)
+[접근제어자 노트](02basic/06modifier.md): 캡슐화의 기본
 
-[메모리 관리와 static 노트](02basic/07virtualMachine.md)
+[메모리 관리와 static 노트](02basic/07virtualMachine.md): 자바 가상 머신의 기초
 
 [final 노트](02basic/08final.md)
 
 [상속 노트](02basic/09extends.md)
 
-[다형성 노트 1: 다형성](02basic/10-1polymorphism.md)
+[다형성 노트 1: 다형성](02basic/10-1polymorphism.md): 객체지향의 꽃이자 자바 언어의 장점
 
-[다형성 노트 2: 추상클래스와 인터페이스](02basic/10-2Abstract.md)
+[다형성 노트 2: 추상클래스와 인터페이스](02basic/10-2Abstract.md): 제약을 통한 안정성, 유지보수 준비
 
 [다형성 노트 3: 다형성과 설계](02basic/10-3polymorphism&architecture.md)
+
+# VI. 마치며
+- 김영한 강사님 계획
+  - 중급, 고급(2024 초)
+  - 데이터베이스 로드맵(2024 중)
+  - 스프링 로드맵과 스프링부트, JPA ...
+- 2024 개인 목표
+  - 독하게 공부하는 C
+  - 파이썬 강의(django or 코테 문제) 또는 도커
+  - 늦어도 3월 재취업
+  - JPA와 QueryDSL
