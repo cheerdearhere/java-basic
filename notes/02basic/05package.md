@@ -2,7 +2,7 @@
 - 프로그램의 기능이 늘어나면 그에 필요한 class도 마찬가지로 늘어난다. 이때 class가 분리되지 않으면 관리하기가 매우 어렵다. 
 - 이를 돕기 위해 디렉토리 개념이 필요한데 java에서는 이러한 개념이 package이다.
 - 유사한 기능, 범위, 용도, 대상 등  개발자의 판단으로 묶을 수 있다. 
-![img.png](../img/packages.png)
+![img.png](../img/beginner~basic/packages.png)
 ## A. 클래스에서 호출하기
 - 같은 패키지의 경우 바로 클래스명으로 호출
 ```java

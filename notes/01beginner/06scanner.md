@@ -10,7 +10,7 @@
     String str = scanner.nextLine();//문자열 입력대기(Enter키를 입력할때까지 대기)
     System.out.println("입력한 문자열: "+str);//입력 받은 값 출력
 ```
-![scannerConsole1.png](../img/scannerConsol1.png)
+![scannerConsole1.png](../img/beginner~basic/scannerConsol1.png)
 
 ```java
 import java.util.Scanner;
@@ -21,7 +21,7 @@ int num = scanner.nextInt();//정수
 double dnum = scanner.nextDouble();//실수
 ```
 - 그외에도 다양한 입력값을 받을 수 있다. 
-![scannerConsole2.png](../img/scannerConsole2.png)
+![scannerConsole2.png](../img/beginner~basic/scannerConsole2.png)
 - 하지만 입력값이 잘못되면 예외가 터지면서 프로그램이 종료됨을 유의
 
 [실습](../../src/chapter06_scanner/Scanner1.java)

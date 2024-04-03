@@ -55,7 +55,7 @@ public class Student {
 # ex : 사용자 정의 타입의 객체에 담긴 값 = class주소@참조값 
     step02_basic.chapter01_class.class1.Student@66a29884
 ```
-![img.png](../img/classObject.png)
+![img.png](../img/beginner~basic/classObject.png)
 
 - 객체에 들어있는 클래스@참조값으로 찾아간 뒤 '.멤버'로 객체 내부의 특성에 접근한다. 
 - 클래스를 선언할때 함께 선언된 member variable의 modifier에 따라 읽고 쓰는 권한에대한 접근이 달라진다. 
@@ -82,7 +82,7 @@ public class Student{
 - 배열을 사용하면 특정 타입을 연속한 데이터구조로 묶어서 편리하게 관리할 수 있다. 
 - Student 클래스의 인스턴스들도 Student 타입이므로 Student[]로 관리할 수 있음
 - 배열 객체도 배열의 참조값을 갖고, 배열의 참조값에 있는 값은 Student 객체의 참조값을 지닌다. 
-![img.png](../img/instanceArray.png)
+![img.png](../img/beginner~basic/instanceArray.png)
 
 ```java
 import step02_basic.chapter01_class.class1.Student;

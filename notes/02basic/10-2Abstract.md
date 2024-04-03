@@ -80,7 +80,7 @@ public class SubClass implements InterfaceClass{
 }
 ```
 - 도면에서 구현은 점선으로 표시한다
-![img.png](../img/polymorphism_abstract_interface.png)
+![img.png](../img/beginner~basic/polymorphism_abstract_interface.png)
 [실습](../../src/step02_basic/chapter10_2_abstract/abstract2/Main.java)
 
 ## E. 상속과 구현
@@ -92,9 +92,9 @@ public class SubClass implements InterfaceClass{
 - 다중 구현: 하나의 부모만 갖는 상속과 달리 여러 인터페이스를 연결할 수있다. 
 
 - 다중 상속을 사용하면 같은 이름의 method가 있는 경우, 클래스간 계층 구조가 복잡해질 수 있어 Java는 다중상속을 막았다.
-![img.png](../img/polymorphism_interface_multiExpends.png)
+![img.png](../img/beginner~basic/polymorphism_interface_multiExpends.png)
 - 인터페이스는 기능을 구현하지 않고 상속받는 자식 클래스가 구현하기 나름이기때문에 다중상속의 문제가 없다. 따라서 다중구현은 지원
-![img.png](../img/polymorphism_interface_multiImplement.png)
+![img.png](../img/beginner~basic/polymorphism_interface_multiImplement.png)
 ```java
 public class ChildClass implements InterfaceA, InterfaceB{
     @Override
@@ -111,7 +111,7 @@ public class ZooClass extends Animal implements Fly, Swim{
     
 }
 ```
-![img.png](../img/polymorph_implementAndExtend.png)
+![img.png](../img/beginner~basic/polymorph_implementAndExtend.png)
 [실습](../../src/step02_basic/chapter10_2_abstract/abstract3/AnimalMain.java)
 
 [다형성과 설계](10-3polymorphism&architecture.md)로 이동

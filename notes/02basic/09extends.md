@@ -26,7 +26,7 @@ public class SubClass extends SuperClass{
 [상속 실습](../../src/step02_basic/chapter09_extends/extends2)
 - 특징
   - 자식은 부모(상속 받을 대상)의 기능을 물려받지만 부모는 자식에 영향을 받지 않는다.
-  ![img.png](../img/extends.png)
+  ![img.png](../img/beginner~basic/extends.png)
   - 순차적인 다중상속은 가능하나 한번에 여러 부모를 두는 다중상속은 불가하다. 
   ```dockerfile
     # 부모의 부모의 부모는 가능
@@ -42,7 +42,7 @@ public class SubClass extends SuperClass{
 ```java
     ElectricCar electricCar = new ElectricCar();
 ```
-![img](../img/extends_constructor.png)
+![img](../img/beginner~basic/extends_constructor.png)
 - 해당 타입의 인스턴스를 생성하면서 상속 관계인 부모도 포함해서 생성한다. 
 - 참조 주소는 하나지만 정보는 부모와 자식 둘 다 공존하는 것.
 - 점유하는 메모리 공간도 구분된다. 
@@ -51,7 +51,7 @@ public class SubClass extends SuperClass{
     electricCar.charge();//특이 기능 > sub
     electricCar.move();//공통 기능 > super
 ```
-![img.png](../img/extends_methodCall.png)
+![img.png](../img/beginner~basic/extends_methodCall.png)
 - 객체 사용하기
   - 참조 주소(힙 메모리)로 이동  
   - 본인 타입에서 찾아서 stack 생성 
@@ -94,7 +94,7 @@ public class SubClass extends SuperClass{
   - 그 외 다양한 용도로 활용됨(static method나 interface처럼 functional하게 사용가능)
   - 필수는 아니지만 코드의 명확성을 위해 권장
 
-![img.png](../img/extends_overriding.png)
+![img.png](../img/beginner~basic/extends_overriding.png)
 
 - method overriding(재정의) 조건
   - method name: 메서드의 이름은 같아야한다. 
@@ -122,7 +122,7 @@ public class SubClass extends SuperClass{
 - | ~  | default   |
 - | -  | private   |
 
-![img.png](../img/extends_design.png)
+![img.png](../img/beginner~basic/extends_design.png)
 
 [실습](../../src/step02_basic/chapter09_extends/extends5/ExtendsMain.java)
 
@@ -134,7 +134,7 @@ public class SubClass extends SuperClass{
 - this: 자신 객체를 칭할때 사용. 하지만 생략해도 결국 자기 자신을 먼저 탐색하므로 기능은 같음
 - 예제
 
-![img.png](../img/extends_super.png)
+![img.png](../img/beginner~basic/extends_super.png)
 
  [실습](../../src/step02_basic/chapter09_extends/extends6/SuperMain.java)
 

@@ -25,8 +25,8 @@
     poly.parentMethod();
 //    poly.childMethod(); //자식 인스턴스에 바로 접근은 불가
 ```
-![img.png](../img/polymorphism_instance1.png)
-![img.png](../img/polymorphism_instance2.png)
+![img.png](../img/beginner~basic/polymorphism_instance1.png)
+![img.png](../img/beginner~basic/polymorphism_instance2.png)
 - 부모타입은 자식타입을 담을 수 있다. 반대는 불가
   - 더 추상적인 객체(부모)는 덜 추상적인 객체(자식)를 담을 수 있지만 
   - 더 구체적인 객체(자식)는 덜 구체적인 객체(부모)를 담을 수 없다. 
@@ -75,7 +75,7 @@ Parent parent2 = child;//생략 권장
 ```
 #### b. 업캐스팅은 상속의 특성상 이런일이 발생할일이 없다
 - 상속의 특성: 인스턴스를 생성할때 상위의 모든 타입의 인스턴스가 생성된다. 
-![img.png](../img/polymorphism_upcasting.png)
+![img.png](../img/beginner~basic/polymorphism_upcasting.png)
 #### c. 에러가 발생할 수 있기에 다운캐스팅만 형변환을 꼭 명시하도록 한 것이다. 
 ```java
     Child child2 = (Child)parent2;
@@ -135,7 +135,7 @@ Child.method
 ```
 
 ## D. 다형성 활용 - 동물 소리 문제
-![img.png](../img/polymorphism_ex_animal.png)
+![img.png](../img/beginner~basic/polymorphism_ex_animal.png)
 ```java
   Dog dog = new Dog();
   Cat cat = new Cat();

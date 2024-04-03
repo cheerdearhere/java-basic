@@ -15,7 +15,7 @@
   - 역할은 대체할 수 없으나 구현된 객체는 대체할 수있다
   - 역할에 맞게 기능만 수행할 수 있다면 객체의 종류는 변경할 수 있다\
 
-![img.png](../img/polymorphism_architecture_OOP.png)
+![img.png](../img/beginner~basic/polymorphism_architecture_OOP.png)
 ### 2. 자바 언어의 다형성 활용
 - 인터페이스와 구현된 클래스, 객체
   - <span style="color:red">역할</span> => 인터페이스

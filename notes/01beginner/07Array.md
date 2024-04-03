@@ -20,7 +20,7 @@
     int num = 5;//정수형 변수
     int[] nums = new int[3];//정수형배열 변수
 ```
-![arrayInit.png](../img/arrayInit.png)
+![arrayInit.png](../img/beginner~basic/arrayInit.png)
 - 확보된 배열 변수의 메모리 공간에 확보된 배열의 메모리 위치 저장
 - 해당 위치의 메모리에 값보관
 ```java
@@ -42,7 +42,7 @@
 ## C. 배열 사용 - 인덱스
 - 배열의 위치를 나타내는 숫자. index
 - 배열의 index는 0부터 시작해 n-1까지 
-![arrayIndex.png](../img/arrayIndex.png)
+![arrayIndex.png](../img/beginner~basic/arrayIndex.png)
 ```java
     int[] fiveArr = new int[5];
 //    fiveArr[5]를 사용하면 예외가 발생
@@ -75,7 +75,7 @@
 
 [A~D까지 실습](../../src/chapter07_Array/Array1.java)
 ## E. 2차원 배열 - 행열
-![2DArr.png](../img/array2D.png)
+![2DArr.png](../img/beginner~basic/array2D.png)
 - 선언
 자료형[][] 변수명;
 - 생성

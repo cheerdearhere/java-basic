@@ -53,7 +53,7 @@
     bArray[0] = 9; // aArray[0], bArray[0] 모두 9
 ```
 - 같은 위치를 참조하기때문
-![img.png](../img/basic-referenceVariable.png)
+![img.png](../img/beginner~basic/basic-referenceVariable.png)
   - 참조값이 아닌 새로운 메모리 주소로 복사하는 방법은 생성자(new)를 사용해 또 다른 위치에 넣고 값을 입력.
 
 

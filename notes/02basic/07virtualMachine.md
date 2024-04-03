@@ -1,6 +1,6 @@
 # VII. Java Virtual Machine (w. static)
 ## A. Java 메모리 구조
-![img.png](../img/JVMMemory.png)
+![img.png](../img/beginner~basic/JVMMemory.png)
 - 메서드 영역: JVM 실행시 구동되는 영역. 최우선으로 클래스 영역이 확보된다. 
   - 클래스 정보, static 영역, 런타임 상수 풀(리터럴: int, long 등)
 - 스택 영역: 매서드가 호출될때 스택 프레임이 쌓이고 매서드가 처리되고나면 줄어든다. 
@@ -18,18 +18,18 @@
 method를 호출하는 위치와 매개변수, 지니는 멤버 변수는 다 다를 수 있다. 힙 영역에 저장된 value 위치는 다를 수 있지만 메서드 코드는 모두 같다. 같은 내용을 호출때마다 메모리에 올리는것은 너무 큰 낭비. 
 
 메서드 코드는 메서드 영역 하나에만 올려놓고 공통으로 관리되고 실행된다. 
-![img.png](../img/JVMMethodCall.png)
+![img.png](../img/beginner~basic/JVMMethodCall.png)
 
 ## B. 스택 영역
 ### 들어가기 전에: 기본 자료구조 - stack, queue
 #### a. 스택 구조 - LIFO: 후입선출
 - 출입구가 하나인 통 모양
 - 오래 보관하고 끝까지 있어야 할 것이 가장 먼저 들어간다.
-![img.png](../img/stack.png)
+![img.png](../img/beginner~basic/stack.png)
 #### b. 큐 구조 - FIFO: 선입선출
 - 아래가 출구인 통모양
 - 순차적으로 처리한다.
-![img.png](../img/queue.png)
+![img.png](../img/beginner~basic/queue.png)
 
 ### 1. 실행 확인
 [실습코드](../../src/step02_basic/chapter07_virtalMachine/javaMemory1/JavaMemoryMain.java)

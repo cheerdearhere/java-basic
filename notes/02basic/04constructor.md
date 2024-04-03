@@ -45,7 +45,7 @@ public class ConstructorClass{
     public ConstructorClass(){}
 }
 ```
-![img.png](../img/constructorThis.png)
+![img.png](../img/beginner~basic/constructorThis.png)
 - 따로 표시하지 않으면 더 가까이 선언된 코드블럭(클래스의 코드블럭보다 메서드의 코드블럭이 가까움)을 우선해 값이 적용되지 않는다.
 ```java
 public class ConstructorClass{

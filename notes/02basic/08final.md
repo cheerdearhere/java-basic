@@ -72,7 +72,7 @@ final Data data = new Data();
 data.value = 1;//하위는 가능
 data.value = 2;
 ```
-![img.png](../img/finalObject.png)
+![img.png](../img/beginner~basic/finalObject.png)
 
 - 상황에 맞게 잘 사용하자
   - 접근제어: public 

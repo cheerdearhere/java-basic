@@ -1,7 +1,7 @@
 # IIX. 메서드
 - 유사한 기능이 프로그램의 여러곳에서 반복되는 경우 한번에 묶음으로 만들 수 있다. 하나의 기능을 단위로 묶은 것을 method라 하며 이를 사용하면 유지보수의 장점을 갖는다. 
 
-![method.png](../img/method_function.png)
+![method.png](../img/beginner~basic/method_function.png)
 ```java
 // int 자료의 합을 여러곳에서 담당하는 경우
 int add(int a, int b){
