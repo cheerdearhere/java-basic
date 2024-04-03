@@ -99,13 +99,19 @@ ____
 
 [다형성 노트 3: 다형성과 설계](02basic/10-3polymorphism&architecture.md)
 
-# VI. 마치며
-- 김영한 강사님 계획
-  - 중급, 고급(2024 초)
-  - 데이터베이스 로드맵(2024 중)
-  - 스프링 로드맵과 스프링부트, JPA ...
-- 2024 개인 목표
-  - 독하게 공부하는 C
-  - 파이썬 강의(django or 코테 문제) 또는 도커
-  - 늦어도 3월 재취업
-  - JPA와 QueryDSL
+# VI. 중급 - 1
+[Object 클래스](03middle-1/01ObjectClass.md)
+
+[불변 객체]
+
+[String 클래스]
+
+[Wrapper, Class 클래스]
+
+[열거형-Enum]
+
+[Date/Time]
+
+[중첩클래스/내부클래스]
+
+[Exception]
