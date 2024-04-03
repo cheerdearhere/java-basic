@@ -25,7 +25,7 @@ ____
 ```
 # III. 자바란?
 ## A. 자바 표준 스팩
-![자바표준스팩](img/javaLanguageSpecification.jpg)
+![자바표준스팩](img/beginner~basic/javaLanguageSpecification.jpg)
 
 컴파일러, 실행 라이브러리, 가상 머신이라는 표준 스팩을 기반으로 여러 회사에서 자바를 생성한다. 
 동작은 같으나 최적화나 작은 차이가 있다. 다만 각 회사들이 자신들의 프로그램에 최적화된 jdk를 사용하면 된다. 
@@ -35,7 +35,7 @@ ____
 표준 스팩의 장점: 구현은 다른 버전을 사용해도 표준 스팩을 따르기 때문에 사용에 있어서는 문제가 되지 않는다. 
 
 ## B. 컴파일과 실행
-![컴파일과실행](img/comfileAndRuntime.jpeg)
+![컴파일과실행](img/beginner~basic/comfileAndRuntime.jpeg)
 
 - .java 소스 코드는 개발자가 작성.
 - javac라는 프로그램을 사용해 .java를 .class파일로 변환하면서 바이트코드로 번역과 함께 문법 오류를 체크한다. 
@@ -53,7 +53,7 @@ ____
 일반적인 프로그램은 운영체제 위에서 움직이기때문에 다른 운영체제 위에서는 작동하지 않는다.
 자바의 경우 가상머신 위에서 작동하기때문에 java만 설치되어있다면 virtual machine 위에서 똑같이 동작한다. 
 
-![자바와 OS](img/java&OS.jpeg)
+![자바와 OS](img/beginner~basic/java&OS.jpeg)
 
 각 OS에 맞춰 JVM이 명령어가 세팅되어있으므로 운영체제에 얽매이지 않고 Java에만 맞춰 작성하면 됨.
 
@@ -100,6 +100,20 @@ ____
 [다형성 노트 3: 다형성과 설계](02basic/10-3polymorphism&architecture.md)
 
 # VI. 중급 - 1
+- java의 기본 라이브러리 중 기본으로 알아야하는 지식을 체크하는 시간
+  - java.lang package: 자바 언어를 이루는 가장 기본 클래스들 집합
+  - 대표 클래스
+    - Object: 모든 자바 객체의 부모 클래스
+    - String: 문자열
+    - (Wrapper): literal(기본형 데이터 타입)을 객체로 만든 것
+      - Integer
+      - Long
+      - Double ...
+    - Class: 클래스 메타 정보
+    - System: 시스템과 관련된 기본 기능들을 제공
+- import를 해야하는 외부 라이브러리와 달리 java.lang은 필수/기본 라이브러리이기 때문에 import가 필요없다.
+  - `import java.lang.*` 생략
+
 [Object 클래스](03middle-1/01ObjectClass.md)
 
 [불변 객체]
