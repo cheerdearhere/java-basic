@@ -232,5 +232,115 @@ print(car);// 실행되기 전까지는 함수를 호출할때 어떤 타입에 
 print(cat);
 ```
 ## B. equals()
+- `java`가 두 객체를 비교하는 방법
+  - 동일성(identity): `==` 연산자를 사용해 두 객체의 참조가 동일한 객체를 가리키고 있는지 확인
+    - 물리적 같음(메모리 주소)
+    - 변수의 값 비교. 해당 객체가 가리키는 reference(메모리 참조 주소)가 변수의 값.
+  - 동등성(Equality): `Object.equals()`를 사용해 두 객체가 논리적으로 동등한지 비교
+    - 논리적 같음 
+    - 가치나 수준이 같음. 외관(reference)은 다를 수 있음
+```java
+User userA = new User("id-100");
+User userB = new User("id-100");
+// 논리적으로 같으나 물리적으로 다름
 
-# III. 
+boolean identity = userV1 == userV2;
+boolean equals = userV1.equals(userV2);
+
+System.out.println("identity = " + identity);
+System.out.println("equals = " + equals);
+```
+> but identity, equals 모두 false
+- `String`도 identity, equals 구분
+> but 문자열은 제대로 작동
+- Object.equals() method
+  - Object가 제공하는 equals() 기본형은 `==`로 비교
+```java
+    public boolean equals(Object obj) {
+        return (this == obj);
+    }
+```
+  - String은 문자열에 맞는 비교로 Override 되어있음
+```java
+public boolean equals(Object anObject) {
+        if (this == anObject) {
+            return true;
+        }
+        return (anObject instanceof String aString)
+                && (!COMPACT_STRINGS || this.coder == aString.coder)
+                && StringLatin1.equals(value, aString.value);
+    }
+```
+ - customized Object 역시 Object.equals()를 재정의해야 제대로 작동
+```java
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof UserV1) {
+            UserV1 u = (UserV1)obj;
+            return this.id.equals(u.id);
+        }
+        else{
+          return this.equals(obj);
+        }
+    }
+```
+- 정확한 equals() 만들기 위해서는...
+  - generator를 사용하 만드는 경우 중요한 사항을 처리
+  - principle(외우지 말고 이런게 있다..정도0)
+    - 반사성(Reflexivity): 자기 자신과 동등
+      - x.equals(x)는 항상 true
+      - 항등식
+    - 대칭성(Symmetry): 두 객체가 서로에대해 동일하다고 판단하면 양방양으로 동일해야한다
+      - x.equals(y)가 true면 y.equals(x)도 true
+      - 교환법칙
+    - 추이성(Transitivity): 세 객체가 있을때 첫 객체가 두번째 객체와 동일하고, 두번째 객체가 세번째 객체와 동일하다면 세번째 객체는 첫번째 객체와도 동일해야한다.
+      - 삼단논법처럼
+    - 일관성(Consistency) : 두 객체의 상태가 변경되지 않는 한 equals method는 늘 동일한 값을 반환한다. 
+    - null 비교: 모든 객체는 null과 비교했을때 false를 반환해야한다. 
+```java
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserV1 userV1 = (UserV1) o;
+        return Objects.equals(id, userV1.id);
+    }
+```
+# III. 실습 문제
+```
+
+문제: toString(), equals() 구현하기
+문제 설명
+다음 코드와 실행 결과를 참고해서 Rectangle 클래스를 만들어라.
+Rectangle 클래스에 IDE의 기능을 사용해서 toString() , equals() 메서드를 실행 결과에 맞도록 재정
+의해라.
+rect1 과 rect2 는 넓이( width )와 높이( height )를 가진다. 넓이와 높이가 모두 같다면 동등성 비교에 성
+공해야 한다.
+
+package lang.object.test;
+public class RectangleMain {
+ public static void main(String[] args) {
+ Rectangle rect1 = new Rectangle(100, 20);
+ Rectangle rect2 = new Rectangle(100, 20);
+ System.out.println(rect1);
+ System.out.println(rect2);
+ System.out.println(rect1 == rect2);
+ System.out.println(rect1.equals(rect2));
+ }
+}
+
+실행 결과
+Rectangle{width=100, height=20}
+Rectangle{width=100, height=20}
+false
+true
+```
+[실습 코드](../../src/step03_middleClass/chapter01_Object/exam_Object01)
+
+# IV. 마치며...
+- Object class 나머지 메서드
+  - clone(): 객체를 복사할때 사용. but 잘 사용안함
+  - hashCode(): equals와 함께 사용되기도 함. Collection framework에서 자세히 다룰 예정
+    - hash 알고리즘 이해 필요
+  - getClass(): 인스턴스가 소속된 Class 정보. Class 챕터에서
+  - notify(), notifyAll(), wait(): thread 추적 관련. 멀티 쓰레드 파트에서 
