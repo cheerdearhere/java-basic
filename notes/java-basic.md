@@ -116,7 +116,7 @@ ____
 
 [Object 클래스](03middle-1/01ObjectClass.md)
 
-[불변 객체]
+[불변 객체](03middle-1/02Immuatable.md)
 
 [String 클래스]
 
