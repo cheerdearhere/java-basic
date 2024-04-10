@@ -1,4 +1,4 @@
-package step03_middleClass.chatper02_Immutable.exam01_Immutable;
+package step03_middleClass.chapter02_Immutable.exam01_Immutable;
 
 public class MyDate {
     private int year;

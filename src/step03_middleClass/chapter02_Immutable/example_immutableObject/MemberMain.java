@@ -1,4 +1,4 @@
-package step03_middleClass.chatper02_Immutable.example_immutableObject;
+package step03_middleClass.chapter02_Immutable.example_immutableObject;
 
 public class MemberMain {
     public static void main(String[] args) {

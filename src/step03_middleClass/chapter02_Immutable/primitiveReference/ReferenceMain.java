@@ -1,4 +1,4 @@
-package step03_middleClass.chatper02_Immutable.primitiveReference;
+package step03_middleClass.chapter02_Immutable.primitiveReference;
 
 public class ReferenceMain {
     public static void main(String[] args) {

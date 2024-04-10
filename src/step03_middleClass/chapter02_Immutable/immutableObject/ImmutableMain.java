@@ -1,4 +1,4 @@
-package step03_middleClass.chatper02_Immutable.immutableObject;
+package step03_middleClass.chapter02_Immutable.immutableObject;
 
 public class ImmutableMain {
     public static void main(String[] args) {
