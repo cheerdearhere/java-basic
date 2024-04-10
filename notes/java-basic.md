@@ -118,7 +118,7 @@ ____
 
 [불변 객체](03middle-1/02Immuatable.md)
 
-[String 클래스]
+[String 클래스](03middle-1/03StringClass.md)
 
 [Wrapper, Class 클래스]
 
