@@ -4,7 +4,7 @@
 
 - 자바에서 제공하는 클래스들이 불변 객체로 이뤄져있음.
 
-[실습 코드 모음](../../src/step03_middleClass/chatper02_Immutable)
+[실습 코드 모음](../../src/step03_middleClass/chapter02_Immutable)
 
 # I. 기본형과 참조형의 공유
 - Primitive Type vs Reference Type
@@ -102,7 +102,7 @@ public class ImmutableField {
 ```
 - 결과적으로 복사후 값 변경을 막아 사이드 이펙트를 방지할 수 있다. 
 - 가변 객체와 불변 객체는 각각 상황에 맞춰 사용하면 된다.\
-# III. [예제](../../src/step03_middleClass/chatper02_Immutable/example_immutableObject)
+# III. [예제](../../src/step03_middleClass/chapter02_Immutable/example_immutableObject)
 - Address 객체는 불변 객체이지만 Member 객체는 변경 가능
   - 필요에 따라 선택
 # IV. 불변 객체의 값 변경
@@ -172,7 +172,7 @@ date2 = 2024-1-1
 date1 = 2025-1-1
 date2 = 2025-1-1
 ```
-[실습 코드](../../src/step03_middleClass/chatper02_Immutable/exam01_Immutable)
+[실습 코드](../../src/step03_middleClass/chapter02_Immutable/exam01_Immutable)
 
 # VI. 불변객체를 자세히 다루는 이유?
 - Java에서 제공하는 기본 라이브러리 클래스들이 불변 객체로 설계됨
