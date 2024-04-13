@@ -219,7 +219,200 @@ private static boolean isEqual(String str1, String str2) {
 ```
 
 # V. Methods...
+- 매우 다양한 기능을 제공하기에 모두 다룰 수 없음
+- 외우기보다 주로 사용하는 기능이 있음을 알아두고 필요할때 검색하거나 [API 문서](https://docs.oracle.com/javase/8/docs/api/java/lang/String.html)를 검색한다.
+- CharSequence: String, StringBuffer, StringBuilder 등 문자열 타입의 상위 타입
+## A. 문자열 정보 조회
+- `int` length(): 문자열의 길이
+- `boolean` isEmpty(): 문자열이 비어있는지(길이가 0인지) 
+- `boolean` isBlank(): 문자열이 비어있는지(길이가 0 or 모든 문자가 공백` `인지)
+- `char` charAt(`int index`): 해당 인덱스의 문자 
+```java
+public static void main(String[] args) {
+  String str = "Hello, Java";
+  System.out.println("문자열 길이: "+str.length());
 
+  System.out.println("empty \"\": "+"".isEmpty());
+  System.out.println("empty str: "+str.isEmpty());
+  System.out.println("empty \"     \": "+"     ".isEmpty());
+
+  System.out.println("blank \"\": "+"".isBlank());
+  System.out.println("blank str: "+str.isBlank());
+  System.out.println("blank \"     \": "+"     ".isBlank());
+
+  System.out.println("index 7th: "+str.charAt(7));
+  System.out.println("J's index: "+str.indexOf('J'));
+}
+```
+```
+문자열 길이: 11
+empty "": true
+empty str: false
+empty "     ": false
+blank "": true
+blank str: false
+blank "     ": true
+index 7th: J
+J's index: 7
+```
+## B. 문자열 비교
+- `boolean` equals(`Object anotherObj`): 호출한 인스턴스와 매개변수의 문자열이 동일한지 비교
+  - equals()는 Object의 메서드를 재정의함(자바 라이브러리)
+- `boolean` equalsIgnoreCase(`String anotherStr`): 두 문자열을 대소문자 구분없이 비교
+- `int` compareTo(`String anotherStr`): 두 문자열을 사전 순으로 비교
+- `int` compareToIgnoreCase(`String anotherStr`): 두 문자열을 대소문자 구분 없이 사전순으로 비교
+- `boolean` startWith(`String prefix`): 문자열이 특정 문자열로 시작하는지 
+- `boolean` endWith(`String suffix`): 문자열이 특정 문자열로 끝나는지
+```java
+public static void main(String[] args) {
+  String str1 = "hello java";
+  String str2 = "heLLo java";
+  String str3 = "hello World";
+
+  System.out.println("equals: str1,str2: "+str1.equals(str2));
+  System.out.println("equals: str1,str3: "+str1.equals(str3));
+  System.out.println("equalsIgnoreCase: str1,str2: "+str1.equalsIgnoreCase(str2));
+  System.out.println("equalsIgnoreCase: str1,str3: "+str1.equalsIgnoreCase(str3));
+
+  System.out.println("b compareTo a: "+"b".compareTo("a"));
+  System.out.println("a compareTo b: "+"a".compareTo("b"));
+  System.out.println("a compareTo c: "+"a".compareTo("c"));
+  System.out.println("str1 compareTo str3: "+ str1.compareTo(str3));
+  System.out.println("str1 compareToIgnoreCase str2: "+ str1.compareToIgnoreCase(str2));
+
+  System.out.println("str1 startWith 'hello'? "+str1.startsWith("hello"));
+  System.out.println("str2 startWith 'hello'? "+str2.startsWith("hello"));
+  System.out.println("str endWith 'java'? "+str3.endsWith("java"));
+}
+```
+```
+equals: str1,str2: false
+equals: str1,str3: false
+equalsIgnoreCase: str1,str2: true
+equalsIgnoreCase: str1,str3: false
+b compareTo a: 1
+a compareTo b: -1
+a compareTo c: -2
+str1 compareTo str3: 19
+str1 compareToIgnoreCase str2: 0
+str1 startWith 'hello'? true
+str2 startWith 'hello'? false
+str endWith 'java'? false
+```
+## C. 문자열 검색
+- `boolean` contains(`CharSequence s`): 문자열이 특정 문자열을 포함하고 있는지
+- `int` indexOf(`String ch`): 문자열 앞에서부터 특정 문자열이 등장하는 인덱스 
+  - (`String ch`, `int fromIndex`): 문자열이 입력한 인덱스 이후부터 처음 등장하는 인덱스
+- `int` lastIndexOf(`String ch`): 문자열 뒤에서부터 특정 문자열이 처음 등장하는 인덱스
+```java
+public static void main(String[] args) {
+  String greeting = "Hello, java Welcome to Java world!";
+  System.out.println("contains('ava') "+greeting.contains("ava"));
+  System.out.println("indexOf('ava'): "+greeting.indexOf("ava"));
+  System.out.println("indexOf('ava',10): "+greeting.indexOf("ava",10));
+  System.out.println("lastIndexOf('ava'): "+greeting.lastIndexOf("ava"));
+}
+```
+```
+contains('ava') true
+indexOf('ava'): 8
+indexOf('ava',10): 24
+lastIndexOf('ava'): 24
+```
+## D. 문자열 조작 및 변환
+- `String` substring(`int beginIndex`): 인덱스부터 문자열 끝까지 
+  - (`int beginIndex`,`int endIndex`): 시작 인덱스 부터 끝 인덱스 앞까지
+- `String` concat(`String str`): 호출한 문자열 뒤에 매개변수 문자열을 붙임
+- `String` replace(`CharSequence target`, `CharSequence replacement`): 특정문자열을 다른 문자열로 대체
+- `String` replaceAll(`String regex`, `String replacement`): 특정 정규표현식과 일치하는 모든 부분을 새 문자열로 대체
+- `String` replaceFirst(`String regex`, `String replacement`): 특정 정규표현식과 일치하는 첫 부분을 새 문자열로 대체
+- `String` toLowerCase()/toUpperCase(): 문자열을 소문자/대문자로 변환
+- `String` trim(): 문자열 양쪽 끝의 공백(whitespace) 제거
+- `String` strip(): java 11. 문자열 끝의 whitespace, 유니코드 공백을 제거
+```java
+public static void main(String[] args) {
+  String str = "Hello, Java! Welcome to Java Programming!";
+
+  System.out.println("after index 7: "+str.substring(7));
+  System.out.println("after index 7, before 12: "+str.substring(7,12));
+
+  System.out.println("use concat: "+str.concat("!!!"));
+  System.out.println("use +operator: "+str+"!!!");
+  System.out.println("Java -> World: "+str.replace("Java", "World"));
+  System.out.println("first Java -> World: "+str.replaceFirst("Java","World"));
+
+  String strWithSpaces = "     Java  program      with  spaces     ";
+  System.out.println("trim: "+strWithSpaces.trim());
+  System.out.println("strip: "+strWithSpaces.strip());
+  System.out.println("front space: "+strWithSpaces.stripLeading());
+  System.out.println("next space: "+strWithSpaces.stripTrailing());
+}
+```
+```
+after index 7: Java! Welcome to Java Programming!
+after index 7, before 12: Java!
+use concat: Hello, Java! Welcome to Java Programming!!!!
+use +operator: Hello, Java! Welcome to Java Programming!!!!
+Java -> World: Hello, World! Welcome to World Programming!
+first Java -> World: Hello, World! Welcome to Java Programming!
+trim: Java  program      with  spaces
+strip: Java  program      with  spaces
+front space: Java  program      with  spaces     
+next space:      Java  program      with  spaces
+```
+## E. 문자열 분할 및 조합
+- `String[]` split(`String regex`): 기준이되는 문자열(정규표현식)을 분할기준으로 삼아 분할
+- `String` join(`CharSequence delimiter`, `CharSequence... elements`): 주어진 구분자로 여러 문자열을 결합한다.
+```java
+public static void main(String[] args) {
+  String fruits = "apple,banana,Orange";
+  String[] fruitsArray = fruits.split(",");
+  Arrays.stream(fruitsArray).forEach(System.out::println);
+  System.out.println("re: "+String.join("-", fruitsArray));
+}
+```
+```
+apple
+banana
+Orange
+re: apple-banana-Orange
+```
+## F. 기타
+- `String` String.valueOf(Object obj): 모든 타입의 자료를 문자열로 변환
+- `Char[]` toCharArray(): 문자열을 문자(char)의 배열로 반환
+- `String` format(`String format`,`Object... args`): 형식문자열과 인자를 사용해 새로운 문자열 생성
+- `boolean` matches(`String regex`): 문자열이 정규표현식과 일치하는지
+```java
+public static void main(String[] args) {
+  int num = 100;
+  boolean flag = true;
+  Object obj = new Object();
+  String strObj = "hi! ";
+  String numStr = String.valueOf(num);
+  String numStr2 = ""+num;
+  String booleanStr = String.valueOf(flag);
+  String objStr = String.valueOf(obj);
+  System.out.println(String.join("-", strObj, numStr, booleanStr, objStr));
+
+  char[] fruitsChars = fruits.toCharArray();
+  for(char c : fruitsChars){
+    System.out.print(c+" ");
+  }
+  System.out.println();
+
+  System.out.println(String.format("num: %05d, flag: %b, str: %s", num, flag, str));
+  
+  String regex = "Hello, (Java||World)";
+  System.out.println(str.matches(regex));
+}
+```
+```
+hi! -100-true-java.lang.Object@6537cf78
+a p p l e , b a n a n a , O r a n g e 
+num: 00100, flag: true, str: Hello, Java! Welcome to Java Programming!
+false
+```
+- 외우는게 아니라 익숙해지는 것
 # VI. mutable Char Array: StringBuilder, StringBuffer
 
 # VII. method Chaining
