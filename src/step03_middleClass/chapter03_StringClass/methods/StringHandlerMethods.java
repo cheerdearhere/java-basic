@@ -1,7 +1,6 @@
 package step03_middleClass.chapter03_StringClass.methods;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 public class StringHandlerMethods {
     public static void main(String[] args) {
