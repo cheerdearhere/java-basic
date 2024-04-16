@@ -414,7 +414,150 @@ false
 ```
 - 외우는게 아니라 익숙해지는 것
 # VI. mutable Char Array: StringBuilder, StringBuffer
-
+- 불변인 String class 단점
+```java
+public static void main(String[] args) {
+    //"A" + "B"
+    String a = "A";//메모리 낭비
+    String b = "B";//메모리 낭비
+    String c = a.concat(b);
+    System.out.println(c);
+    
+    //"a"+"b"+"c"+"d"
+    String str = "a";//메모리 낭비
+    str+="b";//메모리 낭비
+    str+="c";//메모리 낭비
+    str+="d";
+    System.out.println(str);
+}
+```
+- 자원 관리에 있어서 매우 큰 낭비
+- 해결방법: 가변 문자 배열 사용
+  - 가변 객체 사용시 주의사항
+    1. 늘 사이드 이펙트에 주의해야한다. 
+    2. 수정을 method를 사용해 진행한다(문자열 풀이 아님)
+## A. 구조
+- java 9 이전
+```java
+public final class StringBuilder
+{
+  char[] value;
+}
+```
+- java 9 이후
+```java
+public final class StringBuilder
+        extends AbstractStringBuilder
+        implements Appendable, java.io.Serializable, Comparable<StringBuilder>, CharSequence 
+{
+    byte[] value;
+}
+```
+## B. 사용 예시
+- 생성은 constructor: `new StringBuilder(Object object);`
+- 변형은 method 사용
+  - append(`parameter`): 문자열 끝에 추가
+  - insert(`int offsetIndex`, `charSequence`): 문자열 삽입 포인터 위치, 삽입 대상
+  - delete(`int startIndex`,`int endIndex`): 시작 인덱스부터 끝 인덱스 앞까지의 문자 삭제
+  - reverse(): 문자배열을 뒤집음
+  - repeat(`Object targetObj`,`int count`): 타겟을 횟수만큼 반복
+  - toString(): 지금까지 입력/수정된 가변 문자 배열을 불변문자열(String)로 반환
+```java
+public static void main(String[] args) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("A");
+    sb.append("B");
+    sb.append("C");
+    sb.append("D");
+    System.out.println("sb = " + sb);
+    
+    sb.insert(3, "Java");
+    System.out.println("sb = " + sb);
+  
+    sb.delete(3, 7);
+    System.out.println("sb = " + sb);
+  
+    sb.reverse();
+    System.out.println("sb = " + sb);
+  
+    sb.repeat(sb,3);
+    System.out.println("sb = " + sb);
+  
+    String immutableCharacterSequence = sb.toString();
+    System.out.println("immutableCharacterSequence = " + immutableCharacterSequence);
+}
+```
+```
+sb = ABCD
+sb = ABCJavaD
+sb = ABCD
+sb = DCBA
+sb = DCBADCBADCBADCBA
+immutableCharacterSequence = DCBADCBADCBADCBA
+```
+- 하나의 객체가 계속 변환되기때문에 `String`과 달리 메모리의 과도한 낭비를 줄일 수 있다. 
+## C. String 최적화
+- Java의 String 최적화
+  - 문자열 리터럴 최적화: 컴파일 과정에서 결과를 문자열 풀에 등록해 런타임에서는 연산을 진행하지 않아 메모리 누수를 줄인다
+  ```java
+  // before compile time
+  String beforeCompile = "Hello"+" Java";
+  // after compile time(build, runtime)
+  String afterCompile = "Hello Java";
+  ```
+  - String variable 최적화: 단순 연산(`+`)은 원칙상 불가능. but 자바 내부에서 최적화 처리
+    - 자바 9부터 `StringConcatFactory`를 사용해 최적화
+```java
+// 개발자 입력 소스 코드
+String result = str1 + str2;
+```
+```java
+// Java 컴파일시 처리
+String result = new StringBuilder().append(str1).append(str2).toString();
+```
+- String 최적화가 어려운 이유
+  - 루프(반복문) 내에서 문자열을 더하는 경우 최적화는 적용되지 않는다.  
+  - 반복문은 runtime 예측할 수 없어(횟수를 동적 처리할 수 있어 컴파일러가 일할 수 없다) Java가 개입할 여지가 없다 
+```java
+public static void main(String[] args) {
+    int count = 100000;
+    
+    long startTime = System.currentTimeMillis();
+    String res = "";
+    for(int i=0; i<count; i++) {
+      res += "Hello World!";
+    }
+    long endTime = System.currentTimeMillis();
+    System.out.println("duration using + operator: "+(endTime-startTime)+" ms");
+  
+    startTime = System.currentTimeMillis();
+    String res2="";
+    for(int i=0; i<count; i++) {
+      res2 = new StringBuilder().append("Hello World!").toString();
+    }
+    endTime=System.currentTimeMillis();
+    System.out.println("duration using mutable CharSequence: "+(endTime-startTime)+" ms");
+}
+```
+```
+duration using + operator: 3538 ms
+duration using mutable CharSequence: 2 ms
+```
+- mutable CharSequence 사용이 더 좋은 경우
+  - 반복문에서 매우 반복해서 문자를 연결할 때
+  - 조건문을 통해 동적으로 문자열을 조합할 때 
+  - 복잡한 문자열의 특정부분을 변경해야할 때
+  - 매우 긴 대용량 문자열을 조작해야할 때
+- StringBuilder vs StringBuffer
+  - 둘 다 가변 문자 배열
+  - StringBuffer
+    - 내부에 동기화가 되어 있어서 멀티 스레드 상황에 안전
+    - 동기화 오버헤드로 인해 성능이 느린편
+    - 멀티 스레드에서 사용
+  - StringBuilder
+    - 멀티 스레드 상황에서 안전하지 않음
+    - 동기화 오버헤드가 없어 속도가 빠르다
+    - 단일 스레드에서 사용
 # VII. method Chaining
 
 # IIX. 실습 문제
