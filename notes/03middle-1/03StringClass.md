@@ -558,16 +558,277 @@ duration using mutable CharSequence: 2 ms
     - 멀티 스레드 상황에서 안전하지 않음
     - 동기화 오버헤드가 없어 속도가 빠르다
     - 단일 스레드에서 사용
+
 # VII. method Chaining
+- 값을 누적해서 연산을 연속적으로 처리
+- 자기 자신의 참조값을 반환(참조 대상 인스턴스의 value 변경) 
+- 예제
+```java
+public class ValueAdder {
+    private int value;
+    public ValueAdder add(int addValue){
+        this.value += addValue;
+        return this;
+    }
+    public int getValue(){
+        return value;
+    }
+}
+```
+  - 각 연산결과가 참조하는 인스턴스 비교
+  ```java
+public static void main(String[] args) {
+  ValueAdder adder = new ValueAdder();
+  ValueAdder ref1 = adder.add(1);
+  ValueAdder ref2 = adder.add(2);
+  ValueAdder ref3 = adder.add(3);
+  ValueAdder ref4 = adder.add(4);
 
+  int result = adder.getValue();
+
+  System.out.println("ref1 = " + ref1);
+  System.out.println("ref2 = " + ref2);
+  System.out.println("ref3 = " + ref3);
+  System.out.println("ref4 = " + ref4);
+  System.out.println("result = " + result);
+}
+  ```
+ - console
+  ```
+  ref1 = ...methodChaining.ValueAdder@2f4d3709
+  ref2 = ...methodChaining.ValueAdder@2f4d3709
+  ref3 = ...methodChaining.ValueAdder@2f4d3709
+  ref4 = ...methodChaining.ValueAdder@2f4d3709
+  result = 10
+  ```
+- 서로 다른 변수에서 같은 대상을 참조할 수 있음
+  - 함수의 정의역과 공역의 관계
+- this(자신의 reference)를 반환하므로 결과에 다시 메서드를 호출할 수 있어 연속적 처리가 가능하다
+  - 끝나는 지점에서 반환되는 변수명은 생략
+  - 간결하게 이해할 수 있다는 장점
+```java
+public static void main(String[] args) {
+  adder.add(5).add(6).add(7).add(8).add(9).add(10);
+  System.out.println("adder = " + adder.getValue());
+}
+```
+- `StringBuilder`가 method chaining 제공
+  - Java의 기본 라이브러리에 계속해서 적용되어 권장되고있다. 
+```java
+public static void main(String[] args) {
+  StringBuilder sb = new StringBuilder();
+  String str = sb.append("a").append("b").append("c").append("d").append("e").append("f")
+          .insert(4,"Java!")
+          .delete(4,8)
+          .reverse()
+          .toString();
+  System.out.println("str = " + str);
+}
+```
 # IIX. 실습 문제
-## A. 문제1
+[실습예제](../../src/step03_middleClass/chapter03_StringClass/test/ExamStringMethodsMain.java)
+## A. 문제1: startsWith
+```
+문제 설명
+startsWith() 를 사용해서 url 이 https:// 로 시작하는지 확인해라.
+
+package lang.string.test;
+public class TestString1 {
+ public static void main(String[] args) {
+ String url = "https://www.example.com";
+ // 코드 작성
+ }
+}
+
+실행 결과
+true
+```
+## B. 문제2: length
+```
+문제 설명
+length() 를 사용해서 arr 배열에 들어있는 모든 문자열의 길이 합을 구해라.
+실행 결과에 맞도록 출력하자. 
+package lang.string.test;
+public class TestString2 {
+ public static void main(String[] args) {
+ String[] arr = {"hello", "java", "jvm", "spring", "jpa"};
+ // 코드 작성
+ }
+}
+
+실행 결과 
+hello:5
+java:4
+jvm:3
+spring:6
+jpa:3
+sum = 21
+```
+## C. 문제3: indexOf
+```
+문제 설명
+str 에서 ".txt" 문자열이 언제부터 시작하는지 위치를 찾아서 출력해라. indexOf() 를 사용해라. 
+
+package lang.string.test;
+public class TestString3 {
+ public static void main(String[] args) {
+ String str = "hello.txt";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+index = 5
+```
+## D. 문제4: substring
+```
+문제 설명
+substring() 을 사용해서, hello 부분과 .txt 부분을 분리해라.
+단순하게 substring() 에 숫자를 직접 입력해서 문제를 풀면 된다.
+
+package lang.string.test;
+public class TestString4 {
+ public static void main(String[] args) {
+ String str = "hello.txt";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+filename = hello
+extName = .txt
+```
+## E. 문제 5: indexOf, substring
+```
+문제5 - indexOf, substring 조합
+문제 설명
+str 에는 파일의 이름과 확장자가 주어진다. ext 에는 파일의 확장자가 주어진다.
+파일명과 확장자를 분리해서 출력하라.
+indexOf() 와 substring() 을 사용해서 문제를 풀면 된다.
+
+package lang.string.test;
+public class TestString5 {
+ public static void main(String[] args) {
+ String str = "hello.txt";
+ String ext = ".txt";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+filename = hello
+extName = .txt
 ```
 
+## F. 문제6 - count
 ```
-[실습예제](../../src/step03_middleClass/chapter03_StringClass/)
-## B. 문제2
+문제6 - 검색 count
+문제 설명
+str 에서 key 로 주어지는 문자를 찾고, 찾은 문자의 수를 출력해라.
+indexOf() 를 반복문과 함께 풀면 된다.
+
+package lang.string.test;
+public class TestString6 {
+ public static void main(String[] args) {
+ String str = "start hello java, hello spring, hello jpa";
+ String key = "hello";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+count = 3
+```
+## G. 문제 7 - 공백제거
+```
+문제7 - 공백 제거
+문제 설명
+문자의 양쪽 공백을 제거해라. 예) " Hello Java " "Hello Java"
+
+package lang.string.test;\
+public class TestString7 {
+ public static void main(String[] args) {
+ String original = " Hello Java ";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+Hello Java
+```
+## H. 문제8 - 교환
+```
+문제8 - replace
+문제 설명
+replace() 를 사용해서 java 라는 단어를 jvm 으로 변경해라.
+
+package lang.string.test;
+public class TestString8 {
+ public static void main(String[] args) {
+ String input = "hello java spring jpa java";
+ // 코드 작성
+ }
+}
+
+실행 결과
+hello jvm spring jpa jvm
 ```
 
+## I. 문제9 - split
 ```
-[실습예제](../../src/step03_middleClass/chapter03_StringClass/)
+문제9 - split()
+문제 설명
+split() 를 사용해서 이메일의 ID 부분과 도메인 부분을 분리해라.
+
+package lang.string.test;
+public class TestString9 {
+ public static void main(String[] args) {
+ String email = "hello@example.com";
+ // 코드 작성
+ }
+}
+실행 결과 
+ID: hello
+Domain: example.com
+```
+
+## J. 문제 10 - split/ join
+```
+문제10 - split(), join()
+문제 설명
+split() 를 사용해서 fruits 를 분리하고, join() 을 사용해서 분리한 문자들을 하나로 합쳐라.
+실행 결과를 참고해라. 
+
+package lang.string.test;
+public class TestString10 {
+ public static void main(String[] args) {
+ String fruits = "apple,banana,mango";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+apple
+banana
+mango
+joinedString = apple->banana->mango
+```
+## K. 문제 11 - reverse
+```
+문제11 - reverse()
+문제 설명
+str 문자열을 반대로 뒤집어라.
+StringBuilder 에 있는 reverse() 를 사용해라.
+
+package lang.string.test;
+public class TestString11 {
+ public static void main(String[] args) {
+ String str = "Hello Java";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+avaJ olleH
+```
+
