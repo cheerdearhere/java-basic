@@ -1,4 +1,4 @@
-package step03_middleClass.chapter04_MutableStringClass;
+package step03_middleClass.chapter03_StringClass;
 
 public class StringBuilderMain {
     public static void main(String[] args) {
