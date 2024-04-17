@@ -120,7 +120,7 @@ ____
 
 [String 클래스](03middle-1/03StringClass.md)
 
-[Wrapper, Class 클래스]
+[Wrapper, Class 클래스](03middle-1/04WrapperAndClass_type.md)
 
 [열거형-Enum]
 
