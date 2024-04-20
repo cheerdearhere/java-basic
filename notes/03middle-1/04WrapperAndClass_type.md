@@ -118,7 +118,7 @@ private static MyInteger findMyInteger(MyInteger[] arr, int value) {
 - 기본 래퍼 클래스 특징
   - 불변 객체
   - equals()를 사용
-- 객체 생성하기
+## A. 객체 생성하기
   - valueOf()를 권장하는 이유는 자주 사용하는 -128 ~ 127 사이의 수가 문자열 풀처럼 미리 생성된 객체를 반환하므로 성능 향상에 도움이 되기 때문 
 ```java
 Integer i = new Integer(10);//deprecated 예정
@@ -132,12 +132,12 @@ Long l1 = 10000000L;
 Boolean b1 = true;
 Character c1 = 'A';
 ```
-- 값 사용하기
+## B. 값 사용하기
 ```java
 int n1 = i.intValue();
 long n2 = l1.longValue();
 ```
-- 값 비교하기 
+## C. 값 비교하기 
 ```java
 public static void main(String[] args) {
     //비교
@@ -152,7 +152,7 @@ public static void main(String[] args) {
 (i.equals(i2)) = true
 (i.equals(i3)) = false
 ```
-# III. Boxing & Unboxing
+## D. Boxing & Unboxing
 - 리터럴을 래퍼 클래스로 변형하는 것을 박싱이라 한다.
   - Boxing: literal -> Wrapper object
   - 마치 상품을 박스로 감싸듯
@@ -162,9 +162,164 @@ public static void main(String[] args) {
   - 마치 선물 상자에서 상품을 꺼내듯
   - 객체 형태에서 값을 꺼냄
   - 꺼낼때 기본형 타입을 지정할 수 있음
-## A. Auto Boxing
+## E. Auto Boxing/Unboxing
+- 직접 메서드를 표시
+```java
+int value = 7;
+// Primitive -> Wrapper
+Integer boxedValue = Integer.valueOf(value);
+// Wrapper -> Primitive
+int unboxedValue = boxedValue.intValue();
+```
+- 용도가 기본형을 위한 객체이다보니 java 5부터 컴파일러가 auto boxing, auto unboxing 지원
+```java
+int value = 7;
+// Auto: Primitive -> Wrapper
+Integer boxedValue = value;
+// Auto: Wrapper -> Primitive
+int unboxedValue = boxedValue;
+```
+- 언어도 사용자 편의와 흐름에 따라 변경되는 부분이 있음
+# III. wrapper class 주요 메서드
+- parsers
+  - `Wrapper` valueOf(`Object obj`): 래퍼 클래스로 변환, 문자열도 가능
+  - `Primitive` parse{해당타입}(`String numeric`): 해당 객체(특히 문자열)를 해당 타입(기본형)으로 변환
+```java
+    Integer i1 = Integer.valueOf(10);// 숫자 -> 래퍼
+    Integer i2 = Integer.valueOf("10");// 문자열도 가능
+    int i = Integer.parseInt("10");// 문자열을 바로 기본형 int
+```
+- 비교
+```java
+    // 비교
+    int compareResult = i1.compareTo(20);
+    System.out.println("compareResult = " + compareResult);
+```
+- 기본 산술연산
+```java
+    //산술연산
+    System.out.println("sum = " + Integer.sum(10, 20));
+    System.out.println("min = " + Integer.min(10, 20));
+    System.out.println("max = " + Integer.max(10, 20));
+```
+- 편리한 래퍼의 존재에도 기본형을 사용하는 이유 : 성능
+```java
+public static void main(String[] args) {
+  // 기본형 사용
+  long sumPrimitive = 0;
+  startTime = System.currentTimeMillis();
+  for(int i = 0; i<iterations; i++) sumPrimitive++;
+  endTime=System.currentTimeMillis();
+  System.out.println("primitive: " + (endTime-startTime));
 
+  //래퍼 사용
+  Long sumWrapper = 0L;
+  startTime = System.currentTimeMillis();
+  for(int i = 0; i<iterations; i++) sumWrapper++;
+  endTime=System.currentTimeMillis();
+  System.out.println("wrapper: " + (endTime-startTime));
+}
+```
+```
+primitive: 3
+wrapper: 4165
+```
+- 기본형은 이미 존재하는 풀에서 값을 사용하기에 정해진 용량만큼만 사용
+- 래퍼는 인스턴스이므로 내부에 있는 객체를 위한 메타 데이터를 포함해 더 많은 메모리를 사용
 
+- 무엇을 사용해야 하는가? 
+  - 왠만한 연산은 거의 차이가 안남
+  - CPU에서 연산을 아주 많이 수행하거나 수만 ~ 수십만 이상 연속 수행하는 경우 기본형 권장
+  - 유지보수나 관리적 측면에서 편한 것 선택
+- 유지보수 vs 최적화
+  - 둘 모두 가져가면 좋겠지만 생각보다 쉽지 않다. 
+  - 또한 최근 컴퓨터들의 성능이 워낙 좋다보니 최적화가 의미없이 느껴지기도 한다. 
+  - 그렇다해도 성능을 완전 포기할 수 없다
+    - 코드 변경 없이 성능 최적화를 하면 best 
+      - 하지만 대부분의 최적화는 단순함보다는 복잡함을 요구하고 
+      - 더 많은 코드들을 추가로 만들며
+      - 복잡한 과정을 통해 진행되는 경우가 많다. 
+    - 여러 노력으로 최적화를 한다 한들 애플리케이션(응용프로그램) 입장에서 극적인 효과를 보는 경우는 거의 없으며
+    - 대다수 불필요한 최적화를 진행하는 경우가 많다. 
+    - 자바 내부의 연산을 한번 줄이는 것보다 네트워크 호출을 한번 줄이는게 성능을 확보하는 경우가 많다. 
+    - 우선 처리한 뒤 개발이후 성능 테스트에서 중대 문제사항이 발생하는지, 최적화의 영향이 극적인지 체크한뒤 적용
+# IV. java.lang.Class
+- `Class`는 클래스의 정보(메타데이터)를 다루는데 사용한다
+- 주요기능
+  - 타입 정보: 클래스명, 부모 클래스, 구현 인터페이스, 접근 제한자 등 정보 조회
+  - reflection: 클래스에 정의된 메서드, 필드, 생성자 등 조회, 이들을 통해 인스턴스 생성 및 메서드 호출 등 작업 진행
+    - getDeclareFields(): 클래스의 모든 필드 조회
+    - getDeclareMethods(): 클래스의 모든 메서드 조회
+    - getSuperclass(): 클래스의 부모클래스 조회
+    - getInterfaces(): 클래스의 인터페이스 조회
+  - dynamic Loading, create instance
+    - `Class.forName()`: 클래스를 동적으로 호출
+      - DataSource, DB connection 관리 등을 처리할때 동적으로 처리
+    - newInstance(): 해당 클래스의 인스턴스 생성
+  - annotation 처리: 클래스에 적용된 애노테이션을 조회하고 처리하는 기능을 제공
+```java
+public static void main(String[] args) throws Exception{
+  // Class 조회
+  Class<String> stringClass1 = String.class;// 1. class에서 조회
+  Class<? extends String> stringClass2 = new String().getClass(); // 2. instance에서 조회
+  Class<?> stringClass3 = Class.forName("java.lang.String");// 3. 문자열로 라이브러리 조회(Exception 처리 필요)
 
+  // 모든 필드 출력
+  Field[] fields = stringClass1.getDeclaredFields();
+  System.out.println("### "+stringClass1.getName()+"fields>> ");
+  Arrays.stream(fields).forEach(field -> {
+      System.out.print(field.getType()+" "+field.getName()+" : "+field+"\n");
+  });
 
-# IV. 
+  System.out.println();
+
+  //모든 메서드 출력
+  Method[] methods = stringClass1.getMethods();
+  System.out.println("### "+stringClass1.getName()+"methods>> ");
+  Arrays.stream(methods).forEach(method -> {
+      System.out.print(method.getReturnType()+" "+method.getName()+" : "+method+"\n");
+  });
+
+  // super class
+  System.out.println("### "+stringClass1.getName()+"super class>> "+stringClass1.getSuperclass());
+
+  //Interface info
+  Class[] interfaces = stringClass1.getInterfaces();
+  System.out.println("### "+stringClass1.getName()+"interfaces>> ");
+  Arrays.stream(interfaces).forEach(interfaceClass -> {
+      System.out.print(interfaceClass.getName()+": "+interfaceClass+"\n");
+  });
+}
+```
+```
+### java.lang.Stringfields>> 
+class [B value : private final byte[] java.lang.String.value
+byte coder : private final byte java.lang.String.coder
+int hash : private int java.lang.String.hash
+...
+### java.lang.Stringmethods>> 
+boolean equals : public boolean java.lang.String.equals(java.lang.Object)
+int length : public int java.lang.String.length()
+class java.lang.String toString : public java.lang.String java.lang.String.toString()
+...
+### java.lang.Stringsuper class>> class java.lang.Object
+### java.lang.Stringinterfaces>> 
+java.io.Serializable: interface java.io.Serializable
+java.lang.Comparable: interface java.lang.Comparable
+java.lang.CharSequence: interface java.lang.CharSequence
+...
+```
+- 동적으로 입력받아 인스턴스 사용하기
+  - `forName()`에서 동적으로 받아 처리
+  - 애노테이션을 사용해 좀 더 편리하게 사용 가능
+  - 리플렉션을 깊이 있게 이해하기보다 이렇게 사용할 수 있음 정도만
+    - 고급 후반부에서 필요할때 도전하자
+```java
+// create instance
+Class helloClass = Class.forName("step03_middleClass.chapter04_WrapperAndClassType.Hello");
+Hello hello =(Hello) helloClass.getDeclaredConstructor().newInstance();
+System.out.println("hello: "+hello.sayHello());
+```
+# V. java.lang.System
+# VI. Meth, Random
+# VII. 실습 문제
