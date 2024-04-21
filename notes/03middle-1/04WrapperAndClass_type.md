@@ -312,7 +312,7 @@ java.lang.CharSequence: interface java.lang.CharSequence
 - 동적으로 입력받아 인스턴스 사용하기
   - `forName()`에서 동적으로 받아 처리
   - 애노테이션을 사용해 좀 더 편리하게 사용 가능
-  - 리플렉션을 깊이 있게 이해하기보다 이렇게 사용할 수 있음 정도만
+  - 리플렉션(reflection)을 깊이 있게 이해하기보다 이렇게 사용할 수 있음 정도만
     - 고급 후반부에서 필요할때 도전하자
 ```java
 // create instance
@@ -321,5 +321,205 @@ Hello hello =(Hello) helloClass.getDeclaredConstructor().newInstance();
 System.out.println("hello: "+hello.sayHello());
 ```
 # V. java.lang.System
+- 시스템의 여러 정보를 사용할 수 있음. 
+- 시스템 시간
+```java
+        //현재 시간
+        long currentTimeMillis = System.currentTimeMillis();
+        System.out.println("currentTimeMillis   = " + currentTimeMillis);
+        long currentTimeNanos = System.nanoTime();
+        System.out.println("currentTimeNanos    = " + currentTimeNanos);
+```
+- 시스템 환경변수
+```java
+//운영체제가 사용하는 시스템 환경변수
+Map<String,String> osEnv = System.getenv();
+System.out.println("map = " + osEnv);
+//자바가 사용하는 환경변수
+Properties javaProperties = System.getProperties();
+javaProperties.list(System.out);
+System.out.println("java version: "+javaProperties.getProperty("java.version"));
+```
+- 빠른 배열 복사
+```java
+// 배열 고속 복사
+char[] originalArray = {'h','e','l','l','o'};
+char[] newArray = new char[originalArray.length];
+//반복문이 아닌 객체 깊은 복사: 메모리 자체에 접근
+System.arraycopy(originalArray,0,newArray,0,originalArray.length);
+Stream.of(newArray).forEach(System.out::println);
+```
+- 이 프로그램 종료
+  - 프로그램을 갑작스럽게 종료하는 것은 매우 신중해야하므로 권장하지 않음
+  - System.exit(`int status`)
+    - 0: 정상종료
+    - ...
+- console 사용: 표준 입출력
+  - System.out
+    - print
+    - println
+    - printf ...
+  - System.in
+    - Scanner
+- 표준 오류 스트링 처리: System.err
 # VI. Meth, Random
+## A. Math
+- 수학문제를 해결해주는 클래스
+- 워낙 많은 기능(메서드)을 제공하기때문에 외우기 보다 필요에따라 찾아쓰기
+- method
+  - 기본 연산
+    - `abs(x)`: 절대값
+    - `max(a,b)`: 최대값
+    - `min(a,b)`: 최소값
+  - 지수 로그 연산
+    - `exp(x)`: e^x 계산
+    - `log(x)`: 자연로그
+    - `log10(x)`: log 10
+    - `pow(a,b)`: a^b 계산
+  - 반올림 및 정밀도 메서드
+    - `ceil(x)`: 올림
+    - `floor(x)`: 내림
+    - `rint(x)`: 가장 가까운 정수로 반올림
+    - `round(x)`: 반올림
+  - 삼각함수 메서드
+    - `sin(x)`
+    - `cos(x)`
+    - `tan(x)`
+  - 기타
+    - `sqrt(x)`: 제곱근
+    - `cbrt(x)`: 세제곱근
+    - `random()`: 0~1사이의 무작위 값 생성
+```java
+public static void main(String[] args) {
+    //기본 연산
+    System.out.println("max(10,23): "+Math.max(10,23));
+    System.out.println("min(10,23): "+Math.min(10,23));
+    System.out.println("abs(-10): "+Math.abs(-10));
+
+    //반올림, 정밀도
+    System.out.println("올림 - ceil(2.1): "+Math.ceil(2.1));
+    System.out.println("내림 - floor(2.1): "+Math.floor(2.1));
+    System.out.println("가까운 정수 - rint(2.1): "+Math.rint(2.1));
+    System.out.println("반올림 - round(2.1): "+Math.round(2.1));
+
+    //기타
+    System.out.println("제곱근 - sqrt(10): "+Math.sqrt(16));
+    System.out.println("세제곱근 - cbrt(-8): "+Math.cbrt(-8));
+    System.out.println("0~1 랜덤 - random(): "+Math.random());
+}
+```
+- 참고: 수를 정밀하게 관리할때 BigDecimal class 사용 권장
+  - 필요할때 찾아써도 됨
+```java
+BigDecimal bigDecimal = new BigDecimal("0.1");
+```
+## B. Random
+- Math.random의 기능을 강화
+```java
+public static void main(String[] args) {
+    Random random = new Random();
+    //정수 범위 내 랜덤
+    int randomInt = random.nextInt();
+    System.out.println("randomInt = " + randomInt);
+    //0~1 사이 랜덤
+    double randomDouble = random.nextDouble();
+    System.out.println("randomDouble = " + randomDouble);
+    // true or false
+    boolean randomBoolean = random.nextBoolean();
+    System.out.println("randomBoolean = " + randomBoolean);
+
+    // 범위로 조회
+    int range9 = random.nextInt(10);// 0~9
+    System.out.println("range9 = " + range9);
+    int range10 = random.nextInt(10)+1;// 1~10
+    System.out.println("range10 = " + range10);
+
+    // seed를 지정해 일정 값을 얻을 수 있음
+    Random seedRandom = new Random(1);
+        //개별 수행은 다른 값을 갖지만 개별 결과의 값은 일정함(내부 연산을 동일하게 진행)
+    int seed1 = seedRandom.nextInt(10);
+    int seed2 = seedRandom.nextInt(10);
+    System.out.println("seed: " + seed1 + " " + seed2);
+
+}
+```
+```
+randomInt = -1493907866
+randomDouble = 0.8431618096737828
+randomBoolean = true
+range9 = 5
+range10 = 7
+seed: 5 8
+```
+- seed는 주로 게임, 도박에서 자주사용
+  - 마인크래프트의 지형
+  - 각종 랜덤 게임 등
 # VII. 실습 문제
+## A. Wrapper class 사용
+- [실습코드](../../src/step03_middleClass/chapter04_WrapperAndClassType/test/Exam01_Wrapper.java)
+```
+문제1 - parseInt()
+문제 설명
+문자로 입력된 str1 , str2 두 수의 합을 구하자.
+
+package lang.wrapper.test;
+public class WrapperTest1 {
+ public static void main(String[] args) {
+ String str1 = "10";
+ String str2 = "20";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+두 수의 합: 30
+```
+```
+문제2 - parseDouble()
+문제 설명
+배열에 입력된 모든 숫자의 합을 구하자. 숫자는 double 형이 입력될 수 있다.
+
+package lang.wrapper.test;
+public class WrapperTest2 {
+ public static void main(String[] args) {
+ String[] array = {"1.5", "2.5", "3.0"};
+ // 코드 작성
+ }
+}
+
+실행 결과 
+sum = 7.0
+```
+```
+문제3 - 박싱, 언박싱
+문제 설명
+String str 을 Integer 로 변환해서 출력해라.
+Integer 를 int 로 변환해서 출력해라.
+int 를 Integer 로 변환해서 출력해라.
+오토 박싱, 오토 언박싱을 사용하지 말고 직접 변환해야 한다.
+
+package lang.wrapper.test;
+public class WrapperTest3 {
+ public static void main(String[] args) {
+ String str = "100";
+ // 코드 작성
+ }
+}
+
+실행 결과 
+integer1 = 100
+intValue = 100
+integer2 = 100
+```
+## B. 로또 번호 자동 생성기
+[실습 코드](../../src/step03_middleClass/chapter04_WrapperAndClassType/test/Exam02_LottoNumber.java)
+```
+문제 - 로또 번호 자동 생성기
+문제 설명
+로또 번호를 자동으로 만들어주는 자동 생성기를 만들자
+로또 번호는 1~45 사이의 숫자를 6개 뽑아야 한다.
+각 숫자는 중복되면 안된다.
+실행할 때 마다 결과가 달라야 한다.
+실행 결과 
+로또 번호: 11 19 21 35 29 16
+```
