@@ -17,6 +17,10 @@ public class Exam02_LottoNumber {
     public static void main(String[] args) {
 //        lotto number maker in lecture by myself
         customGetLottoNumber();
+//        lotto number maker in lecture by teacher
+        LottoGenerator generator = new LottoGenerator();
+        generator.getLottoNumbers();
+        System.out.println(generator);
     }
 
     /**
