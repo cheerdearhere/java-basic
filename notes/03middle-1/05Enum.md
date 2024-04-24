@@ -185,3 +185,90 @@ public class ClassGrade {
 - 자주 사용되다보니 Enum 타입으로 자바에서 제공
 
 # III. 열거형(Enum type)
+- 열거형 패턴(Type-Safe Enum Pattern)을 매우 쉽게 사용할 수 있는 열거형(Enum type) 제공
+- 열거형의 장점
+  - 타입 안정성 제공
+  - 코드 가독성 향상
+  - 예상 가능한 값들의 집합 표현
+## A. 생성
+- 직접 입력하면 각각 인스턴스를 묵시적으로 생성함
+- 생성자도 private 
+- class 키워드 위치에 enum 입력
+```java
+public enum Grade {
+    BASIC, GOLD, DIAMOND
+}
+```
+- 열거형도 enum을 위한 class
+```
+class Basic: class step03_middleClass.chapter05_Enum.useEnum.Grade
+class Gold: class step03_middleClass.chapter05_Enum.useEnum.Grade
+class Diamond: class step03_middleClass.chapter05_Enum.useEnum.Grade
+ref: 7291c18f
+ref: 34a245ab
+ref: 7cc355be
+```
+- 사용자체는 type-safe enum pattern과 같음
+## B. Enum type 장점
+- 타입 안정성 향상
+- 간결성 및 일관성
+- 확장성
+- 유용한 매서드가 사용을 도움
+- `import`로 해당 클래스를 입력한 경우 Enum 타입을 표시하지 않을 수 있어 가독성을 더 확보할 수 있다.  
+```java
+import static step03_middleClass.chapter05_Enum.useEnum.Grade.*;
+//...
+    public int discount (Grade grade, int price){
+        if(grade==null||price<1) return price;
+
+        int discountPercent = 0;
+
+        if(grade==BASIC) discountPercent = 10;
+        else if (grade==GOLD) discountPercent=20;
+        else if (grade==DIAMOND) discountPercent=30;
+        else System.out.println(": 할인 x ");
+
+        return price*discountPercent/100;
+    }
+```
+## C. 주요 매서드
+- 모든 Enum 형은 java.lang.Enum을 상속받으므로 그 기능을 사용할 수 있다. 
+- `values()`: 모든 Enum 반환
+  - `name()`: ENUM 상수의 이름(name)을 문자열로 반환
+  - `ordinal()`: ENUM 상수의 선언 순서(배열 index)
+    - 가능한 사용 x. 상수가 추가되거나 변경되면 사용된 모든 곳에서 사이드이펙트 발생
+    - 단순한 열거형 자료는 대비가 되지만 에러코드, RESPONSE_CODE 등 복잡한 열거형은 큰 문제를 야기시킨다
+  - `toString()`: ENUM 상수의 이름을 문자열을 반환. name과 같은 기능
+    - Object의 메서드 toString을 사용하는 곳에서 처리하기위한 재정의 매서드
+
+```java
+    Grade[] values = Grade.values();
+    System.out.println("Grade values: "+ Arrays.toString(values));
+    Stream.of(values).forEach(value->{
+    System.out.println("name: "+value.name()+"/ ordinal: "+value.ordinal());
+    });
+```
+```
+Grade values: [BASIC, GOLD, DIAMOND]
+name: BASIC/ ordinal: 0
+name: GOLD/ ordinal: 1
+name: DIAMOND/ ordinal: 2
+```
+- `valueOf(String str)`: Enum의 name과 같은 문자열을 Enum으로 변환
+  - 단, 본래 등록된 Enum이 아닌 경우 IllegalArgumentException 에러 발생
+  - 대소문자 구분
+```java
+    String lowerGold = "gold";
+    String upperGold = lowerGold.toUpperCase();
+    Grade lowerGoldEnum = Grade.valueOf(lowerGold);
+    Grade upperGoldEnum = Grade.valueOf(upperGold);
+    System.out.println(lowerGoldEnum);
+    System.out.println(upperGoldEnum);
+```
+```
+Exception in thread "main" java.lang.IllegalArgumentException: No enum constant step03_middleClass.chapter05_Enum.useEnum.Grade.gold
+	at java.base/java.lang.Enum.valueOf(Enum.java:293)
+	at step03_middleClass.chapter05_Enum.useEnum.Grade.valueOf(Grade.java:3)
+	at step03_middleClass.chapter05_Enum.useEnum.EnumMethodMain.main(EnumMethodMain.java:17)
+```
+## D. 더 리팩토링
