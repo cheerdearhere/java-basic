@@ -124,7 +124,7 @@ ____
 
 [열거형-Enum](03middle-1/05Enum.md)
 
-[Date/Time]
+[Date/Time](03middle-1/06DateTime.md)
 
 [중첩클래스/내부클래스]
 
