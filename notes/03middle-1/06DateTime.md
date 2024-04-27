@@ -428,7 +428,273 @@ between = PT16H16M52.8770813S
 시, 분, 초 = 16시 16분 52초
 ```
 # III. 날짜와 시간의 핵심 인터페이스 
+[실습 코드](../../src/step03_middleClass/chapter06_DateTime/temporalInterface)
 
-# IV. 날짜와 시간 데이터 사용하기
+## A. 시간 관련 객체들의 인터페이스
+- 시간은 특정 시점의 시간(시각)과 시간의 간격(기간 = 시간의 양)으로 나뉜다
+- 이에 대한 패키지 구조는 다음과 같다
+  ![패키지 구조](../img/middle/TemporalInterface.png)
+  - interface `TemporalAccessor`: 날짜와 시간을 읽기위한 기본 인터페이스. 정보 읽기를 위한 기능 제공
+    - interface `Temporal`: 날짜와 시간을 조작(추가, 빼기 위한 기능 제공)
+      - class: LocalDate, LocalDateTime, LocalTime, ZonedDateTime, OffsetDateTime, Instance
+  - interface `TemporalAmount`: 시간의 간격을 나타내며 시간 객체에 적용하여 그 객체를 조정할 수 있다.
+    - class: Duration, Period
+## B. 시간의 단위와 시간 필드
+- interface `TemporalUnit` -> class `ChronoUnit`
+  - 열거형 구조
+  - 날짜와 시간을 측정하는 단위
+  - Duration의 seconds 단위로 값을 지녀 편리
+  <table>
+    <thead>
+      <tr>
+        <td>ChronoUnit</td>
+        <td>설명</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="2">시간</td>
+      </tr>
+      <tr>
+        <td>NANOS</td>
+        <td>나노초</td>
+      </tr>
+      <tr>
+        <td>MICROS</td>
+        <td>마이크로초</td>
+      </tr>
+      <tr>
+        <td>MILLIS</td>
+        <td>밀리초</td>
+      </tr>
+      <tr>
+        <td>SECONDS</td>
+        <td>초</td>
+      </tr>   
+      <tr>
+        <td>MINUTES</td>
+        <td>분</td>
+      </tr>
+      <tr>
+        <td>HOURS</td>
+        <td>시간</td>
+      </tr>
+      <tr>
+        <td COLSPAN="2">날짜</td>
+      </tr>
+      <tr>
+        <td>DAYS</td>
+        <td>일</td>
+      </tr>
+      <tr>
+        <td>WEEKS</td>
+        <td>주</td>
+      </tr>
+      <tr>
+        <td>MONTHS</td>
+        <td>월</td>
+      </tr>
+      <tr>
+        <td>YEARS</td>
+        <td>년</td>
+      </tr>  
+      <tr>
+        <td>DECADES</td>
+        <td>10년</td>
+      </tr>
+      <tr>
+        <td>CENTURIES</td>
+        <td>세기</td>
+      </tr>
+      <tr>
+        <td>MILLENNIA</td>
+        <td>천년</td>
+      </tr>
+    </tbody>
+  </table>
+```java
+public static void main(String[] args){
+    ChronoUnit[] values = ChronoUnit.values();
+    System.out.print("chronos unit: ");
+    int count = 0;
+    for(ChronoUnit value : values){
+        if(count!=0) System.out.print(", ");
+        System.out.print(value);
+        count++;
+        if(count == values.length) System.out.println();
+    }
+    System.out.println("ChronoUnit.HOURS = " + ChronoUnit.HOURS);
+    System.out.println("ChronoUnit.HOURS.getDuration().getSeconds() = " + ChronoUnit.HOURS.getDuration().getSeconds());
+    System.out.println("ChronoUnit.DAYS.getDuration().getSeconds() = " + ChronoUnit.DAYS.getDuration().getSeconds());
 
-# V. 실습문제 
+    // 차이 구하기
+    LocalTime lt1 = LocalTime.of(1,10,0);
+    LocalTime lt2 = LocalTime.of(1,20,0);
+    long secondsBetween = ChronoUnit.SECONDS.between(lt1, lt2);
+    System.out.println("secondsBetween = " + secondsBetween);
+}
+```
+- interface `TemporalField` -> class `ChronoField`
+  - 열거형 구조
+  - 날짜와 시간의 일정 부분을 나타내는 정보를 지니는 필드
+  - 시간의 단위가 아닌 시간의 정보를 표시
+    - 각각의 필드항목은 날짜/시간으 일부 정보를 사용
+      - ex) 2024-08-16
+        - YEAR: 2024
+        - MONTH_OF_YEAR: 8
+        - DAY_OF_MONTH: 16
+  - 각 필드는 `ValueRange.of(0, 999_999_999)`로 범위를 지정하며 `ChronoUnit`으로 단위를 지닌다. 
+  - [docs](https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoField.html)
+```java
+public static void main(String[] args) {
+    ChronoField[] fields = ChronoField.values();
+    System.out.print("chronos fields: ");
+    int count = 0;
+    for (ChronoField field : fields) {
+        if(count!=0) System.out.print(", ");
+        System.out.print(field);
+        count++;
+        if(count == fields.length) System.out.println();
+    }
+
+    System.out.println("ChronoField.MONTH_OF_YEAR.range() = " + ChronoField.MONTH_OF_YEAR.range());
+    System.out.println("ChronoField.DAY_OF_MONTH.range() = " + ChronoField.DAY_OF_MONTH.range());
+}
+```
+## C. 사용하기
+[실습코드](../../src/step03_middleClass/chapter06_DateTime/useMethod)
+### 1. 조회하기
+- 날짜와 시간 데이터에서 어떤 필드를 조회할지 선택 => `ChronoField`
+- `TemporalAccessor` 인터페이스의 구현체는  `TemporalField`의 구현체를 get()의 매개변수로 받아 필요한 데이터를 얻을 수 있다. 
+- get(`ChronoField.ENUM`)보다 가독성 좋은 편의 메서드도 존재
+```java
+public static void main(String[] args) {
+    LocalDateTime dt = LocalDateTime.of(2030,1,2,13,34,59,123);
+    // 원하는 데이터 입력
+    System.out.println("Year: " + dt.get(ChronoField.YEAR));
+    System.out.println("Month of year: " + dt.get(ChronoField.MONTH_OF_YEAR));
+    System.out.println("Day of month: " + dt.get(ChronoField.DAY_OF_MONTH));
+    System.out.println("Hour of day: " + dt.get(ChronoField.HOUR_OF_DAY));
+    System.out.println("Minute of hour: " + dt.get(ChronoField.MINUTE_OF_HOUR));
+    System.out.println("Nano of Second = " + dt.get(ChronoField.NANO_OF_SECOND));
+    System.out.println();
+    // 편의 메서드
+    System.out.println("get Year: " + dt.getYear());
+    System.out.println("get Month value: " + dt.getMonthValue());
+    System.out.println("get Month object: "+dt.getMonth());
+    System.out.println("get Day of month: " + dt.getDayOfMonth());
+    System.out.println("get Hour of day: " + dt.getHour());
+    System.out.println("get Minute of hour: " + dt.getMinute());
+    System.out.println("get Nano of Second = " + dt.getNano());
+    System.out.println();
+    // 편의 메서드에 없는 경우
+    System.out.println("Minute of day: "+dt.get(ChronoField.MINUTE_OF_DAY));
+    System.out.println("Second of day: "+dt.get(ChronoField.SECOND_OF_DAY));
+}
+```
+### 2. 조작하기
+- 날짜와 시간 데이터를 어떤 단위로 변환할지 선택 => `ChronoUnit`
+- `TemporalAccessor` 인터페이스의 구현체에 어떤 단위(`TemporalUnit`)을 얼마나 조절할지 각 연산 메서드 사용
+-  역시 편의 메서드도 존재
+```java
+public static void main(String[] args) {
+    LocalDateTime ldt = LocalDateTime.of(2010, 1, 1, 12,0,0,0);
+    System.out.println("ldt = " + ldt);
+
+    //plus(amount, ChronoUnit)
+    LocalDateTime plus10y = ldt.plus(10, ChronoUnit.YEARS);
+    System.out.println("+10y = "+plus10y);
+    //plusYears(amount)
+    LocalDateTime plus10yMethod = ldt.plusYears(10);
+    System.out.println("+10y(Method)= "+plus10yMethod);
+    //plus(Period/Duration)
+    Period p10y = Period.ofYears(10);
+    LocalDateTime plus10yPeriod = ldt.plus(p10y);
+    System.out.println("+10y(period): "+plus10yPeriod);
+}
+```
+### 3. 모든 시간 필드를 다 조작할 순 없다
+- 없는 필드를 사용하는 경우 에러발생 가능
+```java
+public static void main(String[] args) {
+    LocalDate now = LocalDate.now();
+    int dateSeconds = now.get(ChronoField.SECOND_OF_MINUTE);
+    System.out.println("dateSeconds = " + dateSeconds);
+}
+```
+> Exception in thread "main" java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: SecondOfMinute
+- 이를 체크하기 위한 메서드가 존재
+  - `ChronoUnit`과 `ChronoField` 모두 체크
+```java
+public static void main(String[] args) {
+    LocalDate now = LocalDate.now();
+    if(now.isSupported(ChronoField.SECOND_OF_MINUTE)){
+        int dateSeconds = now.get(ChronoField.SECOND_OF_MINUTE);
+        System.out.println("dateSeconds = " + dateSeconds);
+    }else{
+        System.out.println("SECOND_OF_MINUTE is not supported");
+    }
+}
+```
+### 4. with() method
+- 원하는 값으로 변경(연산 x)
+- [문서](https://docs.oracle.com/javase/8/docs/api/java/time/temporal/TemporalAdjusters.html)
+```java
+public static void main(String[] args) {
+    LocalDateTime ldt = LocalDateTime.of(2010, 1, 1, 12,0,0,0);
+    System.out.println("ldt = " + ldt);
+
+    LocalDateTime with10y = ldt.with(ChronoField.YEAR, 2020);
+    System.out.println("with10y = " + with10y);
+    LocalDateTime withYear = ldt.withYear(2020);
+    System.out.println("withYear = " + withYear);
+    LocalDateTime withMonth = ldt.withMonth(2);
+    System.out.println("withMonth = " + withMonth);
+
+    // TemporalAdjuster 사용
+    LocalDateTime nextFriday = ldt.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+    System.out.println("next Friday = " + nextFriday);
+    LocalDateTime lastSunday = ldt.with(TemporalAdjusters.lastInMonth(DayOfWeek.SUNDAY));
+    System.out.println("last Sunday of month = " + lastSunday);
+    LocalDateTime lastDayOfMonth = ldt.with(TemporalAdjusters.lastDayOfMonth());
+    System.out.println("lastDayOfMonth = " + lastDayOfMonth);
+}
+```
+## D. 문자열 파싱과 포매팅(parsing, formatting)
+[docs](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html)
+- Formatting : 날짜를 사용자의 편의에 맞춰 문자열로 표시
+  - `DateTimeFormatter`로 사용할 포매터를 지정
+  - format(`지정된 포멧 객체`)
+- Parsing : 일정 포멧의 문자열을 날짜 객체로 변환
+  - `DateTimeFormatter`로 해석할 포매터를 지정
+  - LocalDate.parse(`String 시간표시문자열`,`지정된 포멧 객체`)
+  - 지정된 포멧과 확실하게 일치된 문자열만 변환할 수 있다.
+- Formatter: Month와 Minute을 구분하기위해 대소문자를 사용: M(Month), m(minute)
+![패턴표](../img/middle/DateTimeFormmaterPatterns.png)
+```java
+public static void main(String[] args) {
+    LocalDate date = LocalDate.of(2024,12,25);
+    
+    //formatting: TemporalAccessor => String
+    System.out.println("date.toString(): " + date);
+    System.out.println("직접작성 (date.getYear()+\"년 \"...) : " + date.getYear() + "년 " + date.getMonthValue() + "월 " + date.getDayOfMonth() + "일");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+    System.out.println("use DateTimeFormatter: " + date.format(formatter));
+
+    //parsing: String => TemporalAccessor
+    String dateStr = "2030년 12월 23일";
+    LocalDate parsedDate = LocalDate.parse(dateStr, formatter);
+    System.out.println("parsedDate = " + parsedDate);
+
+    // DateTime의 경우
+    LocalDateTime ldt = LocalDateTime.of(2024,12,25,12,59,0);
+    DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    String dtStr = ldt.format(dtFormatter);
+    System.out.println("dtStr = " + dtStr);
+    
+    String dateTimeStr = "2025-01-01 10:00:00";
+    LocalDateTime parsedDateTime = LocalDateTime.parse(dateTimeStr, dtFormatter);
+    System.out.println("parsedDateTime = " + parsedDateTime);
+}
+```
+# IV. 실습문제 
