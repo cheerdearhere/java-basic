@@ -709,7 +709,7 @@ public static void main(String[] args) {
   기준 시각: 2024-01-01T00:00
   1년 2개월 3일 4시간 후의 시각: 2025-03-04T04:00
 ```
-[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test/)
+[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test/DateTime_Example.java)
 ### 2. 날짜 간격 반복 출력하기
 ```
 문제2 - 날짜 간격 반복 출력하기
@@ -723,7 +723,7 @@ public static void main(String[] args) {
   날짜 4: 2024-02-12
   날짜 5: 2024-02-26 
 ```
-[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test/)
+[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test/DateTime_Example.java)
 ### 3. d-day 구하기
 ```
 문제3 - 디데이 구하기
@@ -750,7 +750,7 @@ public static void main(String[] args) {
   남은 기간: 0년 10개월 20일
   디데이: 325일 남음 
 ```
-[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test)
+[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test/DateTime_Example.java)
 ### 4. 시작 요일, 마지막 요일 구하기
 ```
 문제4 - 시작 요일, 마지막 요일 구하기
@@ -771,7 +771,7 @@ public static void main(String[] args) {
   firstDayOfWeek = MONDAY
   lastDayOfWeek = WEDNESDAY
 ```
-[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test)
+[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test/DateTime_Example.java)
 ### 5. 국제회의 시간
 ```
 문제5 - 국제 회의 시간
@@ -783,7 +783,7 @@ public static void main(String[] args) {
   런던의 회의 시간: 2024-01-01T00:00Z[Europe/London]
   뉴욕의 회의 시간: 2023-12-31T19:00-05:00[America/New_York]
 ```
-[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test)
+[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test/DateTime_Example.java)
 ## B. 달력 출력하기
 ```
 문제: 달력 출력하기
@@ -809,4 +809,27 @@ public static void main(String[] args) {
   19 20 21 22 23 24 25 
   26 27 28 29 30 31 
 ```
-[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test)
+[실습 코드](../../src/step03_middleClass/chapter06_DateTime/test/PrintCalendar.java)
+- 강의의 답안
+  - 시간 객체를 사용하면 더 간략하고 편하게 사용 가능
+```java
+    private static void printCalendar(int year, int month) {
+  LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
+  LocalDate firstDayOfNextMonth = firstDayOfMonth.plusMonths(1);
+
+  //월~일: 1~7 = offset % 7(1~0)
+  int offsetWeekDays = firstDayOfMonth.getDayOfWeek().getValue() % 7;
+  System.out.print("\tSu\tMo\tTu\tWe\tTh\tFr\tSa\n");
+  for(int i = 0; i < offsetWeekDays; i++) {
+    System.out.print("\t");
+  }
+  LocalDate dayIterator = firstDayOfMonth;
+  while(dayIterator.isBefore(firstDayOfNextMonth)) {
+    System.out.print("\t"+dayIterator.getDayOfMonth());
+    if(dayIterator.getDayOfWeek() == DayOfWeek.SATURDAY)
+      System.out.println();
+    dayIterator = dayIterator.plusDays(1);
+  }
+}
+```
+- 날짜 시간 라이브러리는 필요할때 찾아 사용하면된다. 이런게 있다.. 정도만
