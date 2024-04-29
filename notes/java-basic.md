@@ -126,6 +126,6 @@ ____
 
 [Date/Time](03middle-1/06DateTime.md)
 
-[중첩클래스/내부클래스]
+[중첩클래스/내부클래스](03middle-1/07InnerClass.md)
 
 [Exception]
