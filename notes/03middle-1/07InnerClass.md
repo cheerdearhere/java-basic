@@ -45,4 +45,45 @@ class Outer {
   - 논리적 그룹화
   - 캡슐화
 # II. 정적 중첩 클래스(static class)
-- 
+- 정적 중첩 클래스는 new 생성자로 인스턴스를 생성한다. 
+- 외부클래스.중첩클래스로 정적 메서드에 접근
+- 외부클래스의 인스턴스(`new Outer()`)와 내부클래스(`new Outer.Nested()`)는 별개의 인스턴스이므로 전혀 관련이 없다 
+```java
+public class NestedOuter {
+    private static int outClassValue = 3;
+    private int outInstanceValue = 2;
+
+    static class Nested{
+        private int nestedInstanceValue = 1;
+        public void print(){
+            //자신의 멤버
+            //내부 클래스도 본인 클래스 내부이기때문에 private으로 선언해도 사용 가능
+            System.out.println(nestedInstanceValue);
+
+            //외부 클래스의 멤버(outer instance 접근 불가
+//            System.out.printf(outInstanceValue);
+
+            // static은 가능
+            System.out.println(NestedOuter.outClassValue);
+        }
+    }
+}
+```
+- main 호출
+```java
+public static void main(String[] args) {
+    NestedOuter outer = new NestedOuter();
+    NestedOuter.Nested nested = new NestedOuter.Nested();
+    nested.print();
+
+    System.out.println("Nested Class: "+nested.getClass());
+}
+``` 
+- class 표시는 $로 구분
+```
+1
+3
+Nested Class: class step03_middleClass.chapter07_InnerClass.NestedOuter$Nested
+```
+- 그저 내부에 있을뿐 외부 다른 클래스와 차이가 없음
+  - private 접근가능하다는 점
