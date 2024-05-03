@@ -45,4 +45,48 @@ class Outer {
   - 논리적 그룹화
   - 캡슐화
 # II. 정적 중첩 클래스(static class)
-- 
+- 내부에 위치하여 `private`에도 접근할수있음
+- 그외에는 별개 클래스와 다를게 없음
+```java
+public class NestedOuter {
+    private static int outClassValue = 3;
+    private int outInstanceValue = 2;
+
+    static class Nested{
+        private int nestedInstanceValue = 1;
+        public void print(){
+            //자신의 멤버
+            //내부 클래스도 본인 클래스 내부이기때문에 private으로 선언해도 사용 가능
+            System.out.println(nestedInstanceValue);
+
+            //외부 클래스의 멤버(outer instance 접근 불가
+//            System.out.printf(outInstanceValue);
+
+            //외부클래스더라도 static은 가능
+            System.out.println(outClassValue);
+        }
+    }
+}
+```
+- 사용 예시
+  - [원본](../../src/step03_middleClass/chapter07_InnerClass/ex_network) >refactoring> [정적 중첩 클래스 적용](../../src/step03_middleClass/chapter07_InnerClass/ex_nested)
+```java
+public class Network {
+    public void sendMessage(String text){
+        NetworkMessage networkMessage = new NetworkMessage(text);
+        networkMessage.print();
+    }
+    private static class NetworkMessage{
+        private final String content;
+        public NetworkMessage(String content){
+            this.content = content;
+        }
+        private void print(){
+            System.out.println("network message: "+content);
+        }
+    }
+}
+```
+# III. 내부 클래스
+
+# IV. 
