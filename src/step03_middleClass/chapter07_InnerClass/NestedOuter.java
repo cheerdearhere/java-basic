@@ -15,8 +15,7 @@ public class NestedOuter {
 //            System.out.printf(outInstanceValue);
 
             //외부클래스더라도 static은 가능
-            System.out.println(outClassValue);
+            System.out.println(NestedOuter.outClassValue);
         }
     }
-
 }
