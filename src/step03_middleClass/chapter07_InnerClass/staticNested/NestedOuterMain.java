@@ -1,4 +1,4 @@
-package step03_middleClass.chapter07_InnerClass;
+package step03_middleClass.chapter07_InnerClass.staticNested;
 
 public class NestedOuterMain {
     public static void main(String[] args) {

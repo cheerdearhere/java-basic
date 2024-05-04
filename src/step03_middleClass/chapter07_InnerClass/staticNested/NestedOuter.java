@@ -1,4 +1,4 @@
-package step03_middleClass.chapter07_InnerClass;
+package step03_middleClass.chapter07_InnerClass.staticNested;
 
 public class NestedOuter {
     private static int outClassValue = 3;
