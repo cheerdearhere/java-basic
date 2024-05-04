@@ -69,7 +69,7 @@ public class NestedOuter {
 }
 ```
 - 사용 예시
-  - [원본](../../src/step03_middleClass/chapter07_InnerClass/ex_network) >refactoring> [정적 중첩 클래스 적용](../../src/step03_middleClass/chapter07_InnerClass/ex_nested)
+  - [원본](../../src/step03_middleClass/chapter07_InnerClass/staticNested/ex_before_refactoring) >refactoring> [정적 중첩 클래스 적용](../../src/step03_middleClass/chapter07_InnerClass/staticNested/ex_after_refactoring)
 ```java
 public class Network {
     public void sendMessage(String text){
@@ -87,6 +87,81 @@ public class Network {
     }
 }
 ```
-# III. 내부 클래스
+# III. 내부 클래스(inner class)
+- `static`을 사용하지 않는다(class 메모리 영역을 사용하지 않는다)
+- 외부 클래스의 instance 소속(인스턴스를 생성하면 그때마다 개별 적용)
+```java
+public class InnerOuter {
+    private static int outClassValue=3;
+    private int outInstanceValue=2;
+    class Inner{
+        private int innerInstanceValue=1;
+        public void callFromInner(){
+            //외부 정적 변수(private 사용 가능)
+            System.out.println("out class value: "+outClassValue);
+            //외부 멤버
+            System.out.printf("out instance value: "+outInstanceValue);
+            //자기 자신 멤버
+            System.out.printf("inner instance value: "+innerInstanceValue);
+        }
+    }
+    public void callFromOuter(){
+        //자신 정적 변수
+        System.out.println("out class value: "+outClassValue);
+        //자신 멤버
+        System.out.printf("out instance value: "+outInstanceValue);
+        //내부 클래스의 private 인스턴스 접근 불가
+//        System.out.printf("inner instance value: "+innerInstanceValue);
+    }
+}
+```
+- 내부클래스의 인스턴스 생성은 외부 클래스의 인스턴스 소속(논리상)
+  - 외부 클래스의 인스턴스에서 생성자를 호출함을 기억하자
+  - 물리적 위치는 외부 클래스 인스턴스의 참조주소를 내부 클래스의 인스턴스가 들고 있을뿐(LinkedList의 노드관리와 유사하게 이해)
+```java
+    public static void main(String[] args) {
+        InnerOuter outer = new InnerOuter();
+        //인스턴스에서 생성자 키워드 사용
+        InnerOuter.Inner inner = outer.new Inner();
+        //메서드 접근
+        outer.callFromOuter();
+        inner.callFromInner();
+    }
+```
+- 내부 클래스 사용 예시
+- [적용 전](../../src/step03_middleClass/chapter07_InnerClass/innerClass/ex_before_refactoring)  
+  - 어떤 클래스가 다른 한 클래스에서만 사용 
+  - 생성자에서부터 관리 시작
+  - 메서드에서 반복적으로 사용
+- [적용 후](../../src/step03_middleClass/chapter07_InnerClass/innerClass/ex_after_refactoring)
+  - 굳이 인스턴스 내부 맴버를 전달할 메서드가 필요 없음
+    - `getModel()`, `getChargeLevel()` 제거
+  - `private`으로 전환해 보안성을 강화
+- 같은 이름의 바깥 변수에 접근하기
+  - 거리 순 접근: `import`과정과 유사
+    - 같은 스코프
+    - this를 사용한 인스턴스 접근
+    - class 이름으로 명확한 위치 지정
+```java
+public class ShadowingInner {
+    public int value = 1;
+    class Inner {
+        public int value = 2;
+        void innerScope(){
+            int value = 3;
+            System.out.println("innerScope: value = "+value);
+            System.out.println("inner.value: this.value = "+this.value);
+            System.out.println("outer.value: OuterClass.this.value = "+ShadowingInner.this.value);
+        }
+    }
+    public static void main(String[] args) {
+        ShadowingInner shadowingInner = new ShadowingInner();
+        Inner inner = shadowingInner.new Inner();
+        inner.innerScope();
+    }
+}
+```
+# IV. 지역 클래스(inner class - local class)
 
-# IV. 
+# V. 익명 클래스(inner class - anonymous class)
+# VI. 실습
