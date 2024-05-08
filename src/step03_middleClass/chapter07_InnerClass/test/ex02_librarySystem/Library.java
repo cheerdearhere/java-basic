@@ -7,18 +7,24 @@ public class Library {
     private final Book[] books;
     private int size;
     //constructor
-    public Library(int size){
-        this.size = 0;
-        books = new Book[size];
+    public Library(int size) throws Exception {
+        if(size <= 0) {
+            throw new Exception(STR."error: 잘못된 입력 - \{size}");
+        }
+        else if(size > 100) {
+            throw new Exception("error: 너무 큰 수 - "+size);
+        }
+        else {
+            this.size = 0;
+            books = new Book[size];
+        }
     }
     //public methods
     public void addBook(String title, String author){
-        if(books.length > size){
-            books[size++] = new Book(title, author);
-        }else{
-            System.out.println("도서관 저장 공간이 부족합니다. ");
-
-        }
+        //검증로직 우선
+        if(size >= books.length) System.out.println("도서관 저장 공간이 부족합니다. ");
+        //정상로직 처리
+        else books[size++] = new Book(title, author);
     }
     public void showBooks(){
         System.out.println("== 책 목록 출력 ==");

@@ -36,7 +36,7 @@ public class LibraryMain {
     도서 제목: 자바 ORM 표준 JPA 프로그래밍, 저자: 김영한
  */
 public class LibraryMain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Library library = new Library(4); // 최대 4권의 도서를 저장할 수 있는 도서관 생성
         library.addBook("책1", "저자1");
         library.addBook("책2", "저자2");
