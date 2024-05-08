@@ -9,7 +9,7 @@ public class Library {
     //constructor
     public Library(int size) throws Exception {
         if(size <= 0) {
-            throw new Exception(STR."error: 잘못된 입력 - \{size}");
+            throw new Exception("error: 잘못된 입력 - "+size);
         }
         else if(size > 100) {
             throw new Exception("error: 너무 큰 수 - "+size);
