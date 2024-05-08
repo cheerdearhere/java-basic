@@ -2,7 +2,7 @@ package step03_middleClass.chapter07_InnerClass.localClass;
 
 import java.lang.reflect.Field;
 
-public class CheckVariableLifecycle {
+public class EffectiveFinalLocalVariable {
     private int outInstanceVariable = 3;
     public Printer process(int paramVariable){
         int localVariable = 1;
@@ -18,12 +18,19 @@ public class CheckVariableLifecycle {
                 System.out.println("outer instance variable: "+outInstanceVariable);// 외부 클래스의 멤버
             }
         }
-        return new LocalPrinter();
-//        printer.print();
+        Printer printer = new LocalPrinter();
+        //캡쳐 후 지역변수 변경
+//        localVariable = 10;
+//        paramVariable = 20;
+        int x = localVariable + 10;
+        x++;
+        int y = x+paramVariable;
+        y--;
+        return printer;
     }
 
     public static void main(String[] args) {
-        CheckVariableLifecycle localOuter = new CheckVariableLifecycle();
+        EffectiveFinalLocalVariable localOuter = new EffectiveFinalLocalVariable();
         Printer printer = localOuter.process(2);//stack 프레임 제거 후 처리
             //스택 프레임이 제거된 후 = 지역변수는 이미 제거된 상태
         printer.print();
