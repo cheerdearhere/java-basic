@@ -128,4 +128,5 @@ ____
 
 [중첩클래스/내부클래스](03middle-1/07InnerClass.md)
 
-[Exception]
+[예외 처리](03middle-1/08ExceptionHandling.md)
+
