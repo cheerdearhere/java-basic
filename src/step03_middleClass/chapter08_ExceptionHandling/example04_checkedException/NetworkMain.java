@@ -9,8 +9,8 @@ public class NetworkMain {
     public static void main(String[] args) throws NetworkClientException {
 //        NetworkServiceV1 networkService = new NetworkServiceV1();
 //        NetworkServiceV2 networkService = new NetworkServiceV2();
-        NetworkServiceV3 networkService = new NetworkServiceV3();
-
+//        NetworkServiceV3 networkService = new NetworkServiceV3();
+        NetworkServiceV4 networkService = new NetworkServiceV4();
         Scanner scanner = new Scanner(System.in);
 
         while(true) {
