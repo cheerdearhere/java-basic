@@ -8,7 +8,9 @@ import java.util.Scanner;
 public class NetworkMain {
     public static void main(String[] args) throws NetworkClientException {
 //        NetworkServiceV1 networkService = new NetworkServiceV1();
-        NetworkServiceV2 networkService = new NetworkServiceV2();
+//        NetworkServiceV2 networkService = new NetworkServiceV2();
+        NetworkServiceV3 networkService = new NetworkServiceV3();
+
         Scanner scanner = new Scanner(System.in);
 
         while(true) {
