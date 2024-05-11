@@ -277,6 +277,223 @@ public void callThrows(){
     - 현대 애플리케이션 개발의 흐름은 checked Exception을 거의 사용하지 않음.
     - 설명은 이후에
 # III. 예외처리 도입하기
+- 해결할 문제
+  - java의 Exception 기능 사용 필요
+  - 예제 코드는 간단한 예외 흐름임에도 정상 흐름보다 더 많은 코드 분량을 차지함
+    - 실제과정에서는 예외의 종류와 처리가 더 복잡함
+    - 정상 흐름과 예외 흐름을 분리해 정상흐름에 대한 가독성 향상 필요
+## A. checked exception 적용하기
+- [실습코드](../../src/step03_middleClass/chapter08_ExceptionHandling/example04_checkedException)
+- 기존과 거의 유사하지만 오류가 발생했을때 오류 코드가 아닌 예외를 던진다.
+  - 따라서 반환값이 필요없음 없음  => `void`로 처리해도 됨 
+  - 오류가 발생하면 예외객체를 생성해 외부로 던짐
+    - `throw new 예외객체(...)`
+```java
+    //public methods
+    public void connect() throws NetworkClientException {
+        if(connectError){
+            //연결 실패
+            throw new NetworkClientException(String.valueOf(NetworkStatus.FAIL_CONNECTED.getStatusCode()),address+" 서버 연결 실패: "+NetworkStatus.FAIL_CONNECTED.getStatusName());
+        }
+        //연결 성공
+        System.out.println(address+" 서버에 연결 성공");
+//        return NetworkStatus.SUCCESS.getStatusName();
+    }
+    public void send(Object data) throws NetworkClientException {
+        if(sendError){
+            //전송 실패
+            throw new NetworkClientException(String.valueOf(NetworkStatus.FAIL_SEND.getStatusCode()), address+" 서버에 데이터 전송 실패: "+NetworkStatus.FAIL_SEND.getStatusName());
+        }
+        //전송 성공
+        System.out.println(address+" 서버에 데이터 전송: "+data.toString());
+//        return NetworkStatus.SUCCESS.getStatusName();
+    }
+```
+- 호출 하는 곳에서 일단 던지기
+  ```java
+    public void sendMessage(String data) throws NetworkClientException {
+        String address = "http://example.com";
+        NetworkClient client = new NetworkClient(address);
+
+        client.initError(data);
+        client.connect();
+        client.send(data);
+        client.disconnect();
+    }
+  ```
+- 남은 문제
+  - 예제 코드는 간단한 예외 흐름임에도 정상 흐름보다 더 많은 코드 분량을 차지함
+    - 실제과정에서는 예외의 종류와 처리가 더 복잡함
+    - 정상 흐름과 예외 흐름을 분리해 정상흐름에 대한 가독성 향상 필요
+  - 예외 처리는 되지만 정상 흐름으로 복귀하지 못하고 프로그램이 종료된다.
+    - 예외 복구
+  - 사용 후에는 반드시 `disconnect()`를 호출해 외부 연결을 해제해야한다.
+    - 외부 리소스 누수 문제 해결
+## B. 예외 복구
+- try-catch 구문으로 예외처리시 지정한 코드블럭을 실행하고 정상 흐름으로 진행
+```java
+public void sendMessage(String data) {
+    String address = "http://example.com";
+    NetworkClient client = new NetworkClient(address);
+
+    client.initError(data);
+    try {
+        client.connect();
+    } catch (NetworkClientException ne) {
+        System.out.println("[오류] 코드: "+ne.getErrorCode()+"/ 메세지: "+ne.getMessage());
+        return;
+    }
+    try {
+        client.send(data);
+    } catch (NetworkClientException ne) {
+      System.out.println("[오류] 코드: "+ne.getErrorCode()+"/ 메세지: "+ne.getMessage());
+      return;
+    }
+    client.disconnect();
+}
+```
+- 결과
+```
+전송할 문자(종료:exit): hello
+http://example.com 서버에 연결 성공
+http://example.com 서버에 데이터 전송: hello
+http://example.com 서버 연결 해제
+
+전송할 문자(종료:exit): error1
+[오류] 코드: 500/ 메세지: http://example.com 서버 연결 실패: connectError
+
+전송할 문자(종료:exit): error2
+http://example.com 서버에 연결 성공
+[오류] 코드: 400/ 메세지: http://example.com 서버에 데이터 전송 실패: sendError
+
+전송할 문자(종료:exit): exit
+프로그램을 정상 종료합니다. 
+```
+- 정상, 예외 흐름 분리
+  - 정상흐름이 잘 보이도록 한곳에서 처리 
+  - 좁은 범위의 예외부터 하나씩 catch 실행
+```java
+    public void sendMessage(String data) {
+        String address = "http://example.com";
+        NetworkClient client = new NetworkClient(address);
+        client.initError(data);
+        try {
+            // 정상 흐름 정리
+            client.connect();
+            client.send(data);
+            client.disconnect();
+        } 
+        //예외 흐름 정리
+        catch (NetworkClientException ne) {
+            System.out.println("[오류] 코드: "+ne.getErrorCode()+"/ 메세지: "+ne.getMessage());
+            return;
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+```
+- 실행결과
+```
+전송할 문자(종료:exit): hello
+http://example.com 서버에 연결 성공
+http://example.com 서버에 데이터 전송: hello
+http://example.com 서버 연결 해제
+
+전송할 문자(종료:exit): error1
+[오류] 코드: 500/ 메세지: http://example.com 서버 연결 실패: connectError
+
+전송할 문자(종료:exit): error2
+http://example.com 서버에 연결 성공
+[오류] 코드: 400/ 메세지: http://example.com 서버에 데이터 전송 실패: sendError
+
+전송할 문자(종료:exit): exit
+프로그램을 정상 종료합니다. 
+```
+- 남은 문제
+  - ~~예제 코드는 간단한 예외 흐름임에도 정상 흐름보다 더 많은 코드 분량을 차지함~~
+    - ~~실제과정에서는 예외의 종류와 처리가 더 복잡함~~
+    - ~~정상 흐름과 예외 흐름을 분리해 정상흐름에 대한 가독성 향상 필요~~
+  - ~~예외 처리는 되지만 정상 흐름으로 복귀하지 못하고 프로그램이 종료된다.~~
+    - ~~예외 복구~~
+  - 사용 후에는 반드시 `disconnect()`를 호출해 외부 연결을 해제해야한다.
+    - 외부 리소스 누수 문제
+## C. finally
+### 1. 리소스 반환 문제
+- JVM GC의 메모리 관리의 영향 밖 외부 자원 관리 필요
+- if문 처럼 `try-catch` 이후 배치하면 되지않을까?
+```java
+try {
+    client.connect();
+    client.send(data);
+} 
+catch (NetworkClientException ne) {
+    System.out.println("[오류] 코드: "+ne.getErrorCode()+"/ 메세지: "+ne.getMessage());
+} 
+client.disconnect();
+```
+- catch로 처리한 예외가 아닌 경우 정상흐름으로 복귀하지 못하므로 disconnect() 불가
+```java
+try {
+    client.connect();
+    client.send(data);
+} catch (NetworkClientException ne) {
+    throw new RuntimeException("ex");// another exception...
+//    System.out.println("[오류] 코드: "+ne.getErrorCode()+"/ 메세지: "+ne.getMessage());
+} 
+// 여기까지 닿지 않기 때문에 외부 리소스 연결이 계속 유지되고 있음
+client.disconnect();
+```
+### 2. finally {...} 사용
+- 정상/예외 흐름 관계없이 반드시 예외 처리 후 진행하는 코드블럭
+```java
+    public void sendMessage(String data) {
+        String address = "http://example.com";
+        NetworkClient client = new NetworkClient(address);
+        client.initError(data);
+        try {
+            client.connect();
+            client.send(data);
+        }
+        catch (NetworkClientException ne) {
+            throw new RuntimeException("ex");// 예외 체크용일뿐 확인 후 삭제
+//            System.out.println("[오류] 코드: "+ne.getErrorCode()+"/ 메세지: "+ne.getMessage());
+        }
+        finally {
+            client.disconnect();
+
+        }
+    }
+```
+```
+http://example.com 서버에 연결 성공
+http://example.com 서버 연결 해제
+Exception in thread "main" java.lang.RuntimeException: ex
+	at step03_middleClass.chapter08_ExceptionHandling.example04_checkedException.NetworkServiceV4.sendMessage(NetworkServiceV4.java:16)
+	at step03_middleClass.chapter08_ExceptionHandling.example04_checkedException.NetworkMain.main(NetworkMain.java:22)
+```
+- catch를 여러개를 사용해도 finally 사용가능
+```java
+public void sendMessage(String data) {
+    String address = "http://example.com";
+    NetworkClient client = new NetworkClient(address);
+    client.initError(data);
+    try {
+        client.connect();
+        client.send(data);
+    } catch (NetworkClientException ne) {
+//            throw new RuntimeException("ex");// 예외 체크용일뿐 확인 후 삭제
+        System.out.println("[오류] 코드: " + ne.getErrorCode() + "/ 메세지: " + ne.getMessage());
+    } catch (RuntimeException re) {
+        System.out.println(re.getMessage());
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        client.disconnect();
+
+    }
+}
+```
 # IV. 예외 계층
 # V. 실무에서 예외처리 예
 # VI. try-with-resource
