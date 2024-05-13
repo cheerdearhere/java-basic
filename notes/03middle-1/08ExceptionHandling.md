@@ -490,10 +490,330 @@ public void sendMessage(String data) {
         e.printStackTrace();
     } finally {
         client.disconnect();
-
     }
 }
 ```
 # IV. 예외 계층
-# V. 실무에서 예외처리 예
+- 단순히 `Exception`을 각각 상속받기보다 예외를 계층화하여 더 세밀하게 예외를 처리할 수 있다. 
+- 예외를 계층화하면 
+  - 유사 계열의 예외를 부모 예외에 포함시켜 잡을 수 있어 같은 처리를 하는 유사 예외를 묶어서 처리할 수 있다.
+  - 특정한 예외만 따로 처리 과정을 진행할 경우 하위 예외를 사용해 처리한다. 
+![예외 계층 예시](../img/middle/Exception_Layer.png)
+## A. 적용
+- 예시 구조
+  - NetworkClientException
+    - ConnectException: 예외 발생시 연결 시도한 서버 주소 보관
+      - `String address`
+    - SendException: 예외 발생시 전송 시도한 데이터 보관
+      -` String sendData`
+- 상위 예외에서 생성자가 parameter 필수(RequiredArgsConstructor)
+```java
+public class ConnectException extends NetworkClientException{
+    private final String address;
+    public ConnectException(String address, String message) {
+        super(message);
+        this.address = address;
+    }
+    public String getAddress() {
+        return address;
+    }
+}
+public class SendException extends NetworkClientException {
+  private final String sendData;
+  public SendException(String sendData, String message) {
+    super(message);
+    this.sendData = sendData;
+  }
+  public String getSendData() {
+    return sendData;
+  }
+}
+```
+- try-catch
+```java
+public void sendMessage(String data) {
+    String address = "http://example.com";
+    NetworkClient client = new NetworkClient(address);
+    client.initError(data);
+    try {
+        client.connect();
+        client.send(data);
+    } catch (ConnectException e) {
+        System.out.println("[연결 오류] 코드: " + e.getStatusCode() + "/ 서버: " + e.getAddress() + "/ 메세지: " + e.getMessage());
+    } catch (SendException e) {
+        System.out.println("[전송 오류] 코드: " + e.getStatusCode() + "/ 전송 데이터: " + e.getSendData() + " 메세지: " + e.getMessage());
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        client.disconnect();
+    }
+}
+```
+- [코드](../../src/step03_middleClass/chapter08_ExceptionHandling/example05_exceptionLayer)
+```
+전송할 문자(종료:exit): error1
+[연결 오류] 코드: 500/ 서버: http://example.com/ 메세지: http://example.com 서버 연결 실패: connectError
+http://example.com 서버 연결 해제
+
+전송할 문자(종료:exit): error2
+http://example.com 서버에 연결 성공
+[전송 오류] 코드: 400/ 전송 데이터: error2 메세지: http://example.com 서버에 데이터 전송 실패: sendError
+http://example.com 서버 연결 해제
+```
+## B. 예외가 더 많으면?
+- 모든 예외를 하나하나 `catch`로 잡는 것은 상당히 번거롭다
+  - 연결 오류의 가중치가 가장 높다고 가정, 명확하게 인식하도록 한다
+    - `[연결 오류] 주소: ...`
+  - 기타 다른 네트워크 오류는 하나로 표시
+    - `[네트워크 오류] 메시지: ...`
+  - 네트워크 외 다른 예외
+    - `[알 수 없는 오류] 메시지: ...`
+- `try-catch`를 사용할때 좁은 범위 > 넓은 범위 순으로
+  - `ConnectException`보다 `NetworkClientException`이 먼저 작성되면 이미 하위 예외가 처리가 되었기때문에 `ConnectionException`의 처리 코드에 닿을 수 없다
+  ```java
+    catch (NetworkClientException e) {
+        System.out.println("[네트워크 오류] 메시지: "+...);
+    }
+    catch (ConnectException e) {
+        System.out.println("[연결 오류] 메시지: "+...);
+    }
+  ```
+  - 같은 부모를 상속받은 여러 예외를 같은 방식으로 처리할 경우 `|`(또는)로 처리
+  ```java
+      catch(SendException|AnotherNetworkException e) {
+          e.printStackTrace();
+      }
+  ```
+- [코드](../../src/step03_middleClass/chapter08_ExceptionHandling/example06_lotsOfException)
+```java
+try {
+    client.connect();
+    client.send(data);
+}
+catch (ConnectException e) {
+    System.out.println("[연결 오류] 코드: "+e.getStatusCode()+"/ 서버: "+e.getAddress()+"/ 메시지: "+e.getMessage());
+}
+catch(SendException|AnotherNetworkException e) {
+    e.printStackTrace();
+}
+catch (NetworkClientException e) {
+    System.out.println("[네트워크 오류] 코드: "+e.getStatusCode()+" 메시지: "+e.getMessage());
+}
+catch (Exception e) {
+    System.out.println("[알 수 없는 오류] 에러 클래스: "+e.getClass().getName()+" 메시지: "+e.getMessage());
+}
+finally {
+    client.disconnect();
+}
+```
+```
+전송할 문자(종료:exit): hello
+http://example.com 서버에 연결 성공
+http://example.com 서버에 데이터 전송: hello
+http://example.com 서버 연결 해제
+
+전송할 문자(종료:exit): error1
+[연결 오류] 코드: 500/ 서버: http://example.com/ 메시지: http://example.com 서버 연결 실패: connectError
+http://example.com 서버 연결 해제
+
+전송할 문자(종료:exit): error2
+http://example.com 서버에 연결 성공
+http://example.com 서버 연결 해제
+step03_middleClass.chapter08_ExceptionHandling.example06_lotsOfException.exception.SendException: http://example.com 서버에 데이터 전송 실패: sendError
+...
+
+전송할 문자(종료:exit): error3
+http://example.com 서버에 연결 성공
+[알 수 없는 오류] 에러 클래스: java.lang.RuntimeException 메시지: error3 occurred
+http://example.com 서버 연결 해제
+
+전송할 문자(종료:exit): error4
+http://example.com 서버 연결 해제
+step03_middleClass.chapter08_ExceptionHandling.example06_lotsOfException.exception.AnotherNetworkException: http://example.com 서버 연결 실패: connectError
+...
+
+전송할 문자(종료:exit): exit
+프로그램을 정상 종료합니다. 
+```
+# V. 실무에서 예외처리 방안
+## A. 설명
+- 처리할 수 없는 예외: 
+  - 시스템 예외: 애플리케이션 범위를 넘어선 시스템 예외가 일시적인경우 일정 횟수는 정상 흐름으로 이어가 재시도
+    - 일정 횟수 이상이라면 이상을 안내하고 시스템을 종료
+  - 네트워크 예외: 타 서버, DB 서버 등 애플리케이션 내에서 처리할 수 없는 경우 예외를 확인해 정상흐름으로 넘겨 재시도 해도 계속 같은 예외가 발생할 수 있다. 
+    - 이 경우 고객에게 시스템 이상을 알리고 더이상 재시도를 하지 않도록 멈추도록 빠르게 안내하는 것이 좋을 수 있다
+    - 또한 개발자에게 로그를 남겨야함
+- 체크 예외(checked Exception)의 부담
+  - 개발자의 실수, 누락을 확인할 수 있는 장점은 있으나
+  - 너무 많은 예외의 발생으로 업무가 과중해진다.
+    - 처리할 수 없는 예외가 많아지고 프로그램이 점점 복잡해지면서 체크 예외를 사용하는 것이 점점 더 부담스러워진다
+  - 처리할 수 없는 경우: catch가 의미가 있나?
+ 
+
+  ```java
+    try{
+  //    ...
+    }
+    catch(){}
+    catch(){}
+    catch(){}
+    catch(){}
+  //    ...
+  ```
+  - 던지는 경우: method 단에서 긴 예외 목록을? 굳이 안써도 예외를 던지는 unchecked exception과 비교..
+  ```java
+  void method() throws NetworkClientException, DatabaseException, ConnectUserException, RuntimeException {
+    //...
+  }
+  ```
+  - `throws Exception`의 문제: 최상위 예외 객체를 던지면 개별 처리가 필요한 예외까지 모두 던져버림
+- 본인이 해결할 수 있는 예외만 잡아서 처리하고 해결할 수 없는 예외는 신경쓰지 않는다
+  - 필요할때만 `try-catch`로 잡아서 처리
+  - 만약 공통으로 처리할 경우 한 곳(부모/패키지)으로 모아 예외를 공통으로 처리한다
+## B. Unchecked Exception 구현하기
+- unchecked Exception + 공통 처리 
+- unchecked exception: RuntimeException 상속
+- 해결할 수 없는 에러인 경우 알아서 `throws`
+  - Service 단에서 처리하던 이전과 달리 전체 로직이 모이는 곳에서 공통적으로 처리
+  - 그냥 main method 외부로 내보낼 경우 시스템이 멈추기때문에 이를 방지하기 위함
+  -  
+- [코드](../../src/step03_middleClass/chapter08_ExceptionHandling/example07_uncheckedException)
+```java
+while(true) {
+    System.out.print("전송할 문자(종료:exit): ");
+    String input = scanner.nextLine();
+    if(input.equalsIgnoreCase("exit")) {
+        break;
+    }
+    try{
+        networkService.sendMessage(input);
+        System.out.println();
+    }
+    catch(Exception e){
+        //공통 예외 처리
+        exceptionHandler(e);
+    }
+}
+System.out.println("프로그램을 정상 종료합니다. ");
+
+/**
+ * 공통 예외 처리
+ * @param e Exception object
+ */
+private static void exceptionHandler(Exception e) {
+  System.out.println("사용자 메시지: 죄송합니다. 알 수 없는 문제가 발생했습니다");
+  System.out.println("==== 개발자용 디버깅 메시지 ====");
+  e.printStackTrace(System.out);
+}
+```
+- 예외별로 별도로 처리하는 경우
+  - 사용자(client)가 시스템 내의 자세한 오류 정보를 알 필요는 없다.
+    - 이후 조치사항이나 문의처, 연락망을 전달하거나 안내문을 표시하는 것이 좋다.
+  - 디테일한 정보는 개발자가 알면 된다. 
+```java
+private static void exceptionHandler(Exception e) {
+    System.out.println("사용자 메시지: 죄송합니다. 알 수 없는 문제가 발생했습니다");
+    System.out.println("==== 개발자용 디버깅 메시지 ====");
+    if(e instanceof SendException sendException) {
+        System.out.println("[전송 오류] 코드: "+sendException.getStatusCode()+"/ data: "+sendException.getSendData()+"/ 메시지: "+sendException.getMessage());
+    }
+    else if(e instanceof AnotherNetworkException anotherNetworkException | e instanceof ConnectException connectException) {
+        System.out.println("[연결 오류] 코드: "+e.getClass().getName()+" / 메시지: "+e.getMessage());
+    }
+    else if(e instanceof NetworkClientException networkClientException) {
+        System.out.println("[네트워크 오류] 코드: "+networkClientException.getStatusCode()+" 메시지: "+e.getMessage());
+    }
+    else{
+        System.out.println("[알 수 없는 오류] 에러 클래스: "+e.getClass().getName()+" 메시지: "+e.getMessage());
+    }
+    e.printStackTrace(System.out);//표준 출력으로 표시
+}
+```
+- `printStackTrace()`: 
+  - default: `printStackTrace(System.err)`를 사용해 CLI 창에서 빨간색으로 표시
+  - 매개변수로 `System.out` 사용시: 표준 출력 처리로 일반 구문 색과 동일하게 표시
+  - 실무에서는 콘솔에 출력하기보다 로그 관리 라이브러리(`Slf4j`, `logback`)를 사용해 콘솔과 로그 기록 파일에 함께 처리한다.
+  - 프로젝트에서 지정한 라이브러리를 사용하도록한다
+
 # VI. try-with-resource
+- 반드시 호출해야하는 마지막 과정이 있는 경우 `try-catch-finally` 구문으로 처리
+  - ex) 외부자원 연결 종료, 네트워크 연결 종료, 스트림 닫기 등
+  - 외부 라이브러리나 네트워크 연결의 사용이 많아지면서 이를 위한 편의 기능을 java7에서 도입됬다
+    - Try with resources
+- Java 7에서 추가된 인터페이스
+```java
+public interface AutoCloseable{
+    void close() throws Exception;
+}
+```
+- 사용하기
+1. AutoCloseable interface 구현
+```java
+public class NetworkClient implements AutoCloseable {
+  //...
+  @Override
+  public void close() {// 보통 예외를 던지지 않기때문에 throws Exception 제거
+    System.out.println("NetworkClient close");
+    disconnect();
+  }
+}
+```
+2. try with Resource 구문 사용
+- try 문이 종료되면 자동 적용 
+  - try 스코프를 넘어가는 순간 바로 AutoCloseable.close() 바로 호출 > 그 후 catch 문
+```java
+public void sendMessage(String data) {
+  String address = "http://example.com";
+//  try(Resource resource = new Resource()){...}
+  try(NetworkClient client = new NetworkClient(address)) {
+    client.initError(data);
+    client.connect();
+    client.send(data);
+  }catch(Exception e) {
+    System.out.println("catch!! "+e.getMessage());
+  }
+}
+```
+- [코드](../../src/step03_middleClass/chapter08_ExceptionHandling/example08_tryWithRescources)
+```
+전송할 문자(종료:exit): hello
+http://example.com 서버에 연결 성공
+http://example.com 서버에 데이터 전송: hello
+NetworkClient close
+http://example.com 서버 연결 해제
+
+전송할 문자(종료:exit): error1
+NetworkClient close
+http://example.com 서버 연결 해제
+catch!! http://example.com 서버 연결 실패: connectError
+
+전송할 문자(종료:exit): error2
+http://example.com 서버에 연결 성공
+NetworkClient close
+http://example.com 서버 연결 해제
+catch!! http://example.com 서버에 데이터 전송 실패: sendError
+
+전송할 문자(종료:exit): error3
+http://example.com 서버에 연결 성공
+NetworkClient close
+http://example.com 서버 연결 해제
+catch!! error3 occurred
+
+전송할 문자(종료:exit): error4
+NetworkClient close
+http://example.com 서버 연결 해제
+catch!! http://example.com 서버 연결 실패: connectError
+
+전송할 문자(종료:exit): exit
+프로그램을 정상 종료합니다. 
+```
+- 장점
+  - 리소스 누수 방지: `finally` 없이도 반드시 리소스를 종료시킴
+  - 코드 간결성 및 가독성 향상: 직접 `close()`를 명시적으로 작성하지 않아도 됨
+  - 스코프 범위 한정: 리소스를 `try{}` 스코프에서만 사용
+  - 조금 더 빠른 자원해제: `try-catch-finally`는 `finally`에서야 처리하지만 `Try with resources`는 try 구문 종료와 함께 처리
+
+# VII. 마치며
+- 예외처리는 따로 문제를 갖기보다 Network 관련 모듈의 변화를 복습해 큰 흐름을 기억하는 것이 더 좋다. 
+- 초기 자바에서는 체크 예외를 기본으로 사용했으나 갈수록 언체크 예외가 주가되었다.
+- Spring, JPA 등 최근 라이브러리에서도 이러한 경향을 기억하자.
