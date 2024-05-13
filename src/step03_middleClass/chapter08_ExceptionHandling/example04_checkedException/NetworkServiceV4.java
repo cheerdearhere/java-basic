@@ -26,7 +26,4 @@ public class NetworkServiceV4 {
             client.disconnect();
         }
     }
-    private boolean isError(String resultMessage){
-        return !resultMessage.equals(NetworkStatus.SUCCESS.getStatusName());
-    }
 }

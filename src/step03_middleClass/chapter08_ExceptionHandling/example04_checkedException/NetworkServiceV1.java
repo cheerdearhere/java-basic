@@ -13,7 +13,4 @@ public class NetworkServiceV1 {
         client.send(data);
         client.disconnect();
     }
-    private boolean isError(String resultMessage){
-        return !resultMessage.equals(NetworkStatus.SUCCESS.getStatusName());
-    }
 }

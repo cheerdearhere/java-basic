@@ -20,7 +20,4 @@ public class NetworkServiceV3 {
         }
 
     }
-    private boolean isError(String resultMessage){
-        return !resultMessage.equals(NetworkStatus.SUCCESS.getStatusName());
-    }
 }
