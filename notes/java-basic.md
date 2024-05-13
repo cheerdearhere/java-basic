@@ -111,26 +111,35 @@ ____
       - Double ...
     - Class: 클래스 메타 정보
     - System: 시스템과 관련된 기본 기능들을 제공
-- import를 해야하는 외부 라이브러리와 달리 java.lang은 필수/기본 라이브러리이기 때문에 import가 필요없다.
+- `import`를 해야하는 외부 라이브러리와 달리 java.lang은 필수/기본 라이브러리이기 때문에 import가 필요없다.
   - `import java.lang.*` 생략
 
-[Object 클래스](03middle-1/01ObjectClass.md)
+[Object 클래스](03middle-1/01ObjectClass.md): Object는 모든 클래스의 최상위 부모, 다형성을 사용하는 법, 공통 사용 메서드
 
-[불변 객체](03middle-1/02Immuatable.md)
+[불변 객체](03middle-1/02Immuatable.md): java에서 불변 객체의 중요성, 사이드 이펙트, 사용하는 이유와 방법
 
-[String 클래스](03middle-1/03StringClass.md)
+[String 클래스](03middle-1/03StringClass.md): 가장 많이 사용되는 객체, String runtime 최적화, method는 하면서 익히자
 
-[Wrapper, Class 클래스](03middle-1/04WrapperAndClass_type.md)
+[Wrapper, Class 클래스](03middle-1/04WrapperAndClass_type.md): 필요한 이유와 사용방식, 리플랙션 이해
 
-[열거형-Enum](03middle-1/05Enum.md)
+[열거형-Enum](03middle-1/05Enum.md): 만들어진 이유 -> 사용하는 이유. 타입 안전 열거형 패턴과 이를 위한 열거형
 
-[Date/Time](03middle-1/06DateTime.md)
+[Date/Time](03middle-1/06DateTime.md): 날짜와 시간에 대한 기본적 라이브러리. 다양한 상황에 대한 적용
 
-[중첩클래스/내부클래스](03middle-1/07InnerClass.md)
+[중첩클래스/내부클래스](03middle-1/07InnerClass.md): 중첩 클래스에대한 구분과 메모리 관련 이해, 지역변수 캡쳐, 익명 클래스, 람다 기본
 
-[예외 처리](03middle-1/08ExceptionHandling.md)
+[예외 처리](03middle-1/08ExceptionHandling.md): 예외 객체. checked exception vs unchecked exception, 예외 계층 구성, `try-catch-finally`, try with resources 
+
+- 중급은 기본기를 다지는 시간
+  - 자바 기본기가 있어야 오픈소스도 이해할 수 있다. 
+  - 프레임워크, 라이브러리도 결국 Java로 만든 프로그램
+  - Java도 결국 프로그래밍 언어. 그 흐름과 방향성을 이해하면 다른 언어도 이해할 수 있다. 
 
 # VII. 중급 - 2
+- Collection Framework: java에서 제공하는 자료구조 라이브러리 모음
+  - 배열 리스트, 링크드 리스트, 노드와 링크 구조
+  - Array, List, ArrayList, LinkedList, Set, Hash, HashSet, LinkedHashSet, TreeSet, Map, Stack, Queue, Deque ...
+- 성능 관점에서의 이해: 성능 측정, 최적화 진행
 
 [Generic]
 
@@ -150,4 +159,5 @@ ____
 
 [Collection - 마지막 정리]
 
-# IX. 고급?
+# IX. 고급
+- lambda, Stream, IO, network, 멀티스레드
