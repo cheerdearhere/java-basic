@@ -141,7 +141,7 @@ ____
   - Array, List, ArrayList, LinkedList, Set, Hash, HashSet, LinkedHashSet, TreeSet, Map, Stack, Queue, Deque ...
 - 성능 관점에서의 이해: 성능 측정, 최적화 진행
 
-[Generic]
+[Generic](04middle-2/01Generic.md)
 
 [Collection - ArrayList]
 
