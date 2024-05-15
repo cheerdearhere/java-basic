@@ -1,4 +1,4 @@
-package step04_middleClass2.chapter01_Generic.whyGeneric;
+package step04_middleClass2.chapter01_Generic.generic01_whyGeneric;
 
 public class GenericBoxMain {
     public static void main(String[] args) {

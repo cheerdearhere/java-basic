@@ -1,4 +1,4 @@
-package step04_middleClass2.chapter01_Generic.genericBasic;
+package step04_middleClass2.chapter01_Generic.generic02_Basic;
 
 import step04_middleClass2.chapter01_Generic.animal.Animal;
 import step04_middleClass2.chapter01_Generic.animal.Cat;
