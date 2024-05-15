@@ -184,7 +184,7 @@ void main(String[] args){
 ## C. 활용 예제
 - 제네릭을 도입해볼 예제
 ![구조](../img/middle/GenericExampleStructure.png)
-- [코드](../../src/step04_middleClass2/chapter01_Generic/genericBasic)
+- [코드](../../src/step04_middleClass2/chapter01_Generic/generic02_Basic)
 ```java
     public static void main(String[] args) {
         Animal animal = new Animal("동물",0);
@@ -272,4 +272,233 @@ value
 pair2 = Pair{first=key, second=value}
 ```
 [코드](../../src/step04_middleClass2/chapter01_Generic/test/ex01_basic/PairMain.java)
-# III. 
+# III. 타입 매개변수 제한
+## A. 복습용 패키지 - basic
+- 그냥 클래스로 다만듦
+- 다른 타입을 혼용할 수 없으므로 타입 안정성 높음
+- 반복코드가 많고 기능과 타입이 추가될 때마다 각각 다 추가해야함 > 유지보수 어려움
+- [코드](../../src/step04_middleClass2/chapter01_Generic/generic03_limitTypeParameter/re01_basic)
+## B. 다형성 시도 - polymorphism
+- `Dog`, `Cat`의 부모인 `Animal`을 사용해 받음
+- 코드 재사용성은 좋아짐
+- 타입 안정성이 안좋아졌으나 개별 클래스의 기능이 따로 추가되지 않아 에러 여지는 없음
+  - 인자를 받은 매개변수에서 체크 실패
+  - 결과가 Animal class 반환이라 형변환 필요
+- [코드](../../src/step04_middleClass2/chapter01_Generic/generic03_limitTypeParameter/re02_polymorphism)
+## C. 제네릭 도입과 실패
+- 제네릭을 썼는데 사용자 정의 참조 타입의 기능(메서드)을 사용하는 곳에서 에러가 컴파일 에러가 발생한다
+```java
+public class AnimalHospitalV1<T> {
+    private T animal;
+    public void set(T animal){
+        this.animal = animal;
+    }
+    public void checkup(){
+        System.out.println("동물 이름: "+animal.getName());//error
+        System.out.println("크기: "+animal.getSize());//error
+        animal.sound();//error
+    }
+    public T bigger(T targetAnimal){
+        return animal.getSize() > targetAnimal.getSize() ? animal : targetAnimal;//error
+    }
+}
+```
+- T의 타입을 정의하는 시점에서는 `Object`의 기능만 사용 가능
+  - toString(), equals()
+- 호출(생성)시에는 개별 타입의 기능이 지정되므로 사용할 수있으나
+- 정의 시점(컴파일 시점)에서는 개별 타입의 기능을 알 수 없기때문에 컴파일 에러가 발생한다.
+- 또한 `Animal`이나 그 자식 타입이 아닌 다른 것들도 제네릭으로 사용할 수 있다.
+```java
+AnimalHospitalV0<Integer> integerAnimalHospitalV0 = new AnimalHospitalV0<>();
+AnimalHospitalV0<Double> doubleAnimalHospitalV0 = new AnimalHospitalV0<>();
+//...
+```
+- 만약 `Animal` 타입의 기능을 사용한 기능을 사용해 제네릭 타입을 정의하고 싶다면 받는 제네릭을 `Animal`로 제한을 둬야 한다.
+- [코드](../../src/step04_middleClass2/chapter01_Generic/generic03_limitTypeParameter/re03_genericFail)
+## D. 타입 매개변수 제한
+- 제네릭을 표시하는 다이아<>에서 `extends` 로 제한할 클래스 지정
+  - `public class AnimalHospital<T extends Animal>{...}`
+  - 상속으로 제한을 둬 사용할 타입의 상한을 `Object`에서 `Animal`로 제한
+- Animal 타입의 자식으로 제네릭 인자로 사용 가능
+```java
+    AnimalHospitalV2<Dog> dogHospital = new AnimalHospitalV2<>();
+    AnimalHospitalV2<Cat> catHospital = new AnimalHospitalV2<>();
+```
+- [코드](../../src/step04_middleClass2/chapter01_Generic/generic03_limitTypeParameter/re04_typeParam)
+# IV. 제네릭 메서드
+- 클래스 범위가 아닌 메서드 범위에서 제네릭을 사용
+- 제네릭을 사용하긴하지만 제네릭 타입과 제네릭 메서드는 분명 다른 기능임을 기억하자
+  - 제네릭 클래스가 아니어도 사용할 수 있음
+## A. 정의
+- 반환 타입 옆에 `<T> 반환` 표시
+```java
+/**
+ * Generic 그냥 사용
+ * @param obj Object 소속
+ */
+public static <T> T genericMethod(T obj){
+  String t;
+  if(obj instanceof String) {
+    t = "String - " + obj;
+  }
+  else {
+    t = obj.getClass().getName() + " - " + obj;
+  }
+  System.out.println("Object print: "+t);
+  return obj;
+}
+```
+- 마찬가지로 `extends`로 타입의 상한을 제한
+```java
+/**
+ * 타입 제한해서 사용
+ * @param obj Number로만 제한
+ */
+public static <T extends Number> T genericNumberMethod(T obj){
+  if(obj instanceof Integer) {
+    Integer i = obj.intValue() * 2;
+    return (T)i;
+  }else{
+    return obj;
+  }
+}
+```
+## B. 호출
+- 호출시 제네릭 사용하기: method 명 앞에 타입 인자 전달
+```java
+public static void main(String[] args) {
+    GenericMethod genericMethod = new GenericMethod();
+  Integer i = 10;
+  Integer result;
+  
+  //다형성 사용
+  Object object = GenericMethod.objMethod(i);
+  result = (Integer)object;
+  System.out.println("result = " + result);
+  //타입 인자(Type Argument) 명시적 전달
+  result = GenericMethod.<Integer>genericMethod(i);
+  System.out.println("result = " + result);
+  //다른 타입을 인자로 전달할 수 없음
+  Double doubleRes = GenericMethod.<Double>genericNumberMethod(Double.valueOf(i));
+  System.out.println("doubleRes = " + doubleRes);
+}
+```
+## C. static method, instance method와 제네릭
+  - 일반 클래스에서는 정적 메서드와 인스턴스 메서드 모두 generic method로 만들 수 있다
+  - 단, 인스턴스가 생성되어야만 사용할 수 있는 generic type에서는 static method에서 사용할 수 없다.
+    - 정적 메서드는 
+      - 클래스와 함께 메서드 영역에 속하기에 jvm 실행 시점에서 정의되고, 
+      - 인스턴스 없이도 호출할 수 있기 때문에 
+    - 인스턴스가 생성되면서 지정되는 제네릭 타입을 사용할 수 없다. 
+```java
+public class StaticInstance<T> {
+    //instance generic method: instance: instance method 자체에 generic 적용
+    <U> U instanceGenericMethod(U u){
+        return u;
+    }
+    //instance method using generic type's: instance method에서 class의 generic 사용
+    <U> U instanceMethod(U u){
+        return u;
+    }
+    //static generic method : static method 자체에 generic 적용
+    static <U> U staticGenericMethod(U u){
+        return u;
+    }
+    //static method using generic type's: static method에서 class의 generic 사용
+    // compiler error
+//    static T staticMethod(T t){
+//        return t;
+//    }
+}
+```
+## D. 제네릭 메서드 타입 추론
+- java 컴파일러는 반환타입과 들어가는 인자의 타입으로 타입을 추론하기때문에 묵시적으로 처리할 수 있다.
+```java
+    //타입추론
+    Integer integerData = GenericMethod.genericMethod(i);
+    System.out.println("integer = " + integerData);
+    Double doubleData = GenericMethod.genericMethod(Double.valueOf(i));
+    System.out.println("double = " + doubleData);
+//      GenericMethod.genericNumberMethod("not number");
+```
+## E. 제네릭 메서드 활용하기
+- 제네릭 메서드로만 만들어보기: [AnimalMethod](../../src/step04_middleClass2/chapter01_Generic/generic04_genericMethod/AnimalMethod.java)
+```java
+public class AnimalMethod {
+    public static <T extends Animal> void checkup(T animal){
+        System.out.println("동물 이름: "+animal.getName());
+        System.out.println("크기: "+animal.getSize());
+        animal.sound();
+    }
+    public static <T extends Animal> T bigger(T basicAnimal, T targetAnimal){
+        return basicAnimal.getSize() > targetAnimal.getSize() ? basicAnimal : targetAnimal;
+    }
+}
+```
+- 사용
+```java
+public static void main(String[] args) {
+    Dog dog = new Dog("멍멍이1", 100);
+    Cat cat = new Cat("냥냥이1", 300);
+    
+    // 강아지 병원
+    AnimalMethod.<Dog>checkup(dog);
+    // 고양이 병원
+    AnimalMethod.checkup(cat);
+    //타입 반환 
+    Dog biggerDog = AnimalMethod.bigger(dog, new Dog("비교개",50));
+    System.out.println("bigger dog: "+biggerDog);
+    Cat biggerCat = AnimalMethod.<Cat>bigger(cat, new Cat("비교양이",50));
+    System.out.println("bigger cat = " + biggerCat);
+    //타입안정성을 벗어나면 컴파일 에러
+//    Cat catAndDog = AnimalMethod.bigger(dog, new Cat("비교개",50));
+}
+```
+
+## F. 우선순위: generic type vs generic method
+- 물론! 당연히! 타입과 변수명은 각각 달라야한다
+```java
+public class ComplexBox <T extends Animal> {
+    /* class scope */
+    private T animal;
+
+    public void set(T animal) {
+        this.animal = animal;
+    }
+
+    public <T> T printAndReturn(T t) {
+      /* method scope */
+        System.out.println("animal.className = " + animal.getClass().getName());
+        System.out.println("u.className = " + t.getClass().getName());
+        return t;
+      /* //method scope */
+    }
+    /* //class scope */
+}
+```
+- 호출시
+```java
+public static void main(String[] args) {
+    Dog dog = new Dog("멍개",100);
+    Cat cat = new Cat("냐옹", 50);
+
+    ComplexBox<Dog> box = new ComplexBox<>();
+    box.set(dog);// Generic type T set
+    // Dog
+    Cat returnCat = box.printAndReturn(cat);// Generic method T set
+    // Cat
+}
+```
+- 스코프에서 더 가까운 곳의 처리가 우선됨
+  - 제네릭 타입: 인스턴스 범위
+  - 제네릭 메서드: 메서드 범위
+- [코드](../../src/step04_middleClass2/chapter01_Generic/generic04_genericMethod)
+# V. 와일드카드 & 타입 이레이저
+## A. 와일드카드
+## B. 타입 이레이져
+
+# VI. 실습문제
+## A. 문제 1 - 제네릭 메서드와 상한
+## B. 문제 2 - 제네릭 타입과 상한
+## C. 문제 3 - 제네릭 메서드와 와일드카드
+
