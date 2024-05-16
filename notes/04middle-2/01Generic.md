@@ -495,10 +495,295 @@ public static void main(String[] args) {
 - [코드](../../src/step04_middleClass2/chapter01_Generic/generic04_genericMethod)
 # V. 와일드카드 & 타입 이레이저
 ## A. 와일드카드
-## B. 타입 이레이져
+- (컴퓨터 프로그래밍에서) 하나 이상의 문자들을 상징하는 특수문자
+- 하나의 특수문자가 여러가지(문자, 의미, 타입 등)를 상징
+  - ex) `java.lang.*` : lang 패키지 소속 모든 클래스
+- 제네릭을 사용할 때 더 편하게 해줌
+  - <b style="color:red">제네릭 타입이나 제네릭 메서드를 선언하는 것이 아님</b>
+  - 이미 정의해놓은 제네릭 타입을 활용
+  - 차이는 와일드카드를 사용하면 상한 클래스로 처리하기때문에 명시적 형변환 필요
+  - 반환타입에 표시하지 않고 바로 매개변수에서 표기가능
+- 실행시 제네릭 메서드에 비해 와일드 카드의 실행이 더 단순하다
+  - 제네릭 메서드 : 제네릭 타입 추론 > 타입 결정 > 메서드 호출 > 실행
+  - 와일드 카드 : 메서드 호출 > 실행
+  - 꼭 필요한 경우가 아니라면 더 단순한 와일드카드가 권장됨
+## B. 와일드카드 사용 예시
+- 주의: 이미 제네릭 타입이 선언되어 있음을 기억하자!
+### 1. 비제한 와일드 카드
+- 제한 없는 제네릭 사용(Object 클래스까지)
+  - `<?>` == `<? extends Object>`
+- 제네릭
+```java 
+static <T> void printGeneric(Box<T> box){
+    System.out.println("generic obj = "+box.get());
+}
+```
+- 와일드카드
+```java
+static void printWildcard(Box<?> obj){
+    System.out.println("wildcard obj = "+obj.get());
+}
+```
+### 2. 상한 와일드카드
+- 제네릭 메서드와 마찬가지로 `extends`를 사용해 상한 제한 가능
+  - 단, 자식 클래스를 넣어도 상한(지정한 최상위) 클래스를 반환
+    - arg: Animal -> param: Animal
+    - arg: Dog -> param: Animal
+    - arg: Cat -> param: Animal
+- 제네릭
+```java
+static <T extends Animal> void printUptoAnimal(Box<T> box){
+    T t = box.get();//Animal의 자녀인 경우 해당 클래스로
+    System.out.println("Animal print");
+    System.out.println("\t이름 = "+t.getName());
+    System.out.println("\t크기 = "+t.getSize());
+}
+```
+- 와일드카드
+```java
+static void printAnimalWildcard(Box<? extends Animal> box){
+    Animal animal = box.get();// 상한 클래스로 꺼내짐
+    System.out.println("Animal print with wildcard(?)");
+    System.out.println("\t이름 = "+animal.getName());
+    System.out.println("\t크기 = "+animal.getSize());
+}
+```
+### 3. 상한 제한시 타입 객체 반환
+- 해당 타입으로 반환하는 경우 하위 타입을 반환하는 제네릭과 달리 상한 타입(animal)으로 반환
+  - 역시, 자식 클래스를 넣어도 상한(지정한 최상위) 클래스를 반환
+- 제네릭
+```java
+static <T extends Animal> T printAndReturnGeneric(Box<T> box){
+    T t = box.get();//Animal의 자녀인 경우 해당 클래스로
+    System.out.println("Animal print, return");
+    System.out.println("\t이름 = "+t.getName());
+    return t;
+}
+```
+- 와일드카드
+```java
+static Animal printAndReturnWildcard(Box<? extends Animal> box){
+    Animal animal = box.get();// 상한 클래스로 꺼내짐
+    System.out.println("Animal print, return with wildcard(?)");
+    System.out.println("\t이름 = "+animal.getName());
+    return animal;
+}
+```
+- 호출하는 곳에서 사용할 경우 하위타입은 형변환 명시
+  - 내부에서 자식 클래스로 반환시킬 수 있으나 타입 차이로인한 에러가 있을 수 있음
+```java
+Dog returnDog = Wildcard.<Dog>printAndReturnGeneric(dogBox);
+Cat returnCat = Wildcard.printAndReturnGeneric(catBox);
 
+Dog wildcardDog = (Dog) Wildcard.<Dog>printAndReturnWildcard(dogBox);
+Cat wildcardCat = (Cat) Wildcard.printAndReturnWildcard(catBox);
+
+Dog wildcardDog2 = (Dog) Wildcard.<Dog>printAndReturnWildcard(catBox);// 컴파일 에러가 발생하지 않음
+```
+### 4. 하한 와일드카드
+- 지정한 범위 까지만, 그 아래는 불가
+```java
+static void writeBox(Box<? super Animal> box){
+    box.set(new Dog("하한",200));
+}
+```
+- 사용 예: `<? super Animal>` 적용
+```java
+    Wildcard.writeBox(objBox);
+    Wildcard.writeBox(animalBox);
+//  Wildcard.writeBox(dogBox);
+//  Wildcard.writeBox(catBox);
+```
+- [코드](../../src/step04_middleClass2/chapter01_Generic/generic05_wildcard)
+## C. 타입 이레이져
+- 컴파일 전인 자바 소스 코드 파일(.java)에는 제네릭의 타입 매개변수(`<...>`)가 존재
+- 컴파일 후인 자바 바이트 코드 파일(.class)에는 없음
+- 대략적 이해
+  - GenericBox.java 정의 시점
+  ```java
+  public class GenericClass <T> {
+      private T value;
+      public void set(T value){
+          this.value = value;
+      }
+      public T get(){
+          return value;
+      }
+  }
+  ```
+  - GenericBox.java 생성 시점(컴파일 진행)
+```java
+//main
+public static void main(String[] args) {
+  GenericClass<Integer> genericInstance = new GenericClass<>();
+  genericInstance.set(10);
+  Integer result = genericInstance.get();
+}
+//generic class
+public class GenericClass <Integer> {
+    private Integer value;
+    public void set(Integer value){
+        this.value = value;
+    }
+    public Integer get(){
+        return value;
+    }
+}
+```
+  - GenericBox.class(컴파일 종료 후): runtime
+    - 더 이상 체크할 필요가 없기때문에(이미 컴파일 과정에서 점검이 끝나기 때문에) 제네릭 정보를 다 제거하고 Object로 사용
+    ```java
+    public class GenericClass {
+        private Object value;
+        public void set(Object value){
+            this.value = value;
+        }
+        public Object get(){
+            return value;
+        }
+    }
+    ```
+    - 메인 메서드 역시 제네릭 지정 정보가 삭제되고 사용하는 곳에서 형변환을 명시
+    ```java
+    public static void main(String[] args){
+        GenericClass genericInstance = new GenericClass();
+        genericInstance.set(10);
+        //컴파일러가 다운캐스팅 추가
+        Integer result = (Integer) genericInstance.get();
+    }
+    ```
+- 자바의 제네릭은 사용자의 편의를 위해 캐스팅 과정을 컴파일러가 대신해주는 매우 편리한 기능
+- 타입 이레이저 방식의 한계 
+  - 컴파일 이후 제네릭의 타입 정보가 모두 제거되기때문에 타입을 활용하는 코드는 에러가 발생한다.
+- .java
+```java
+public class EraserBox <T extends Animal> {
+    public boolean instanceCheck(Object obj) {
+        return obj instanceof T;// 오류: 'Object' cannot be safely cast to 'T'
+    }
+
+    public void create() {
+        return new T();// 오류: Type parameter 'T' cannot be instantiated directly
+    }
+}
+```
+- .class
+```java
+public class EraserBox {
+    public boolean instanceCheck(Object obj) {
+        return obj instanceof Object;
+    }
+
+    public void create() {
+        return new Object();
+    }
+}
+```
 # VI. 실습문제
-## A. 문제 1 - 제네릭 메서드와 상한
-## B. 문제 2 - 제네릭 타입과 상한
-## C. 문제 3 - 제네릭 메서드와 와일드카드
+- 문제 풀기 전 세팅
+  ```
+  준비
+    여러분은 게임속 케릭터를 클래스로 만들어야 한다.
+    BioUnit 은 유닛들의 부모 클래스이다.
+    BioUnit 의 자식 클래스로 Marine , Zealot , Zergling 이 있다
+  ```
+  - [유닛 타입](../../src/step04_middleClass2/chapter01_Generic/test/ex02_starcraft/Units)
+## A. 문제 1 : 유닛 비교
+- 제네릭 메서드와 상한
+```
+문제 설명
+다음 코드와 실행 결과를 참고해서 UnitUtil 클래스를 만들어라.
+UnitUtil.maxHp() 메서드의 조건은 다음과 같다.
+두 유닛을 입력 받아서 체력이 높은 유닛을 반환한다. 체력이 같은 경우 둘 중 아무나 반환해도 된다.
+제네릭 메서드를 사용해야 한다.
+입력하는 유닛의 타입과 반환하는 유닛의 타입이 같아야 한다.
 
+package generic.test.ex3;
+import generic.test.ex3.unit.Marine;
+import generic.test.ex3.unit.Zealot;
+public class UnitUtilTest {
+ public static void main(String[] args) {
+ Marine m1 = new Marine("마린1", 40);
+ Marine m2 = new Marine("마린2", 50);
+ Marine resultMarine = UnitUtil.maxHp(m1, m2);
+ System.out.println("resultMarine = " + resultMarine);
+ Zealot z1 = new Zealot("질럿1", 100);
+ Zealot z2 = new Zealot("질럿2", 150);
+ Zealot resultZealot = UnitUtil.maxHp(z1, z2);
+ System.out.println("resultZealot = " + resultZealot);
+ }
+}
+
+실행 결과 
+    resultMarine = BioUnit{name='마린2', hp=50}
+    resultZealot = BioUnit{name='질럿2', hp=150}
+```
+- [코드](../../src/step04_middleClass2/chapter01_Generic/test/ex02_starcraft/UnitUtilTest.java)
+## B. 문제 2 : 셔틀 만들기
+- 제네릭 타입과 상한
+```
+문제 설명
+  다음 코드와 실행 결과를 참고해서 Shuttle 클래스를 만들어라.
+  Shuttle 클래스의 조건은 다음과 같다.
+  제네릭 타입을 사용해야 한다.
+  showInfo() 메서드를 통해 탑승한 유닛의 정보를 출력한다.
+
+package generic.test.ex3;
+import generic.test.ex3.unit.Marine;
+import generic.test.ex3.unit.Zealot;
+import generic.test.ex3.unit.Zergling;
+public class ShuttleTest {
+ public static void main(String[] args) {
+ Shuttle<Marine> shuttle1 = new Shuttle<>();
+ shuttle1.in(new Marine("마린", 40));
+ shuttle1.showInfo();
+ Shuttle<Zergling> shuttle2 = new Shuttle<>();
+ shuttle2.in(new Zergling("저글링", 35));
+ shuttle2.showInfo();
+ Shuttle<Zealot> shuttle3 = new Shuttle<>();
+ shuttle3.in(new Zealot("질럿", 100));
+ shuttle3.showInfo();
+ }
+}
+
+실행 결과 
+  이름: 마린, HP: 40
+  이름: 저글링, HP: 35
+  이름: 질럿, HP: 100
+```
+- [코드](../../src/step04_middleClass2/chapter01_Generic/test/ex02_starcraft/ShuttleTest.java)
+## C. 문제 3 - 제네릭 메서드와 와일드카드
+```
+문제 설명
+    앞서 문제에서 만든 Shuttle 을 활용한다.
+    다음 코드와 실행 결과를 참고해서 UnitPrinter 클래스를 만들어라.
+    UnitPrinter 클래스의 조건은 다음과 같다.
+    UnitPrinter.printV1() 은 제네릭 메서드로 구현해야 한다.
+    UnitPrinter.printV2() 는 와일드카드로 구현해야 한다.
+    이 두 메서드는 셔틀에 들어있는 유닛의 정보를 출력한다.
+
+package generic.test.ex3;
+import generic.test.ex3.unit.Marine;
+import generic.test.ex3.unit.Zealot;
+import generic.test.ex3.unit.Zergling;
+public class UnitPrinterTest {
+ public static void main(String[] args) {
+ Shuttle<Marine> shuttle1 = new Shuttle<>();
+ shuttle1.in(new Marine("마린", 40));
+ Shuttle<Zergling> shuttle2 = new Shuttle<>();
+ shuttle2.in(new Zergling("저글링", 35));
+ Shuttle<Zealot> shuttle3 = new Shuttle<>();
+ shuttle3.in(new Zealot("질럿", 100));
+ UnitPrinter.printV1(shuttle1);
+ UnitPrinter.printV2(shuttle1);
+ }
+}
+
+실행 결과 
+    이름: 마린, HP: 40
+    이름: 마린, HP: 40
+```
+- 제네릭을 직접 만들어서 사용하는 경우는 거의 없다
+  - 직접 설계하거나 만들지 않기 때문에 이 이상의 고급 이론은 크게 필요하지 않다
+  - 제네릭으로 만들어진 라이브러리, 프레임워크를 이해하고 사용할때 도움이 많이 됨
+- [코드](../../src/step04_middleClass2/chapter01_Generic/test/ex02_starcraft/UnitPrinterTest.java)
