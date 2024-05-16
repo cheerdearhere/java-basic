@@ -143,7 +143,7 @@ ____
 
 [Generic](04middle-2/01Generic.md)
 
-[Collection - ArrayList]
+[Collection - ArrayList](04middle-2/CollectionFramework/02ArrayList.md)
 
 [Collection - LinkedList]
 
