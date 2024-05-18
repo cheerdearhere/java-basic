@@ -99,7 +99,7 @@ public static void main(String[] args) {
      | 이동 | 1 | 0 | 2 | 3 |
      | 삽입 | 1 | 4 | 2 | 3 |
 - 배열의 마지막 위치: `O(1+1)` => `O(1)`
-  1. 대상 인덱스를 찾고
+  1. 대상 인덱스를 찾고`
   2. 마지막에 추가
 
      | 기존 | 1 | 2 | 3 | 0 |
@@ -111,6 +111,151 @@ public static void main(String[] args) {
     - 부족하면 추가할 수 없다: 1032명이 온다면?
     - 남으면 메모리 낭비다: 그렇다고 10000으로?
 - 처음부터 정적으로 크기가 지정된 배열의 한계를 보완한 자료구조의 필요성 -> List
-
 - [배열 코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/array)
-# III. 배열 리스트
+# III. 배열 리스트 구현하기
+- 배열의 단점
+  - 길이를 동적으로 변경할 수 없다
+  - 데이터 추가하기 불편(연산 복잡)하다
+- 이를 보완한 자료구조: List
+  - 순서가 있음: index
+  - 중복 허용: unique 아님
+  - 동적 할당됨: 가변 크기 자료구조
+## A. [MyArrayListV0](../../../src/step04_middleClass2/chapter02_CollectionFramework/arrayList/MyArrayListV0.java): 기본 배열
+- 기본 배열부터 점진적으로 만들어가보자
+- 간단한 자료구조 예시이므로 구체적 검증 로직, 예외 처리, 다른 메서드는 생략
+```java
+public static void main(String[] args) {
+    MyArrayListV0 myArrayList = new MyArrayListV0();
+    myArrayList.add("A");
+    System.out.println(myArrayList);
+    myArrayList.add("B");
+    System.out.println(myArrayList);
+    myArrayList.add("C");
+    System.out.println(myArrayList);
+    //기능
+    System.out.println("myArrayList.size() = " + myArrayList.size());
+    System.out.println("myArrayList.get(1) = " + myArrayList.get(1));
+    System.out.println("myArrayList.indexOf(\"C\") = " + myArrayList.indexOf("C"));
+    System.out.println("myArrayList.indexOf(\"no data\") = " + myArrayList.indexOf("D"));
+    System.out.println("myArrayList.set(2,\"Z\") = " + myArrayList.set(2, "Z"));
+    System.out.println(myArrayList);
+    //범위를 초과하면?
+    myArrayList.add("D");
+    myArrayList.add("E");
+    System.out.println(myArrayList);
+    myArrayList.add("F");// java.lang.ArrayIndexOutOfBoundsException
+}
+```
+## B. [MyArrayListV1](../../../src/step04_middleClass2/chapter02_CollectionFramework/arrayList/MyArrayListV1.java): 동적할당
+- 배열의 길이를 동적으로 할당
+```java
+    public void add(Object obj){
+        if(size == elements.length) grow();
+        elements[size] = obj;
+        size++;
+    }
+
+    private void grow() {
+        int oldCapacity = elements.length;
+        int newCapacity = oldCapacity * 2;
+
+//      Object[] newElements = new Object[newCapacity];
+//        for(int i = 0; i < elements.length; i++){
+//            newElements[i] = elements[i];
+//        }
+//        elements = newElements;
+        elements = Arrays.copyOf(elements, newCapacity);//참조대상 변경
+    }
+```
+- 배열이 가득 찼을때 배열 크기를 확장 후 추가
+    - `size == elements.length` 조건 확인 후 grow method 호출
+    - 기존 배열보다 2배 큰 배열을 생성
+      - 보통 50%로 크기 증가시킴
+    - 값 복사
+      - deep copy
+    - `elements`의 참조값 변경(기존 참조대상은 다른 참조값이 없는경우 GC 처리)
+      - 얕은 복사(값만 복사)
+    - add method stack frame 진행
+## C. [MyArrayListV2](../../../src/step04_middleClass2/chapter02_CollectionFramework/arrayList/MyArrayListV2.java): 기능 추가
+- 추가할 기능
+  - add(index, object): 원하는 위치에 데이터 증가
+    - 추가 위치에따라 데이터 이동이 필요할 수 있으므로 복잡도가 달라짐
+      - 처음/중간: O(n) or O(n/2)
+      - 끝: O(1)
+  - remove(index): 원하는 위치의 값을 제거하고 빈 값 제거
+    - 제거 위치에 따라 데이터 이동이 필요할 수 있으므로 복잡도가 달라짐
+      - 처음/중간: O(n) or O(n/2) 
+      - 끝: O(1)
+      - ex)
+      
+        | 기존 | 1 | 2 | 3 | 4 |
+        |----|---|---|---|---|
+        | 검색 | 1 | 2 | 3 | 4 |
+        | 삭제 | 1 | 0 | 3 | 4 |
+        | 이동 | 1 | 3 | 0 | 4 |
+        | 이동 | 1 | 3 | 4 | 0 |
+- 배열 리스트는
+  - 마지막에 데이터를 추가/제거할 때 `O(1)`
+  - 다른 곳에서 추가/제거할 때 `O(n)`
+## D. [MyArrayList](../../../src/step04_middleClass2/chapter02_CollectionFramework/arrayList/MyArrayListV3.java): 제네릭 도입
+- 중간에 다른 타입을 입력해도 컴파일 에러가 일어나지 않음
+  - == 타입 안정성이 보장되지 않음
+```java
+MyArrayListV2 integerArrayList = new MyArrayListV2();
+integerArrayList.add(1);
+integerArrayList.add(2);
+integerArrayList.add(3);
+integerArrayList.add("4");
+int idx1 = (Integer) integerArrayList.get(1);
+int idx2 = (Integer) integerArrayList.get(2);
+int idx3 = (Integer) integerArrayList.get(3);//class cast exception
+```
+- Generic type 사용
+  1. generic type 지정
+     - `public class MyArrayList<E>{...}`
+  2. parameter type 변경
+      ```java
+          public void add(E obj){
+              if(size == elements.length) grow();
+              elements[size] = obj;
+              size++;
+          }
+          public void add(int index, E obj){
+              if(size == elements.length) grow();
+              shiftRightFrom(index);
+              elements[index] = obj;
+              size++;
+          }
+      ```
+  3. return type 변경
+     - 데이터를 보관하는 타입이 `Object`이므로 다운 캐스팅 필요
+     - 다만 컴파일러가 경고가 있으므로 SuppressWarnings annotation 사용 
+       - `@SuppressWarnings("unchecked")`
+      ```java
+         @SuppressWarnings("unchecked")
+         public E remove(int index){
+             E oldValue = (E)elements[index];
+             //이동하면 해당 위치 데이터는 자동으로 덮어씌워짐
+             shiftLeftFrom(index);
+             size--;
+             return oldValue;
+         }
+         @SuppressWarnings("unchecked")
+         public E get(int index){
+             return (E)elements[index];
+         }
+      ```
+  4. Object[]는 유지
+     - 제네릭은 생성자에서 사용할 수 없음
+       - `new E[DEFUALT_CAPACITY]` 불가
+     - 데이터를 주고 받는 지점에서 타입이 체크되므로 따로 변경 안함
+     - 보관은 자율이므로 Object 사용
+- 타입 안정성이 보장되므로 
+  - 캐스팅 관련 에러가 없음
+  - 일관된 타입 사용 가능
+  - `get`할때 다운 캐스팅을 별도로 할 필요가 없음
+- 단점
+  - 정확한 크기를 미리 알지 못하면 메모리 낭비
+  - 데이터를 중간에 추가하거나 삭제할때 비효율적: O(n)
+# IV. 연결 리스트(LinkedList)
+
