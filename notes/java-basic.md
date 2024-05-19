@@ -145,7 +145,7 @@ ____
 
 [Collection - ArrayList](04middle-2/CollectionFramework/02ArrayList.md)
 
-[Collection - LinkedList]
+[Collection - LinkedList](04middle-2/CollectionFramework/03LinkedList.md)
 
 [Collection - List]
 

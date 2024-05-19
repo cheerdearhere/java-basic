@@ -246,7 +246,7 @@ int idx3 = (Integer) integerArrayList.get(3);//class cast exception
          }
       ```
   4. Object[]는 유지
-     - 제네릭은 생성자에서 사용할 수 없음
+     - 제네릭은 생성자에서 사용할 수 없음/
        - `new E[DEFUALT_CAPACITY]` 불가
      - 데이터를 주고 받는 지점에서 타입이 체크되므로 따로 변경 안함
      - 보관은 자율이므로 Object 사용
@@ -257,5 +257,5 @@ int idx3 = (Integer) integerArrayList.get(3);//class cast exception
 - 단점
   - 정확한 크기를 미리 알지 못하면 메모리 낭비
   - 데이터를 중간에 추가하거나 삭제할때 비효율적: O(n)
-# IV. 연결 리스트(LinkedList)
 
+-> [연결리스트](03LinkedList.md)
