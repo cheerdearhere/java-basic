@@ -1,5 +1,7 @@
 package step04_middleClass2.chapter02_CollectionFramework.linkedList;
 
+import java.util.Optional;
+
 public class Node {
     private Object item;
     private Node next;
@@ -16,7 +18,9 @@ public class Node {
     public Object getItem() {
         return item;
     }
-
+    public void setItem(Object element) {
+        this.item = element;
+    }
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
