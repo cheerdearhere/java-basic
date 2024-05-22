@@ -282,6 +282,7 @@ find data:
 - 최적화를 했지만 더 많은 데이터는 결국 시간이 걸린다. 
 # IV. 실습 코드
 ## A. 리스트 사용하기
+- `Scanner`가 한 main 내에서 여러번 사용되면 standard input 관련 bufferThread를 인식하는데 문제가 생길수 있어 각각 파일을 따로 생성
 ### 1. 배열을 리스트로
 ```
 문제1 - 배열을 리스트로 변경하기
@@ -305,9 +306,9 @@ public class ArrayEx1 {
 
 실행 결과 
   점수 총합: 350
-  점수 평균: 70.0`
+  점수 평균: 70.0
 ```
-[실습코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/list/)
+[실습코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/list/ArrayEx01.java)
 ### 2. 입력과 출력
 ```
 문제 설명
@@ -327,7 +328,7 @@ public class ArrayEx1 {
   출력
   1, 2, 3, 4, 5
 ```
-[실습코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/list/)
+[실습코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/list/ArrayEx02.java)
 ### 3. 합계와 평균
 ```
 문제3 - 합계와 평균
@@ -345,7 +346,7 @@ public class ArrayEx1 {
   입력한 정수의 합계: 15
   입력한 정수의 평균: 3.0
 ```
-[실습코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/list/)
+[실습코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/list/ArrayEx03.java)
 ## B. 리스트를 사용한 쇼핑카트
 ```
 문제 - 쇼핑카트
@@ -381,7 +382,7 @@ Main class
    }
   }
 
-ShoppingCart - 코드 작성 ```java
+ShoppingCart - 코드 작성 
   public class ShoppingCart {
   // 코드 작성
   }
@@ -391,5 +392,4 @@ ShoppingCart - 코드 작성 ```java
   상품명:상추, 합계:12000
   전체 가격 합:16000 
 ```
-
-[실습코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/list/)
+[실습코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/list/ShoppingCart.java)
