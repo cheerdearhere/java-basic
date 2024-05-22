@@ -66,7 +66,6 @@ public class MyArrayList<E> implements MyList<E>{
         int oldCapacity = elements.length;
         int newCapacity = oldCapacity * 2;
 
-        System.out.println("size up: "+oldCapacity+" -> "+newCapacity);
         elements = Arrays.copyOf(elements, newCapacity);
     }
     private void shiftRightFrom(int index) {
