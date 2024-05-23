@@ -149,7 +149,7 @@ ____
 
 [Collection - List](04middle-2/CollectionFramework/04List.md)
 
-[Collection - Hash]
+[Collection - Hash](04middle-2/CollectionFramework/05HashSet.md)
 
 [Collection - HashSet]
 
