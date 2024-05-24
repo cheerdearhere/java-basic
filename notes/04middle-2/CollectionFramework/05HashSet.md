@@ -112,7 +112,174 @@ System.out.println("search: "+intArr2[searchValue2]);
   - 조회
     - 평균: O(1)
     - 최악: O(n) - 충돌
-# III. HashSet
+# III. HashSet 구현해보기
+- 핵심 특성
+  - 중복 x 
+  - 순서 x 
+  - 빠른 검색기능
+- [Main class](../../../src/step04_middleClass2/chapter02_CollectionFramework/set/MyHashSetMain.java): 같은 기능을 다른 로직으로 진행하므로 클라이언트 코드에 영향을 주지 않음
+```java
+//        MyHashSetV0 set = new MyHashSetV0();
+        MyHashSetV1 set = new MyHashSetV1();
+        MyHashSetV2 set = new MyHashSetV2();
+        MyHashSetV3 set = new MyHashSetV3();
+```
+## A.[MyHashSetV1](../../../src/step04_middleClass2/chapter02_CollectionFramework/set/MyHashSetV1.java): 해시 알고리즘(hash index)
+```java
+public class MyHashSetV1 {
+    private final int DEFAULT_INITIAL_CAPACITY = 16;
+    LinkedList<Integer>[] buckets;
+    private int size = 0;
+    private int capacity = DEFAULT_INITIAL_CAPACITY;
 
+    public MyHashSetV1();
+    public MyHashSetV1(int initialCapacity);
     
+    public boolean add(int value);
+    public boolean contains(int searchValue);
+    public boolean remove(int value);
+    public int getSize();
+    
+    private void initBucket();
+    private int getHashIndex(int value);
+    
+    @Override
+    public String toString();
+```
+- 특징
+  - 최악의 경우를 제외하고 검색시 O(1)을 보장
+    - 등록, 검색, 삭제 모두 평균 O(1) 
+  - 충돌가능성 낮춤
+- 문제: 데이터의 값이 index인 양의 정수가 아니라면..?
+- 주의: List의 remove()의 매개변수 타입에 따라 호출되는 메서드가 다름 
+  - 기본형인 int가 전달되면 index 기준으로 삭제함
+## B. MyHashSetV2: 해시 코드
+### 1. [문자 해시코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/set/objectHash/StringHashMain.java)
+- 모든 문자는 각자 고유한 코드를 지닌다: ASCII, UTF-8 ...
+```java
+public static void main(String[] args) {
+    //char
+    char charA = 'A';
+    char charB = 'B';
+    
+  System.out.println("charA = " + charA);
+  System.out.println("charA code = " + (int) charA);
+  System.out.println("charB code = " + (int) charB);
+  //charA = A
+  //charA code = 65
+  //charB code = 66
+}
+```
+- 문자열을 코드화 시키는 가장 단순한 방법 -> 문자 코드를 더해서 사용
+```java
+private static int hash(char ch) {
+  return (int) ch;
+}
+private static int hash(String str) {
+    int hash = 0;
+    char[] chars = str.toCharArray();
+    for(char ch : chars) {
+        hash += (int) ch;
+    }
+    return hash;
+}
+private static int hashIndex(char value){
+  int hash = hash(value);
+  return hash % CAPACITY;
+}
+private static int hashIndex(String str){
+  int hash = hashCode(str);
+  return hash % CAPACITY;
+}
+```
+- 이렇게 배열의 인덱스를 사용해 값을 저장, 조회
+  - 알고리즘에 따라 암호화를 위해 사용될 수 있음
+![String's hashCode](../../img/middle/CollectionFrameworks/HashCode_String.png)
+- 충돌 가능: 다른 데이터임에도 값 자체가 같을 수 있다.
+  - "AD" -> A(65) + D(68) => 133
+  - "BC" -> B(66) + C(67) => 133
+- 해시코드화 시키고나면 해시 인덱스를 통해 사용할 수 있다. 
+  - 사용자가 직접 만든 Custom type은 어떻게???
+### 2. [java의 hashCode](../../../src/step04_middleClass2/chapter02_CollectionFramework/set/objectHash/JavaHashCodeMain.java): Object 클래스의 method
+- 모든 객체에 적용할 수있는 방법: Object class 이용
+  - default: 인스턴스의 참조값(메모리주소)
+  - 그대로 사용하지않고 재정의해서 사용
+```java
+public class Object{
+//  ...
+    public int hashCode();
+}
+```
+- Java 소속 클래스들은 이미 재정의 되어있음
+  - 음의 정수도 있음
+```
+10.hashCode() = 10
+strA.hashCode() = 65
+strAB.hashCode() = 2081
+Integer.valueOf(-1).hashCode() = -1
+```
+- 사용자가 직접 만든 클래스에서 값은 같지만 다른 인스턴스인 경우
+- 사용하는 데이터를 기반으로 비교하도록 재정의
+  - `Objects.hashCode(hash 변환에 사용할 값);`
+```java
+@Override
+public int hashCode() {
+    return Objects.hashCode(id);
+}
+```
+- 동일성과 동등성
+```java
+public static void main(String[] args) {
+  System.out.println("member1 == dupMember1 = " + (member1==dupMember1));
+  System.out.println("identity String(member1) = " + Objects.toIdentityString(member1));
+  System.out.println("identity String(dupMember1) = " + Objects.toIdentityString(dupMember1));
+  System.out.println("member1.equals(dupMember1) = " + member1.equals(dupMember1));
+  System.out.println("member1.hashCode() = " + member1.hashCode());
+  System.out.println("dupMember1.hashCode() = " + dupMember1.hashCode());
+}
+
+// member1 == dupMember1 = false 동일성
+// identity String(member1)    = ....Member@7530d0a
+// identity String(dupMember1) = ....Member@27bc2616
+// member1.equals(dupMember1) = true 동등성
+// member1.hashCode() = 104070
+// dupMember1.hashCode() = 104070
+```
+- 값을 비교해야하므로 equals()도 재정의해야한다
+  - `instanceof` 사용
+  ```java
+  @Override
+  public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof Member member)) return false;
+      return Objects.equals(id, member.id);
+  }
+  ```
+  - `getClass()` 사용
+  ```java
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    Member member = (Member) o;
+    return Objects.equals(id, member.id);
+  }
+  ```
+### 3. [MyHashSetV2](../../../src/step04_middleClass2/chapter02_CollectionFramework/set/MyHashSetV2.java): Hash code 사용
+- 이를 사용해 구현해보자
+- hash index는 0~양수이므로 절대값 처리(`Math.abs()`)
+```java
+private int getHashIndex(Object value){
+    int hashCode = Math.abs(value.hashCode());
+    int hashIndex = hashCode % capacity;
+    return hashIndex;
+//    return Math.abs(value.hashCode()) % capacity;
+}
+```
+## C.[직접만든 클래스 저장하기](../../../src/step04_middleClass2/chapter02_CollectionFramework/set/MyHashSetMainCustom.java)
+- 주의!! 
+  - 커스텀 클래스에 `equals()`와 `hashCode()`가 재정의되어있지 않으면 문제가 생긴다
+  - java의 객체들은 기본적으로 재정의되어있으나 개발자가 직접 만든 클래스는 없음을 주의하자
+- `Member`에 equals()가 재정의되어있지않으면 내부에서 이를 사용하는 contain()이 제대로 작동하지 않음
+## D. equals(), hashCode() 재정의의 중요성
+## E. [MyHashSetV3](../../../src/step04_middleClass2/chapter02_CollectionFramework/set/MyHashSetV3.java): Generic, Interface 적용
 # IV. Set
