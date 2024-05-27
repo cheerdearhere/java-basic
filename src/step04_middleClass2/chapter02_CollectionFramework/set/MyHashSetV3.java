@@ -1,10 +1,11 @@
 package step04_middleClass2.chapter02_CollectionFramework.set;
 
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class MyHashSetV3 <E>{
+public class MyHashSetV3 <E> implements MySet<E> {
     private final int DEFAULT_INITIAL_CAPACITY = 16;
     LinkedList<E>[] buckets;
     private int size = 0;
@@ -17,6 +18,7 @@ public class MyHashSetV3 <E>{
         this.capacity = initialCapacity;
         initBucket();
     }
+
     public boolean add(E value){
         int hashIndex = getHashIndex(value);
         LinkedList<E> bucket = buckets[hashIndex];
@@ -60,7 +62,7 @@ public class MyHashSetV3 <E>{
 
     @Override
     public String toString() {
-        return "MyHashSetV2: " +
+        return "MyHashSetV3: " +
                 IntStream.range(0, buckets.length)
                         .mapToObj(index ->"\n\t" + index + ". " + buckets[index].toString())
                         .collect(Collectors.joining("")) +

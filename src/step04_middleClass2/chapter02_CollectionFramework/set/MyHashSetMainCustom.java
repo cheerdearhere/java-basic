@@ -4,7 +4,8 @@ import step04_middleClass2.chapter02_CollectionFramework.set.objectHash.Member;
 
 public class MyHashSetMainCustom {
     public static void main(String[] args) {
-        MyHashSetV2 set = new MyHashSetV2();
+//        MyHashSetV2 set = new MyHashSetV2();
+        MySet<Member> set = new MyHashSetV3<>();
         // Member instance
         Member hi = new Member("hi");
         Member dupHi = new Member("hi");
@@ -25,9 +26,9 @@ public class MyHashSetMainCustom {
 
         System.out.println(set);
         System.out.println("add duplicated data: "+set.add(dupHi));
-        String searchValue = "A";
-        System.out.println("search A: "+set.contains(searchValue));
-        searchValue = "Z";
+        Member searchValue = new Member("hi");
+        System.out.println("search hi: "+set.contains(searchValue));
+        searchValue = new Member("Z");
         System.out.println("search Z: "+set.contains(searchValue));
 
     }
