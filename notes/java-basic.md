@@ -149,11 +149,7 @@ ____
 
 [Collection - List](04middle-2/CollectionFramework/04List.md)
 
-[Collection - Hash](04middle-2/CollectionFramework/05HashSet.md)
-
-[Collection - HashSet]
-
-[Collection - Set]
+[Collection - Set](04middle-2/CollectionFramework/05Set.md)
 
 [Collection - Map, Stack, Queue]
 
