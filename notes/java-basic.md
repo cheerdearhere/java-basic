@@ -151,7 +151,7 @@ ____
 
 [Collection - Set](04middle-2/CollectionFramework/05Set.md)
 
-[Collection - Map, Stack, Queue]
+[Collection - Map, Stack, Queue](04middle-2/CollectionFramework/06MapStackQueue.md)
 
 [Collection - 마지막 정리]
 
