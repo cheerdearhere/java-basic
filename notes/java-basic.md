@@ -153,7 +153,7 @@ ____
 
 [Collection - Map, Stack, Queue](04middle-2/CollectionFramework/06MapStackQueue.md)
 
-[Collection - 마지막 정리]
+[Collection - 순회, 비교, 기타 유틸](04middle-2/CollectionFramework/07Iterator_Comparator_etc.md)
 
 # IX. 고급
 - lambda, Stream, IO, network, 멀티스레드
