@@ -141,19 +141,27 @@ ____
   - Array, List, ArrayList, LinkedList, Set, Hash, HashSet, LinkedHashSet, TreeSet, Map, Stack, Queue, Deque ...
 - 성능 관점에서의 이해: 성능 측정, 최적화 진행
 
-[Generic](04middle-2/01Generic.md)
+[Generic](04middle-2/01Generic.md): 타입 안정성과 코드 재사용성을 모두 만족하는 방식. 와일드카드도 잊지말자
 
-[Collection - ArrayList](04middle-2/CollectionFramework/02ArrayList.md)
+[Collection - ArrayList](04middle-2/CollectionFramework/02ArrayList.md): 배열을 사용한 리스트 구조
 
-[Collection - LinkedList](04middle-2/CollectionFramework/03LinkedList.md)
+[Collection - LinkedList](04middle-2/CollectionFramework/03LinkedList.md): 노드를 사용한 리스트 구조
 
-[Collection - List](04middle-2/CollectionFramework/04List.md)
+[Collection - List](04middle-2/CollectionFramework/04List.md): 순서가 있고 중복이 가능한 자료구조. 
+- Big O notation
+- interface 사용의 장점: 내부 로직은 달라도 사용자는 모르거나 같은 방식으로 사용할 수 있는 캡슐링의 장점
 
-[Collection - Set](04middle-2/CollectionFramework/05Set.md)
+[Collection - Set](04middle-2/CollectionFramework/05Set.md): 순서가 없고 중복이 불가한 자료구조
+- 직접 만든 객체에 equals와 hashCode가 필요한 이유
 
 [Collection - Map, Stack, Queue](04middle-2/CollectionFramework/06MapStackQueue.md)
+- Map: 키-값 쌍으로 이뤄진 구조, Set은 값이 null인 Map
+- 스택과 큐가 있었으나 데크(Deque)로 합쳐짐
 
 [Collection - 순회, 비교, 기타 유틸](04middle-2/CollectionFramework/07Iterator_Comparator_etc.md)
+- 순회, 정렬: 
+  - Iterator와 Itarable/ Comparator와 Comparable... 
+- 컬렉션 관련 유틸리티
 
 # IX. 고급
 - lambda, Stream, IO, network, 멀티스레드
