@@ -139,6 +139,8 @@ public class HashSet<E>
       - `offer`: 뒤에서 입력
       - `poll`: 앞에서 출력
 ![Deque](../../img/middle/CollectionFrameworks/DoubleEndedQueue.png)
+## D. PriorityQueue
+- 입/출력 순서가 아닌 우선순위(개발자 임의의 가치 판단)를 따라는 경우 사용. 자주 사용하지는 않음
 # III. 실습 문제
 ## A. array to map
 ```
