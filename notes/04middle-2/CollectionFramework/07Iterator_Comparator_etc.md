@@ -204,6 +204,150 @@ public class MyUser implements Comparable<MyUser> {
     users2.add(m3);
 ```
 - 자바의 정렬 알고리즘이 이미 잘 되어있으므로 직접 구현하기보다 있는걸 잘쓰는걸로
-# III. Collection utilities
+# III. Collection 관련 유틸
+## A. [Collections class](../../../src/step04_middleClass2/chapter02_CollectionFramework/utils/collections/CollectionsSortMain.java)
+- `Collections.max(list)`: 리스트 중 최대값(comparator 기준)
+- `Collections.min(list)`: 리스트 중 최소값(comparator 기준)
+- `Collections.sort(list);`: 정렬. Comparator를 두번째 인자로 전달할 수 있다
+- `Collections.shuffle(list);`: 혼합. 내부에 `Random` 객체를 사용. 직접 인스턴스를 인자로 전달할 수있다.
+- `Collections.reverse(list);`: 역순. 리스트의 순서를 역순으로 배치
+## B. [편하게 불변 Collection 생성하기](../../../src/step04_middleClass2/chapter02_CollectionFramework/utils/collections/OfMain.java)
+- `of()`를 사용해 만든 자료는 불변 객체를 생성
+```java
+    List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    list.set(2,99);//Immutable object is modified 
+    Set<Integer> set = Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    Map<String, Integer> map = Map.of("a", 1, "b", 2, "c", 3, "d", 4);
+```
+- 구현된 인스턴스의 이름: ImmutableCollections
+```
+list: java.util.ImmutableCollections$ListN
+set: java.util.ImmutableCollections$SetN
+map: java.util.ImmutableCollections$MapN
+```
+- 다시 가변 컬렉션으로 생성: 생성자의 인수로 불변 컬랙션 전달
+```java
+ArrayList<Integer> mutableList = new ArrayList<>(list);
+```
+- 가변 컬렉션 -> 불변 컬렉션: `Collections.unmodifiableList()`
+```java
+Collections.unmodifiableList(mutableList);
+```
+- 빈 리스트 : 데이터가 없는 경우 `null`보다 빈 배열(`[]`)을 전달하는 것이 더 좋을 수 있다
+
+```java
+import java.util.Collections;//가변 리스트
+List<Integer> list = new ArrayList<>();
+List<Integer> list2 = new LinkedList<>();
+//불변 리스트
+List<Integer> unmodifiableList = Collections.emptyList();//java 5 Collections$Empty$List
+List<Integer> unmodifiableList2 = List.of();//java 9 ImmutableCollections$List
+```
+## C. 배열 > 리스트로 전환
+- `Arrays.asList(...elements)`: java 1.2부터 사용. 요소의 값은 변경(set)할 수 있지만 길이 변경(add, remove)은 불가하다. 
+- `List.of(...elemnets)`: 불변리스트 반환. 권장(java 9 하위 버전인 경우를 제외하고)
+- 둘다 배열을 인수로 전달할 수 있다. 
+  - asList: 배열을 그대로 사용
+    - 배열이 매우 큰 경우 효과적
+  - of: 요소를 가지고 새로운 리스트 생성
+    - 그외 모두 효과적
+```java
+    static <E> List<E> of(E... elements) {
+        switch (elements.length) { // implicit null check of elements
+            case 0:
+                @SuppressWarnings("unchecked")
+                var list = (List<E>) ImmutableCollections.EMPTY_LIST;
+                return list;
+            case 1:
+                return new ImmutableCollections.List12<>(elements[0]);
+            case 2:
+                return new ImmutableCollections.List12<>(elements[0], elements[1]);
+            default:
+                return ImmutableCollections.listFromArray(elements);
+        }
+```
+## D. 멀티스레드 사용시 동기화 문제 처리(synchronized)
+- 멀티스레드 사용시 여러 시점에서 데이터에 접근할 수 있는데 이때 동기화 처리시 문제가 발생할 수 있다. 이때를 위해 동기화 처리를 자바가 지원
+```java
+    System.out.println("list : "+list.getClass().getName());
+    List<Integer> synchronizedList = Collections.synchronizedList(list);
+    System.out.println("synchronizedList className: "+synchronizedList.getClass().getName());
+```
+
 # IV. Collection Framework 정리
+- Collection framework
+  - 일관성: 다양한 컬렉션의 하위 클래스, 인터페이스에서 작업의 일관성을 확보할 수 있다.
+  - 재사용성, 다형성: 또한 다형성을 통해 코드 재사용성을 키울 수 있다.
+  - 확장성: 새로운 컬렉션 타입을 개발할때 Collection 타입을 통해 구현할 수 있고 사용처의 수정없이 사용할 수 있다. 
+- Interface
+  - List: 순서가 있고 중복이 허용됨
+    - 구현체: ArrayList, LinkedList
+  - Set: 순서가 없고 중복이 불가함
+    - 구현체: HashSet, LinkedHashSet, TreeSet
+  - Queue: 요소를 사용되면 사라지게끔 만들어 임시로 보관하는 용도
+    - 구현체: LinkedList, ArrayDeque, PriorityQueue
+  - Map: 키와 값 쌍으로 보관. 직접 Collection을 상속하지 않지만 key, value, entry의 집합은 Collection 타입을 사용한다
+    - 구현체: HashMap, LinkedHashMap, TreeMap
+- 실무에서는 거의... 
+  - 보통 데이터 정렬은 DB 수준에서 처리. 
+  - 이미 전달된 데이터를 수정하는 경우는 드물다
+    - List -> ArrayList
+    - Set -> HashSet
+    - Map -> HashMap
+    - Queue -> ArrayDeque
 # V. 실습문제
+```
+카드 게임을 만들어보자.
+요구사항
+    카드( Card )는 1 ~ 13까지있다. 각 번호당 다음 4개의 문양이 있다.
+    ♠: 스페이드
+    ♥: 하트
+    䡫: 다이아
+    ♣: 클로버
+    예) 1(♠), 1(♥), 1(䡫), 1(♣), 2(♠), 2(♥), 2(䡫), 2(♣) ... 13(♠), 13(♥), 13(䡫), 13(♣)
+    따라서 13 * 4 = 총 52장의 카드가 있다.
+    52장의 카드가 있는 카드 뭉치를 덱( Deck )이라 한다.
+    2명의 플레이어( Player )가 게임을 진행한다.
+    게임을 시작하면 다음 순서를 따른다.
+    1. 덱에 있는 카드를 랜덤하게 섞는다.
+    2. 각 플레이어는 덱에서 카드를 5장씩 뽑는다.
+    3. 각 플레이어는 5장의 카드를 정렬된 순서대로 보여준다. 정렬 기준은 다음과 같다.
+    작은 숫자가 먼저 나온다.
+    같은 숫자의 경우 ♠, ♥, 䡫, ♣ 순으로 정렬한다. ♠가 가장 먼저 나온다.
+    예) 1(♠), 1(♥), 2(䡫), 3(♣) 순서로 출력된다.
+    4. 카드 숫자의 합계가 큰 플레이어가 승리한다.
+    게임을 단순화 하기 위해 숫자만 출력한다.
+    합계가 같으면 무승부이다.
+
+실행 결과 예시 
+    플레이어1의 카드: [2(♠), 7(♥), 7(♦), 8(♣), 13(♠)], 합계: 37
+    플레이어2의 카드: [1(♠), 1(♣), 6(♠), 9(♠), 9(♣)], 합계: 26
+    플레이어1 승리 
+    
+    플레이어1의 카드: [2(♦), 3(♠), 6(♥), 10(♣), 13(♦)], 합계: 34
+    플레이어2의 카드: [2(♠), 4(♣), 5(♠), 11(♣), 12(♥)], 합계: 34
+    무승부
+
+참고
+스페이드, 하트 같은 아이콘을 직접 사용하기 어려운 경우 다음과 같이 \ (백슬래시 backslash)와 함께 다음 코드를 적
+어주면 아이콘을 출력할 수 있다.
+"\u2660" : 스페이드(♠)
+"\u2665" : 하트(♥)
+"\u2666" : 다이아몬드(䡫)
+"\u2663" : 클로버(♣)
+예) System.out.println("\u2660")
+
+이 문제는 정해진 정답이 없다. 실행 결과 예시를 참고하되, 자유롭게 풀면 된다.
+CardGameMain 에 main() 메서드를 만들고 시작하자. 필요하면 클래스를 추가해도 된다.
+CardGameMain - 코드 작성
+package collection.compare.test;
+public class CardGameMain {
+ public static void main(String[] args) {
+ // 코드 작성
+ }
+}
+```
+
+[내가 한 코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/myCardGame)
+
+[강의 코드](../../../src/step04_middleClass2/chapter02_CollectionFramework/test/cardGame)
