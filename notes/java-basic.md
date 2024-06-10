@@ -162,6 +162,26 @@ ____
 - 순회, 정렬: 
   - Iterator와 Itarable/ Comparator와 Comparable... 
 - 컬렉션 관련 유틸리티
+# IIX. design pattern 
+- GoF의 23개의 디자인 패턴을 코드로 공부할 예정
+  - 객체 생성 관련 패턴
+  - 구조 관련 패턴
+  - 행동 관련 패턴
+- 단계
+  1. 패턴이 필요한 이유(상황/예제)
+  2. 적용 후 좋은점
+  3. 장단점
+  4. 실무 사용 예시
+- 강의는 java와 spring을 중심으로 하지만 중요한 것은 패턴을 익히는 것
+ 
+[객체 생성 관련 패턴](05designPatterns/chapter01objectCreation.md)
+  - 싱글톤, 팩토리 메소드, 추상 팩토리, 발더, 프로토타입
+
+[구조 관련 패턴]
+- ㅇ
+
+[행동 관련 패턴]
+- ㅇ
 
 # IX. 고급
 - lambda, Stream, IO, network, 멀티스레드
