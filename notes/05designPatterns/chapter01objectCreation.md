@@ -158,18 +158,89 @@ public class Settings implements Serializable {...}
 ## E. Enum 사용
 - 안전하고 단순하게 구현됨
 - 리플렉션을 이용한 파괴를 방지
+- 미리 객체가 생성되어있다는 점만 제외하면 방지가 됨
 ```java
-    try{
-        Constructor<Settings> constructor = Settings.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        Settings setting6 = constructor.newInstance();
-        System.out.println("use reflection : " + (setting6.equals(setting5)));//false
-    }
+SettingEnum setting6 = null;
+//모든 생성자 가져오기
+Constructor<?>[] constructors = SettingEnum.class.getDeclaredConstructors();
+for(Constructor<?> constructor : constructors){
+    constructor.setAccessible(true);//private 접근 허용
+    setting6 = (SettingEnum) constructor.newInstance("INSTANCE");
+    //enum에서 reflection 방지:  Cannot reflectively create enum objects
+}
+System.out.println("use reflection : " + (setting6==setting5));//false****
 ```
+- `show bytecode`로 생성된 코드 살펴보기
+- enum도 싱글톤을 구현하는데 권장되는 방법 중 하나
+
 ## F. 혼자 정리해보기
-- 자바에서 enum을 사용하지 않고 싱글톤 패턴을 구현하는 방법
-- private 생성자와 static 메소드를 사용하는 방법의 단점
-- enum을 사용해 싱글톤 패턴을 구현하는 방법의 장점과 단점
-- static inner class를 사용해 싱글톤 패턴을 구현
-## G.java와 spring에서 찾아보는 패턴
+
+<details>
+  <summary> 
+    자바에서 enum을 사용하지 않고 싱글톤 패턴을 구현하는 방법 
+  </summary> 
+  <ul>
+    <li>synchronized 사용</li>
+    <li>Eager Initialization</li>
+    <li>double checked locking</li>
+    <li>static inner class</li>
+  </ul>
+</details>
+<details>
+  <summary>
+    private 생성자와 static 메소드를 사용하는 방법의 단점    
+  </summary>
+  <ul>
+    <li>
+      멀티쓰레드 환경에서 여러쓰레드가 접근했을때 의도와 달리 별개의 인스턴스 여러개가 생성될 수 있음
+    </li>
+  </ul>
+</details>
+<details>
+  <summary>
+    enum을 사용해 싱글톤 패턴을 구현하는 방법의 장점과 단점    
+  </summary>
+  <ul>
+    <li>
+      장점1: Enum을 상속받아 이미 구현된 코드를 사용할 수 있어 단순하게 구현 가능. 
+    </li>
+    <li>
+      장점2: 싱글톤을 깨뜨릴 수 있는 여러 요인이 미리 막혀있음(역직렬화, 리플렉션)
+    </li>
+    <li>
+      단점: 미리 생성해놓기 때문에 초기 자원소모가 커지고, 자원 낭비가 될 수 있다
+    </li>
+  </ul>
+</details>
+<details>
+  <summary>
+        static inner class를 사용해 싱글톤 패턴을 구현  </summary>
+  </summary>
+  <ul style="list-style: none; padding-left: 0">
+<li>
+
+```java
+private Settings(){}
+private static class SettingsHolder{
+    private static final Settings INSTANCE = new Settings();
+}
+public static Settings getInstance(){
+    return SettingsHolder.INSTANCE;
+}
+```
+</li>
+  </ul>
+</details>
+
+## G. java와 spring에서 찾아보는 패턴
+### 1. Java
+- Runtime: JVM의 실행환경 정보를 갖고 있음
+```java
+public static void main(String[] args) {
+    Runtime runtime = Runtime.getRuntime();
+    System.out.println(runtime.maxMemory());
+    System.out.printf(String.valueOf(runtime.freeMemory()));
+}
+```
+### 2. Spring
 # II. 

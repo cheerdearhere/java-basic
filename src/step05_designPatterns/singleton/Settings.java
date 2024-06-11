@@ -1,4 +1,4 @@
-package step05_designPatterns.signgleton;
+package step05_designPatterns.singleton;
 
 import java.io.Serializable;
 
@@ -11,7 +11,6 @@ public class Settings implements Serializable {
         return SettingsHolder.INSTANCE;
     }
     protected Object readResolve(){
-//        return SettingsHolder.INSTANCE;
         return getInstance();
     }
 }

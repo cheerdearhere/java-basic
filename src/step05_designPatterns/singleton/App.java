@@ -1,4 +1,4 @@
-package step05_designPatterns.signgleton;
+package step05_designPatterns.singleton;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -59,12 +59,15 @@ public class App {
         //enum 사용하기
         SettingEnum setting5 = SettingEnum.INSTANCE;
         try{
-            Constructor<Settings> constructor = Settings.class.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            Settings setting6 = constructor.newInstance();
-            System.out.println("use reflection : " + (setting6.equals(setting5)));//false
-        }catch (NoSuchMethodException e){
-            throw new RuntimeException(e);
+            SettingEnum setting6 = null;
+            //모든 생성자 가져오기
+            Constructor<?>[] constructors = SettingEnum.class.getDeclaredConstructors();
+            for(Constructor<?> constructor : constructors){
+                constructor.setAccessible(true);
+                setting6 = (SettingEnum) constructor.newInstance("INSTANCE");
+                //enum에서 reflection 방지:  Cannot reflectively create enum objects
+            }
+            System.out.println("use reflection : " + (setting6==setting5));//false
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
