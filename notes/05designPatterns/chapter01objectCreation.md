@@ -1,6 +1,6 @@
 
 - 객체 생성과 관련된 패턴
-# I. Singleton pattern
+# I. [Singleton pattern](../../src/step05_designPatterns/singleton)
 - 인스턴스를 `오직 한 개만` 제공하는 클래스
 - 시스템 런타임, 환경 세팅에 대한 정보 등을 하나의 인스턴스로 생성해 글로벌하게 접근하도록 하는 방식
 ![singleton pattern](../img/designPatterns/singleton.png)
@@ -243,4 +243,184 @@ public static void main(String[] args) {
 }
 ```
 ### 2. Spring
-# II. 
+- 자바가 자주 사용되는 프레임워크
+- Application 관리를 담당하는 ApplicationContext
+  - class/Annotation/XML 등 다양한 방법으로 설정을 관리할 수 있음
+  - main()에서 어떻게 접근할 것인지를 결정
+```java
+public static void main(String[] args){
+  ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class);
+}
+```
+- `@Bean`으로 필요한 데이터를 싱글톤으로 관리하도록 함
+  - 설정을 관리하는 곳에서 미리 생성해 들고 있도록 함
+  - 다만 엄밀히 따지자면 singleton pattern과 다른 singleton scope 방식
+    - ApplicationContext 안에서 유일한 객체로 사용하기에 유사한 이유로 사용
+```java
+@Configuration
+public class SpringConfig{
+    @Bean
+    public String hello(){
+        return "hello";
+    }
+}
+```
+- 설정된 `Bean`이 같은 것인지 확인
+```java
+public static void main(String[] args){
+  ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class);
+  String hello1 = applicationContext.getBean("hello",String.class);
+  String hello2 = applicationContext.getBean("hello",String.class);
+  System.out.printf(hello2==hello1);//같은 인스턴스(참조주소 기준)인지 확인
+}
+```
+### 3. 기타
+- 이 외에도 다른 디자인 패턴(builder, facade, abstract factory 등) 구현체의 일부로 쓰이기도함
+
+# II. [Factory method pattern](../../src/step05_designPatterns/factoryMethod)
+- 구체적으로 어떤 인스턴스를 만들지는 서브 클래스가 정한다
+- 인스턴스 생성의 책임을 추상적인 인터페이스로 감싸는 것
+- 예시: 다양한 구현체(Product)가 있고 그 중 특정한 구현체를 만들 수 있는 다양한 팩토리(Creator)를 제공할 수 있다.
+![팩토리매서드 예시](../img/designPatterns/factoryMethod.png)
+- 팩토리 인터페이스(Creator interface)의 구현체(ConcreteCreator class)가 의존하는 인터페이스(Product interface)의 구현체(ConcreteProduct class)를 생성하도록 함
+- OCP를 만족하도록 도움
+## A. 필요한 이유
+### 1. 예제
+- client
+```java
+public class Client {
+    public static void main(String[] args) {
+        Client client = new Client();
+        
+        Ship whiteship = ShipFactory.orderShip("Whiteship","keesss@mail.com");
+        System.out.println(whiteship);
+        
+        Ship blackship = ShipFactory.orderShip("Blackship","keesss@mail.com");
+        System.out.println(blackship);
+    }
+}
+```
+- factory
+```java
+public class ShipFactory {
+    //validate
+    public static Ship orderShip(String name, String email){
+        if(name==null || name.isBlank()){
+            throw new IllegalArgumentException("배 이름을 지어주세요");
+        }
+        if(email==null || email.isBlank()){
+            throw new IllegalArgumentException("연락처를 남겨주세요");
+        }
+
+        prepareFor(name);
+
+        Ship ship = new Ship();
+        ship.setName(name);
+
+        //customizing for specific name
+        if(name.equalsIgnoreCase("Whiteship")){
+            ship.setLogo("\uD83D\uDEE5");
+        }else if(name.equalsIgnoreCase("Blackship")){
+            ship.setLogo("\uD8BD\uDEA5");
+        }
+
+        //coloring
+        if(name.equalsIgnoreCase("Whiteship")){
+            ship.setColor("white");
+        }else if(name.equalsIgnoreCase("Blackship")){
+            ship.setColor("black");
+        }
+
+        //notify
+        sendEmailTo(email, ship);
+
+        return ship;
+    }
+    private static void prepareFor(String name){
+        System.out.printf("%s 만들 준비 중\n",name);
+    }
+    private static void sendEmailTo(String email, Ship ship){
+        System.out.printf("to %s: \n\t %s 제작 완료. \n\t %s\n",email,ship.getName(),ship);
+    }
+}
+```
+- product
+```java
+public class Ship {
+    private String name;
+    private String logo;
+    private String color;
+
+    //getter and setter
+    //overrided toString
+}
+```
+### 2. 단점
+- 새로운 객체가 필요할때 전체 코드의 수정이 필요하게됨
+  - 배가 추가(확장)되면 client가 매번 변경되어야함
+  - 유지보수에 좋지 않음
+- 확장에는 열려있고 변경에는 닫혀야한다
+  - 변경된 것에의해 다른 코드가 변경되지 않도록
+  - 코드의 확장에는 열려있도록
+## B. [적용해보기](../../src/step05_designPatterns/factoryMethod/ex01_usePattern) 
+- 변하지 않는 부분은 계속 내부에 두고
+- 달라지는 부분은 밖으로 빼서 method로(인터페이스에서 규정만 하도록)
+  - 특히 제어문
+- interface 만들기(기존은 WhiteshipFactory로 변경)
+  - java 11 이상: default/private으로 내장 클래스를 사용할 수 있음
+  - 그 이하: 중간에 추상 클래스를 만들어 내장 클래스 사용
+- 중간에 추상 클래스가 들어간 경우
+  - 공정 내에서 필요에따라 공정을 진행하면되는 것. 
+  - 반드시 인터페이스, 반드시 추상메서드가 정해진 것은 아님
+```java
+public abstract class DefaultShipFactory implements ShipFactory{
+    @Override
+    public void sendEmailTo(String email, Ship ship){
+        System.out.printf("to %s: \n\t %s 제작 완료. \n\t %s\n",email,ship.getName(),ship);
+    }
+}
+```
+![다이어그램](../img/designPatterns/factoryDiagram.png)
+
+- 각 구현체의 특이 공정을 재정의(overriding)하여 사용하도록 함
+- Blackship을 추가(확장)했지만 이전 코드의 변경이 없음
+  - client code의 변경을 최소화하기위해 의존성 주입(Dependency Inspect)
+- 다형성을 사용해 client 부의 코드를 변경하지 않도록함
+  - 일종의 의존성 역전
+```java
+private void print(ShipFactory shipFactory, String shipName, String email) {
+      System.out.println(shipFactory.orderShip(shipName, email));
+}
+```
+## C. 복습
+
+<details>
+  <summary> 
+    팩토리 메소드 패턴을 적용했을 때 장점과 단점 
+  </summary> 
+  <ul>
+    <li></li>
+  </ul>
+</details>
+<details>
+  <summary> 
+    확장에 열려있고 변경에 닫혀있는 객체지향 원칙 설명
+  </summary> 
+  <ul>
+    <li></li>
+  </ul>
+</details>
+<details>
+  <summary> 
+    자바 8에 추가된 default method 설명
+  </summary> 
+  <ul>
+    <li></li>
+  </ul>
+</details>
+
+## D. 장단점
+
+## E. java와 spring에서 찾아보는 패턴
+
+# III. 
