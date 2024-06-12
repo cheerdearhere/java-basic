@@ -399,7 +399,17 @@ private void print(ShipFactory shipFactory, String shipName, String email) {
     팩토리 메소드 패턴을 적용했을 때 장점과 단점 
   </summary> 
   <ul>
-    <li></li>
+    <li> 
+      내답: 장점은 OCP를 만족시켜 운영 및 유지보수할때 안정성이 높다. 단점은 객체를 관리하는 코드가 분산되고 구조가 복잡해져서 한번에 파악하기 힘들어진다
+    </li>
+    <ul>
+      <li> 
+        장점: 기존의 인스턴스를 생성하는 코드를 변경하지않고 새로운 인스턴스를 만드는 로직을 생성할 수 있다. creator와 product의 연결을 느슨하게 함(loosely coupling)으로써 서로의 의존성을 낮춰 OCP를 만족하도록한다. 코드를 건드리지 않으므로 복잡해지지 않는다. 
+      </li>
+      <li> 
+        단점: 기능을 나누고 분리하다보니 클래스가 늘어난다. 단순한 구조가 점점 복잡해진다. 
+      </li>
+    </ul>
   </ul>
 </details>
 <details>
@@ -407,7 +417,12 @@ private void print(ShipFactory shipFactory, String shipName, String email) {
     확장에 열려있고 변경에 닫혀있는 객체지향 원칙 설명
   </summary> 
   <ul>
-    <li></li>
+    <li>
+      내 답: 아이템이 추가되거나 기능이 세분화되는 등 기능의 확장에는 열려 있고 확장으로 인한 다른 코드들의 변경에는 닫혀있어 유지보수의 효율을 높히는 전략 
+    </li>
+    <li>
+      강의: 기존 코드를 변경하지 않으면서 새로운 기능을 확장할 수 있다는 객체지향 원칙
+    </li>
   </ul>
 </details>
 <details>
@@ -415,12 +430,38 @@ private void print(ShipFactory shipFactory, String shipName, String email) {
     자바 8에 추가된 default method 설명
   </summary> 
   <ul>
-    <li></li>
+    <li>내 답: 같은 패키지 소속에서 접근할 수 있도록하는 제어자. protected는 거기에 상속관계에 있는 대상이 추가됨. 주로 Interface 내에 구현부가 완성된 상태에서 default 구현을 포함한다 </li>
+    <li>강의: 이전에는 인터페이스에서 추상메서드만 사용하고 구현된 클래스에서 만들었으나 인터페이스 내에 기본 메서드를 구현할 수 있도록 돕는 접근제어자. java 9는 인터페이스에서 private method도 구현 가능하다</li>
   </ul>
 </details>
 
-## D. 장단점
-
-## E. java와 spring에서 찾아보는 패턴
-
+## D. java와 spring에서 찾아보는 패턴
+### 1. [단순한 팩토리 패턴](../../src/step05_designPatterns/factoryMethod/SimpleFactoryMethodExample.java)
+- 매개변수의 값에 따라 또는 메소드에 따라 각기 다른 인스턴스를 리턴하는 단순한 버전의 팩토리 패턴
+```java
+public class SimpleFactory {
+    public Object createProduct(String name){
+        if(name.equals("whiteship")){
+            return new WhiteShip();
+        }
+        else if(name.equals("blackship")){
+            return new BlackShip();
+        }
+        throw new IllegalArgumentException("no data");
+    }
+}
+```
+- java.lang.Calendar or java.lang.NumberFormat
+### 2. Spring Bean Factory
+- Object 타입의 Product를 만드는 BeanFactory라는 Creator
+- Spring의 핵심적인 IoC 컨테이너 : Bean factory
+```java
+public static void main(String[] args) {
+    BeanFactory xmlFactory = new ClassPathXmlApplicationContext("config.xml");
+    xmlFactory.getBean("username",String.class);
+    
+    Bean javaFactory = new AnnotationConfigApplicationContext(Config.class);
+    javaFactory.getBean("id", String.class);
+}
+```
 # III. 
