@@ -436,7 +436,7 @@ private void print(ShipFactory shipFactory, String shipName, String email) {
 </details>
 
 ## D. java와 spring에서 찾아보는 패턴
-### 1. [단순한 팩토리 패턴](../../src/step05_designPatterns/factoryMethod/SimpleFactoryMethodExample.java)
+### 1. [단순한 팩토리 패턴](../../src/step05_designPatterns/factoryMethod/SimpleFactoryCalendar.java)
 - 매개변수의 값에 따라 또는 메소드에 따라 각기 다른 인스턴스를 리턴하는 단순한 버전의 팩토리 패턴
 ```java
 public class SimpleFactory {
