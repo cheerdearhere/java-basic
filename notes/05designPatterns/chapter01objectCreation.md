@@ -510,5 +510,81 @@ public static void main(String[] args) {
 - constructor, setter를 사용하던 xml 방식과 달리 복잡한 빈인 경우 팩토리를 사용
 - 생성 결과인 Object instance를 bean으로 등록
 - 주로 스프링 내부에 들어있어 직접 작성하는 경우는 거의 없음
-# IV. 빌더 패턴
+
+# IV. builder pattern 
+- 빌더 패턴: 어떤 인스턴스가 만들어질때 다양한 구성으로 만들어질 수있는데 이 과정을 동일한 프로세스를 지나도록 돕는 패턴
+- 복잡한 객체를 만드는 프로세스를 분리할 수있다
+- [before](../../src/step05_designPatterns/builder)
+  - 다양한 멤버를 지닌 인스턴스인경우 선택적으로 properties를 입력하는 경우
+  - 연관된 필드의 경우 입력을 제한시키거나 필수로 하는 등 작업 필요
+  - 여러 필드를 지닌 경우 생성자에 다 집어넣으면 가독성을 낮춤
+  - 사용하는 필드가 달라진 경우 생성자 종류가 너무 많을 수 있음 
+![builder](../img/designPatterns/builder.png)
+## A. [적용해보기](../../src/step05_designPatterns/builder/after/DefaultTourBuilder.java)
+- 중간 작업인 경우 자기 자신을 반환시켜 chaining 가능하도록 함
+- 마지막 결과에서 원하는 product 반환
+```java
+public interface TourPlanBuilder {
+
+    TourPlanBuilder title(String title);
+
+    TourPlanBuilder nightsAndDays(int nights, int days);
+
+    TourPlanBuilder startDate(LocalDate startDate);
+
+    TourPlanBuilder whereToStay(String whereToStay);
+
+    TourPlanBuilder addPlan(int day, String plan);
+
+    TourPlan getPlan();
+}
+```
+- [같은 객체를 반복해서 생성하는 경우](../../src/step05_designPatterns/builder/after/TourDirector.java)
+## B. 장점과 단점
+- 장점
+  - 만들기 복잡하고 구성이 다양한 경우에 가독성을 높여준다
+  - 다양한 인터페이스를 구성해 프로세스를 필수로 요청할 수 있음
+    - 순차적 프로세스 강제 가능
+  - 제공하는 빌더에따라 구성을 다르게할 수 있다
+    - vip/gold/ ... 
+  - 불안정한 객체의 생성을 방지시킬 수 있다. 
+    - 마지막 build 작업에서 처리 가능
+- 단점
+  - 객체 하나를 만들기 위해 빌더/디렉터를 또 생성해야해 자원 소모가 더 크다
+  - 구조가 복잡해져 난해해진다(디자인 패턴들의 특징)
+## C. 자바와 스프링
+### 1. java
+- [StringBuilder](../../src/step05_designPatterns/builder/UseStringBuilder.java)/StringBuffer: 둘다 character 가변 배열을 사용해 메모리 사용을 줄임 
+  - StringBuffer는 synchronized를 포함해 동기화 상황에서 사용 가능. 연산속도 차이가있을 수있음
+- [Stream.builder](../../src/step05_designPatterns/builder/UseStreamBuilder.java): 스트림 생성시 원하는 데이터를 편하게 입력 가능
+```java
+Stream.Builder<String> builder = Stream.builder();
+  Stream<String> names = builder
+          .add("kim")
+          .add("hong")
+          .add("chang")
+          .build();
+```
+  - Stream을 단축한다면 static generic method 기억
+```java
+Stream<Integer> scoreStream = Stream.<Integer>builder()
+        .add(100)
+        .add(23)
+        .add(70)
+        .build();
+```
+### 2. Spring
+- [UriComponentsBuilder](https://www.baeldung.com/spring-uricomponentsbuilder): Uri 작성을 도와주는 builder
+```java
+public static void main(String[] args) {
+  UriComponents pageLink = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host("www.mypage.com")
+                .path("myinfo")
+                .build()
+                .encode();//빈 공간을 채움 
+}
+```
+- Mock 관련 객체나 여러 내부 api들은 이런식으로 구성되어있음
+
 # V. 프로토타입 패턴
