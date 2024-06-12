@@ -464,4 +464,51 @@ public static void main(String[] args) {
     javaFactory.getBean("id", String.class);
 }
 ```
-# III. 
+
+# III. Abstract factory pattern
+- 서로 관련있는 여러 객체를 만들어주는 인터페이스
+- 추상 팩토리 패턴: 팩토리에서 여러 인스턴스를 생성. 팩토리 메소드와 유사하지만 client 코드가 중심이 되는 패턴
+- 내부 구조 자체는 팩토리 메소드와 유사
+![추상 팩토리](../img/designPatterns/abstractFactory.png)
+## A. [예시](../../src/step05_designPatterns/abstractFactory/before)
+- 제품군 전체가 아닌 제품 내부의 기능이 더 세분화되는 경우에도 매번 팩토리를 수정해야함
+- client에 제시되는 내용을 좀더 추상화하여 기존 코드의 변경 없이 사용자의 선택을 확장시킬 수 있음
+## B. 추상팩토리 패턴 적용
+- [client](../../src/step05_designPatterns/abstractFactory/after/WhiteshipFactory.java) 코드
+- ship에 앵커, 휠을 제각각 구체적 인스턴스로 직접 삽입하는 것이 아닌 또 추상적 인터페이스(creator)-클래스(product) 연결로 지정
+- 상세 선택을 하위에 맡겨 직접 선택하도록 함
+- 입장에 따라 SOLID 원칙의 해석이 다르긴 함(특히 단일 책임 원칙 부분)
+  - `ShipPartFactory`의 책임은 어디까지로 봐야하는가?
+```java
+    shipFactory = new WhiteshipFactory(/*client에서 선택*/new WhiteshipPartProFactory());
+    ship = shipFactory.createShip();
+    //타입 체크
+    System.out.println(ship.getAnchor().getClass());
+    System.out.println(ship.getWheel().getClass());
+```
+## C. factory method pattern vs abstract factory pattern
+- 비슷하지만 다른 둘 비교하기
+- 공통점
+  - 둘 모두 인터페이스를 사용해 확장에 열려있고 변경에 닫혀있는 코드를 추구
+  - 둘 모두 객체를 생성하는 방식을 추상화 시키는 방법(구체적 타입의 인스턴스를 만드는 과정을 추상화된 creator 사용)
+- 서로 비슷한 것은 GoF의 디자인 패턴의 특징.
+  - 보는 관점에 따라 중점이 달라지므로 용도가 달라짐
+
+| factory method                       |    | abstract factory                           |
+|--------------------------------------|----|--------------------------------------------|
+| inheritance: 팩토리를 구현하는 방법            | 관점 | composition: 팩토리를 사용하는 방법                  |
+| 구체적인 객체 생성 과정을 하위 또는 구체적인 클래스로 옮기는 것 | 목적 | 관련있는 여러 객체를 구체적인 클래스에 의존하지 않고 만들 수 있게 해주는것 |
+
+## D. java and spring
+### 1. java library
+- javax.xml.xpath.XPathFactory#newInstance()
+- javax.xml.transform.TransformerFactory#newInstance()
+- javax.xml.parsers.DocumentBuilderFactory#newInstance()
+  - 예시) [DocumentBuilderFactory](../../src/step05_designPatterns/abstractFactory/javaLib/DocumentBuilderFactoryExample.java)
+### 2. spring 
+- [FactoryBean](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/FactoryBean.html): Bean을 생성하는 과정을 처리
+- constructor, setter를 사용하던 xml 방식과 달리 복잡한 빈인 경우 팩토리를 사용
+- 생성 결과인 Object instance를 bean으로 등록
+- 주로 스프링 내부에 들어있어 직접 작성하는 경우는 거의 없음
+# IV. 빌더 패턴
+# V. 프로토타입 패턴
