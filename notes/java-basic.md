@@ -177,8 +177,8 @@ ____
 [객체 생성 관련 패턴](05designPatterns/chapter01objectCreation.md)
   - 싱글톤, 팩토리 메소드, 추상 팩토리, 발더, 프로토타입
 
-[구조 관련 패턴]
-- ㅇ
+[구조 관련 패턴](05designPatterns/chapter02structure.md)
+- 어댑터, 브릿지, 컴포짓, 데코레이터, 퍼사드, 플라이웨이트, 프록시
 
 [행동 관련 패턴]
 - ㅇ
