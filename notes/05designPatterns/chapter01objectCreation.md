@@ -588,3 +588,92 @@ public static void main(String[] args) {
 - Mock 관련 객체나 여러 내부 api들은 이런식으로 구성되어있음
 
 # V. 프로토타입 패턴
+- 기존 인스턴스를 복제해 새로운 인스턴스를 만드는 방식
+- 기존 객체를 응용해 반복적인 작업을 최소화할때 사용
+  - 네트워크
+  - DB connection 
+- 예시: 구현이 없는 `clone()`을 세워놓고 필요한 클래스에 삽입해 사용하도록
+![프로토 타입 패턴](../img/designPatterns/prototype.png)
+- [연습 코드](../../src/step05_designPatterns/prototype/before): 코드를 넣으면 url을 생성
+  - 이슈 발생시 이슈 정보만 수정되면 되고 다른 작업은 필요 없으므로 `clone()`으로 축약
+  - 확인시 
+    - `==`: 별개의 인스턴스이므로 참조값은 달라야함
+    - `equals()`: 클론이므로 내부의 값은 같아야함
+## A. 적용하기
+- java에서 제공하는 메커니즘을 사용해본 뒤 커스텀하는 방법
+### 1. [java.lang.Object.clone()](https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html)
+- `Cloneable`을 구현
+  - java에서 제공하는 기본적 클론 메서드 사용
+  - java.Object의 clone()은 얕은 복사를 지원
+    - shallow copy: 참조만 복사되어 기존 값의 변화에 영향을 받음
+    - deep copy: 참조가 아닌 새로운 인스턴스를 생성 -> 임의 구현의 필요성
+```java
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+```
+- Object의 기본형을 사용한 경우 return Object
+```java
+        GithubIssue issue2 = (GithubIssue) issue.clone();//new GithubIssue(repository);
+        issue2.setId(2);
+        issue2.setTitle("2주차: JVM 사용");
+        System.out.println("issue2.getUrl(): " + issue2.getUrl());
+```
+- 클론과 원본 비교(equals, hashCode 재정의)
+```java
+System.out.println("clone==issue = " + (clone == issue));
+System.out.println("clone.equals(issue) = " + clone.equals(issue));
+```
+```
+
+clone = step05_designPatterns.prototype.after.GithubIssue@c488c572
+issue = step05_designPatterns.prototype.after.GithubIssue@c488c572
+clone==issue = true
+clone.equals(issue) = true
+```
+- deep copy로 customizing 
+```java
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        GithubRepository repository = new GithubRepository();
+        repository.setUser(this.githubRepository.getUser());
+        repository.setName(this.githubRepository.getName());
+
+        GithubIssue issue = new GithubIssue(repository);
+        issue.setId(this.id);
+        issue.setTitle(this.title);
+        
+        return issue;
+    }
+```
+### 2. 장단점
+- 기존의 인스턴스를 프로토타입으로 사용해 다른 인스턴스를 생성
+  - Object clone()을 재정의
+  - default: 참조값 복사(얕은 복사)
+  - 직접 커스터마이징 하여 복사를 조절
+- 장점
+  - 복잡한 객체를 만드는 과정을 숨길 수 있다. 
+  - 기존 객체를 복제(재생성)하는 과정이 새 인스턴스를 만드는 것보다 비용적인 면에서 효율적일수 있다(==아닐수 있다)
+  - 추상적 타입을 반환할 수 있다: 구체적인 객체를 좀더 추상화 상태의 객체를 반환시킬 수 있음
+- 단점
+- 복잡한 객체를 만드는 과정 자체가 복잡할 수 있다. 
+  - 특히 순환참조가 있는 경우
+## B. java and spring
+### 1. java
+- Collection의 하위 객체들의 복사
+  - `Cloneable`을 구현하는 클래스들이 많지만 Object를 전달받아 타입 안정성을 보장할 수 없어 생성자를 사용
+  - 방법1: 프로토 타입 방식 - `ArrayList<Student> studentsCopy = (ArrayList<Student>) students.clone();`
+    - 단, List(바로 위의 인터페이스)에는 적용x, 반환 Object 타입이므로 명시적 형변환
+    - 잘 사용하지 않음
+  - 방법2: 주로 쓰이는 방식 - `ArrayList<Student> studentsCopy2 = new ArrayList<>(students);`
+    - 직접 객체를 삽입해 사용
+    - 변경 불가 처리된 컬렉션을 변경가능한 컬렉션으로 전환할때도 사용
+
+### 2. 외부 라이브러리
+- [Model Mapper library](https://modelmapper.org/): 별도의 객체를 만들도록 도와주는 라이브러리
+  - reflection을 통해 데이터를 복사해 넣음
+```java
+ModelMapper modelMapper = new ModelMapper();
+TargetObject copiedObj = modelMapper.map(targetObj,TargetObject.class);
+```
