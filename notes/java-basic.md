@@ -180,7 +180,7 @@ ____
 [구조 관련 패턴](05designPatterns/chapter02structure.md)
 - 어댑터, 브릿지, 컴포짓, 데코레이터, 퍼사드, 플라이웨이트, 프록시
 
-[행동 관련 패턴]
+[행동 관련 패턴]Behavioral Patterns
 - ㅇ
 
 # IX. 고급
