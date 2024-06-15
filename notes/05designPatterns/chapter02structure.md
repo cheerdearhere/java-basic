@@ -268,8 +268,51 @@ public class Slf4jExample{
     - ex) [TransactionTemplate](https://docs.spring.io/spring-framework/reference/data-access/transaction/programmatic.html)
 
 
-# III. 
-# IV. 
-# V. 
-# VI. 
+# III. Composite
+- 전체 계층 구조와 부분적 객체를 client 입장에서 동일하게 취급하는 방식
+- Part-Whole Hierarchy: client 입장에서 전체, 부분 모두 동일한 컴포넌트로 인식
+- 트리 구조로 구성된 대상에 적용
+  - 의외로 자주 사용됨
+- [ex)](../../src/step05_designPatterns/composite/before/Client.java) 
+![composite](../img/designPatterns/composite.png)
+- client의 코드에 굳이 없어도 될 코드들이 들어있음
+  - Bag, Item이 주체인 기능의 코드들이 코드에 있어야함
+  - 다른 객체들이 추가되면 또 다른 정보가 client에 속해 복잡해짐
+- Leaf, Composite, Component
+## A. [적용](../../src/step05_designPatterns/composite/after/Client.java)
+- Component > Composite, Leaf > Client
+  - 중요한 것은 이름이 아니라 공통된 operation
+  - Client에 너무 과도한 정보를 주지 않고 객체별 단일 책임을 최대한 지켜줌
+- 역할
+  - `Item`: Leaf
+  - `Bag`: Composite
+  - `Component`
+- 어떤 대상으로하고 어떻게 연산할지는 인터페이스에 책임을 전달
+```java
+//어떤 대상을 사용할지는 중요하지 않음
+private void printPrice(Component component) {
+    System.out.println("price: " + component.getPrice());
+}
+```
+## B. 장단점
+- 장점
+  - 복잡한 트리 구조를 편리하게 사용할 수 있다
+    - 데이터 구조를 제각각 client에 노출 시켜 혼란을 주지 않고 하나의 Component interface로  공통된 operation을 등장시킨다.
+  - 새로운 타입의 leaf, composite의 출현에 대해 client가 굳이 대응할 필요가 없다
+    - 확장에는 열려있고 변경에는 닫혀있음
+  - 다형성과 재귀를 활용할 수 있다
+- 단점
+  - 공통된 operation method를 지닌 트리를 만들어야하기 때문에(공통된 인터페이스를 정의해야 하기 때문에) 지나치게 일반화 해야하는 경우도 생길 수 있다.
+    - 타입 체크를 위해 코드 내부에서 다른 연산이 필요한 경우 다른 방향이 필요한건 아닌지 점검 필요
+    - 지나친 매몰은 오히려 패턴의 사용의 단점이 될 수 있다.
+## C. java
+- [Swing library](../../src/step05_designPatterns/composite/JavaSwingExample.java): java로 desktop 프로그램을 만드는 라이브러리
+  - JFrame(composite) > Frame > Window > `Container` > `Component`
+  - JTextField(leaf) > JTextComponent > JComponent > `Container` > `Component`
+  - JButton(leaf) > AbstractButton > JComponent > `Container` > `Component`
+- JSF(java server faces): 컴포넌트 기반 웹 화면 만드는 라이브러리
+
+# IV. Decorator
+# V. Facade
+# VI. Flyweight
 # V. Proxy
