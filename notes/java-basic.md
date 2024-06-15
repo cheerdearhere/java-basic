@@ -180,8 +180,8 @@ ____
 [구조 관련 패턴](05designPatterns/chapter02structure.md)
 - 어댑터, 브릿지, 컴포짓, 데코레이터, 퍼사드, 플라이웨이트, 프록시
 
-[행동 관련 패턴]Behavioral Patterns
-- ㅇ
+[행동 관련 패턴](05designPatterns/chapter03behavior.md)
+- 책임-연쇄, 커맨드, 인터프리터, 이터레이터, 중재자(Mediator), 메멘토, 옵저버, 상태, 전략, 템플릿 메소드/콜백, 방문자
 
 # IX. 고급
 - lambda, Stream, IO, network, 멀티스레드
