@@ -313,6 +313,92 @@ private void printPrice(Component component) {
 - JSF(java server faces): 컴포넌트 기반 웹 화면 만드는 라이브러리
 
 # IV. Decorator
+- 기존 코드를 변경하지 않고 부가 기능을 추가할 수 있는 유용한 패턴
+  - 상속이 아닌 위임을 사용해서 유연하게 부가기능을 추가
+    - static -> compile time
+    - dynamic -> run time
+- [ex)](../../src/step05_designPatterns/decorator/before)
+![decorator](../img/designPatterns/decorator.png)
+- comment 출력.
+- 새로운 기능을 추가하고 싶을때: CommentService를 확장(상속)한 TrimmingCommentService
+  - Client 코드의 변경이 필요 -> 고정적으로 선택이 필요
+  - 단일 상속만 가능하므로 두 기능을 한번에 사용할 수 없음
+  - 플래그(needSpamFilter, needTrimming)를 사용해서 그에 맞게 처리? 
+    - 두 플래그가 필요한 경우 어떻게? 
+## A. 적용
+- 여러 컴포넌트를 사용하던 것과 달리 하나의 컴포넌트를 사용. 
+  - 구체적 사용은 Decorator(wrappee로 Component를 가짐)와 Concrete Decorator로 구성됨.
+- 인터페이스로 우선 공통 기능을 지정하고 내부 연산을 분리
+- [예시](../../src/step05_designPatterns/decorator/after)
+- decorator interface
+```java
+public class CommentDecorator implements CommentService{
+    private final CommentService commentService;
+    public CommentDecorator(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
+    @Override
+    public void addComment(String comment) {
+        commentService.addComment(comment);
+    }
+}
+```
+- concrete decorator
+```java
+public class TrimmingCommentDecorator extends CommentDecorator {
+    public TrimmingCommentDecorator(CommentService commentService) {
+        super(commentService);
+    }
+    @Override
+    public void addComment(String comment) {
+        super.addComment(trim(comment));
+    }
+    private String trim(String comment) {
+        return comment.replace("...","");
+    }
+}
+```
+- Client(App)
+  - 여기서는 조건문으로 분기를 처리했으나 Spring에서는 Bean을 사용
+```java
+public static void main(String[] args) {
+    CommentService commentService = new DefaultCommentService();
+    //상황에 따른 동적 처리
+    if(enableSpamFilter) {
+        commentService = new SpamFilteringCommentDecorator(commentService);
+    }
+    if(enableTrimming) {// decorator가 서로 덮혀있음
+        commentService = new TrimmingCommentDecorator(commentService);
+    }
+    Client client = new Client(commentService);
+    client.writeComment("오징어 게임");
+    client.writeComment("백문이불여...");
+    client.writeComment("http://www.never.co.kr");
+}
+```
+## B. 장단점
+- 장점
+  - 새로운 클래스 생성 없이 기존 클래스를 조합해 사용 가능: SRP
+  - 컴파일 타임이 아닌 런타임에 동적으로 기능을 확장할 수 있다. : OCP
+    - flag 변경이 되면 그에 따라 처리되므로 동적으로 확인
+    - 두 기능을 동시에 선택도 가능
+- 단점
+  - 데코레이터를 조합하는 코드(App)가 복잡해진다
+    - 물론 모든 디자인패턴이 지닌 것
+## C. java and spring
+### 1. java
+- adepter pattern 예제 중 IO에서 
+  - InputStream > InputStreamReader > BufferReader 인터페이스가 중첩해 감쌈
+- generic을 사용하지 않고 `Collections`에서 [checked~ 메서드](../../src/step05_designPatterns/decorator/DecoratorInJava.java): 타입 체크를 진행하도록 데코레이터로 감싸 타입 캐스트 에러를 발생시킴
+  - 마찬가지로 멀티스레드 환경을 위한 동시성 처리가 된 `synchronized~` method
+  - 불변 컬랙션 객체로 취급 처리하는 `unmodified~` method
+### 2. spring
+- Servlet request, response의 wrapper들: 확장 시킬 수 있음. 대상을 커스터마이징할 수 있음
+  - `HttpServletRequestWrapper`, `HttpServletResponseWrapper`
+  - `ServerHttpRequestDecorator`, `ServerHttpResponseDecorator`
+  - `WebFilter`
+- `BeanDefinitionDecorator`: 직접 사용할 일은 거의 없음
 # V. Facade
 # VI. Flyweight
 # V. Proxy
