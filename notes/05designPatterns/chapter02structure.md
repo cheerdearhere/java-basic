@@ -400,5 +400,48 @@ public static void main(String[] args) {
   - `WebFilter`
 - `BeanDefinitionDecorator`: 직접 사용할 일은 거의 없음
 # V. Facade
+- 불어로 '건물의 전경'
+- 디테일한 것은 잘 보이지 않게 숨김
+- [ex)](../../src/step05_designPatterns/facade/before) 
+![facade pattern](../img/designPatterns/facade.png)
+- client에 상세 코드를 노출시키지 않고 기능만 표시해야함
+- 하나의 클래스에 의존성이 너무 높음
+## A. [적용](../../src/step05_designPatterns/facade/after)
+- 인터페이스, 내부 기능(메서드)으로 내부의 코드를 숨김
+- 메일을 보내는 객체와 메세지를 담당할 객체로 나눔
+- 조삼모사라 생각할 수 있겠지만 기능이 추가되거나 다른 곳에서 기능을 사용하는 경우 코드의 재사용성을 줄일 수 있다.
+```java
+  EmailSettings emailSettings = new EmailSettings();
+  emailSettings.setHost(host);
+  EmailSender emailSender = new EmailSender(emailSettings);
+  
+  EmailMessage emailMessage = new EmailMessage();
+  emailMessage.setSubject(subject);
+  emailMessage.setFrom(from);
+  emailMessage.setTo(to);
+  emailMessage.setText(text);
+  emailMessage.setCc("hongil@mail.com");
+  emailMessage.setBcc("gallam@mail.com");
+  
+  emailSender.sendEmail(emailMessage);
+```
+## B. 장점과 단점
+- 장점
+  - 서브 시스템에 대한 의존성을 한 곳으로 모을 수 있다. 
+  - 사용자가 이해하는데 어려움이 적다
+- 단점
+  - 퍼사드로 서브시스템을 옮긴 것일뿐 큰 차이가 없어보일 수 있다. 
+## C. java and spring
+- 브릿지 패턴의 예제들. 
+- 다양한 인터페이스, 기능을 간략화해서 사용하도록함 
+```java
+public static void main(String[] args) {
+  MailSender mailSender = new JavaMailSenderImpl();
+  
+  PlatformTransactionManager platformTransactionManager = new JdbcTransactionManager();
+}
+```
+- 코드에 대한 의존성을 최소화할때 사용
+
 # VI. Flyweight
 # V. Proxy
