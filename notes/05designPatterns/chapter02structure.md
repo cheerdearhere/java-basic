@@ -444,4 +444,99 @@ public static void main(String[] args) {
 - 코드에 대한 의존성을 최소화할때 사용
 
 # VI. Flyweight
+- 경량급: 자주 변하는 속성(extrinsit, 외적인 속성)과 변하지 않는 속성(intrinsit, 내적인 속성)을 분리해 코드의 재사용성을 증진시킨다
+- [ex)](../../src/step05_designPatterns/flyweight/before/Client.java)
+![flyweight](../img/designPatterns/flyweight.png)
+## A. 적용하기
+- [코드](../../src/step05_designPatterns/flyweight/after)
+- 변하지 않는 fontFamily, fontSize => intrinsit
+```java
+public final class Font {
+    private final String family;
+    private final int size;
+    Font(String family, int size) {
+        this.family = family;
+        this.size = size;
+    }
+
+    public String getFamily() {
+        return family;
+    }
+
+    public int getSize() {
+        return size;
+    }
+}
+```
+- 계속 변경되는 value, color => extrinsit
+```java
+public class Character {
+    private char value;
+    private String color;
+    Font font;//flyweight instance
+    public Character(char value, String color, Font font) {
+        this.value = value;
+        this.color = color;
+        this.font = font;
+    }
+    public char getValue() {
+        return value;
+    }
+    public void setValue(char value) {
+        this.value = value;
+    }
+    public String getColor() {
+        return color;
+    }
+    public void setColor(String color) {
+        this.color = color;
+    }
+    public Font getFont() {
+        return font;
+    }
+    public void setFont(Font font) {
+        this.font = font;
+    }
+}
+```
+- flyweight 객체를 생성할 factory
+```java
+public class FontFactory {
+    private Map<String, Font> cache = new HashMap<>();
+    public Font getFont(String fontName) {
+        if(cache.containsKey(fontName)) {
+            return cache.get(fontName);
+        }
+        else {
+            String[] fontSplit = fontName.split(":");
+            Font newFont = new Font(fontSplit[0], Integer.parseInt(fontSplit[1]));
+            cache.put(fontName, newFont);
+            return newFont;
+        }
+    }
+}
+```
+- 인스턴스를 많이 만들때 유용
+```java
+public static void main(String[] args) {
+    FontFactory fontFactory = new FontFactory();
+    Character c1 = new Character('g',"red",fontFactory.getFont("nanum:12"));
+    Character c2 = new Character('o',"red",fontFactory.getFont("nanum:12"));
+    Character c3 = new Character('l',"red",fontFactory.getFont("nanum:12"));
+    Character c4 = new Character('d',"red",fontFactory.getFont("nanum:12"));
+}
+```
+## B. 장단점
+- 장점
+  - 중복되는 데이터도 또 제각각 생성해서 낭비되는 메모리를 아낄 수 있다. 
+  - 생성하는 인스턴스의 양이 많을 수록 효율이 좋다
+- 단점
+  - 코드가 복잡해진다
+## C. java and spring
+- java
+  - Wrapper의 valueOf() method: 자주  사용되는 값은 캐싱을해 메모리 낭비를 최소화
+  - 자주쓰이는 값은 ==로 비교해도 가능
+  - 단, 범위를 넘어선 경우 참조값으로 비교하므로 값 비교가 안된다. 
+    - == 대신 equals() 사용
+
 # V. Proxy
