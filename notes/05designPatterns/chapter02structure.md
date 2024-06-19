@@ -540,3 +540,105 @@ public static void main(String[] args) {
     - == 대신 equals() 사용
 
 # V. Proxy
+- 어떤 대상에 접근하는 때 그 직전에 접근하게 하는 패턴
+- 의미: 대리 - 중간 대리 인스턴스를 통해 처리
+  - Spring의 filter, intercepter 처럼 접근을 제어하거나 선 처리를 진행함
+  - 쓰지 않는 인스턴스 생성을 방지할 수 있음
+  - logging, caching 등 사전 작업을 통해 성능 향상을 도모할 수 있다 
+- [ex)](../../src/step05_designPatterns/proxy/before)
+![Proxy](../img/designPatterns/proxy.png)
+- Subject interface, RealSubject class와 ProxyService class
+  - Game service 시작 전에 걸리는 시간을 체크하고싶다면?
+  - 그외 추가적인 선 처리가 필요하다면? 
+  - 이미 생성된 객체가 있다면 그걸 써도되지 않을까? 
+  - 만들어놓고 굳이 필요하지 않다면?
+## A. 구현하기
+- [기존코드 그대로](../../src/step05_designPatterns/proxy/basic)
+- defaultGameService는 할 일만, 부가적인 일을 Proxy가 
+- 필요할때 인스턴스 생성
+## B. 장단점
+- 장점
+  - 기존 코드를 변경하지 않고 새로운 기능을 추가할 수 있다.
+    - 부가적인 기능 사용시
+    - OCP
+  - 각 클래스별 책임을 유지할 수 있다 : SRP
+  - 기능 추가 및 초기화 지연 등 다양한 기능을 추가할 수있다
+    - 캐싱, 로깅 등
+  - 코드 반복을 줄일 수 있다
+- 단점
+  - 처음부터 다시 만들어야 할 수 있다
+    - 상속보다는 구현(권장)
+## C. java and spring
+### 1. java
+- Dynamic Proxy: Runtime에 인스턴스를 동적으로 생성하도록함
+  - [reflection](../../src/step05_designPatterns/proxy/ProxyInJava.java)
+```java
+public class ProxyInJava {
+    public static void main(String[] args) {
+        ProxyInJava proxyInJava = new ProxyInJava();
+        proxyInJava.dynamicProxy();
+    }
+    private void dynamicProxy(){
+        GameService gameServiceProxy = getGameServiceProxy(new DefaultGameService());
+        gameServiceProxy.startGame();
+    }
+    private GameService getGameServiceProxy(GameService gameService){
+        return (GameService) Proxy.newProxyInstance(
+                this.getClass().getClassLoader(), 
+                new Class[]{GameService.class},
+                (proxy,method,args)->{
+                    System.out.println("dynamic proxy");
+                    method.invoke(gameService, args);
+                    System.out.println("end");
+                    return null;
+                }
+            );
+    }
+}
+```
+### 2. spring
+- AOP: 여러곳에서 사용하는 코드를 재사용성을 높힘
+- 주요관심과 부가적 관심으로 나눠 여러곳에서 사용하도록함
+- 기본적으로 Spring에서 사용하는 Bean에 적용
+- Service
+```java
+@Service
+public class GameService{
+    public void startGame(){
+      System.out.println("game start!");
+    }
+}
+```
+- Aspect 관리
+```java
+@Aspect
+@Component
+public class PerfAspect{
+    @Around("bean(gameService)")//gameService 소속의 어디에서든 사용 가능
+    public void timestemp(ProceedingJoinPoint point)/*적용대상*/throws Throwable{
+        long start = System.currentTimeMillis();
+        point.proceed();
+        System.out.println("소요시간: "+(System.currentTimeMillis()-start));
+    }
+}
+```
+- 실행: bean을 생성하는 시점인 스프링 구동때 성능 체크가 진행됨
+```java
+@SpringBootApplication
+public class App {
+  public static void main(String[] args) {
+    SpringApplication app = new SpringAppliction(App.class);
+    app.setWebApplicationType(WebApplicationType.NONE);
+    app.run(args);
+  }
+
+  @Bean
+  public ApplicationRunner applicationRunner(GameService gameService){
+      return args->{
+          //CGLIB 소속(가짜 라이브러리): 위의 인터페이스 역할
+          gameService.startGame();//디버거로 확인 가능
+      };
+  }
+}
+```
+- 선언적 표현식(`@Transactionable`, `@Cachable`...)
