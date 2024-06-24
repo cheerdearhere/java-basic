@@ -143,6 +143,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 ![스프링 시큐리티](../img/designPatterns/CoR_springSecurity.png)
 
 # II. Command
+- request하는 객체(invoker)와 response하는 객체(receiver) 사이에 Command객체를 위치시켜 둘을 decoupling 시킴
+- [ex)](../../src/step05_designPatterns/command/before/Button.java)
+![command](../img/designPatterns/command.png)
+- 또 다른 기기가 추가된다면?
+  - 모두 on()이지만 다른 기능...
+- 코드의 변경이 자주 일어나고 비슷한 코드가 반복됨
+## A. [적용하기](../../src/step05_designPatterns/command/after/Button.java)
+- Command로 재사용성을 높임
+## B. 장단점
+- 장점
+  - 기존 코드를 변경하지 않고 새로운 커맨드를 추가할 수있다: OCP
+  - 수신자의 코드의 변경이 생겨도 요청자의 코드는 변경되지 않는다
+  - 각자 자신의 책임을 처리: SRP
+  - 반대 기능을 지정해 처리를 단순화 시킬 수 있다
+- 단점
+  - 코드가 여러단계를 거쳐 복잡하다
+## C. java and spring
+### 1. java
+- [`ExecutorService` interface](../../src/step05_designPatterns/command/CommandInJava.java): thread pool을 생성해 처리하도록 함
+- `Runable` interface를 사용한 객체들
+  - Runable interface가 팩토리고 구현체가 concretCommand class
+    - 내부 익명 클래스
+    - lambda식으로 축약한 것도 같은 방식
+    - method reference
+- SimpleJdbcInsert: JdbcTemplate 내부에서 작용
+
 # III. Interpreter
 # IV. Iterator
 # V. Mediator
