@@ -170,6 +170,49 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 - SimpleJdbcInsert: JdbcTemplate 내부에서 작용
 
 # III. Interpreter
+- cs에서는 사람의 소스를 기계어로 변경시켜주는 프로그램을 칭하지만  
+  - regex로 지정한 패턴 내에서 일치, 불일치를 점검하는 것이 예시
+- 일반적으로 악보를 음악으로 변환시켜주거나 어떤 언어를 다른 언어로 변환하는 번역가의 의미
+- 자주 등장하는 문제를 간단한 언어로 정의하고 재사용
+- [ex)](../../src/step05_designPatterns/interpreter/before/PostfixNotation.java)
+  - Domain Specific Language: 언어를 해당 도메인에 특화된 언어를 구현할 수 있다.
+![인터프리터](../img/designPatterns/interpreter.png) 
+- 컴포짓 패턴과 유사. 
+- 처리 결과 트리구조를 생성
+  - Abstract Syntax Tree
+## A. 적용하기
+- [단순하게 처리해서 반환하기](../../src/step05_designPatterns/interpreter/after/VariableExpression.java)
+- [부호별로 interpreter 만들기](../../src/step05_designPatterns/interpreter/after/PlusExpression.java)
+- [Parser](../../src/step05_designPatterns/interpreter/after/App.java)
+- [하나의 인터페이스에서 관리](../../src/step05_designPatterns/interpreter/after/PostfixExpression.java)
+## B. 장단점
+- 장점
+  - 자주 등장하는 문제 패턴을 언어와 문법으로 표현
+  - 기존 코드의 변화를 최소화하고 문법을 확장할 수 있다: OCP
+  - 각각의 대상들이 하나의 기능을 담당
+- 단점
+  - 복잡도가 매우 커진다
+  - 구현하는 문법의 복잡성에 의해 난이도가 커진다: return of interest
+## C. java and spring 
+### 1. java
+- 컴파일러
+- [정규 표현식](../../src/step05_designPatterns/interpreter/InterpreterInJava.java)
+### 2. spring
+- 표현식: 연속되는 객체의 내부 데이터를 사용하는 class
+```java
+public static void main(String[] args){
+    Book book = new Book("spring");
+    ExpressionParser parser = new SpelExpressionParser();
+    Expression expression = parser.parseExpression("title");// title field 호출
+    System.out.println(expression.getValue(book));//book 객체에서 탐색
+}
+```
+- `@Value` annotation
+```java
+@Value("#{2 + 5}")
+private String value;
+```
+
 # IV. Iterator
 # V. Mediator
 # VI. Memento

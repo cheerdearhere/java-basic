@@ -1,0 +1,42 @@
+package step05_designPatterns.interpreter.before;
+
+import java.util.Stack;
+
+public class PostfixNotation {
+    private final String expression;
+    public PostfixNotation(String expression) {
+        this.expression = expression;
+    }
+
+    private void calculate(){
+        Stack<Integer> numbers = new Stack<>();
+        for(char c : this.expression.toCharArray()) {
+            switch(c) {
+                case '+':
+                    numbers.push(numbers.pop() + numbers.pop());
+                    break;
+                case '-':
+                    numbers.push(numbers.pop() - numbers.pop());
+                    break;
+                case '*':
+                    numbers.push(numbers.pop() * numbers.pop());
+                    break;
+                case '/':
+                    numbers.push((int)(numbers.pop() / numbers.pop()));
+                    break;
+                case '%':
+                    numbers.push((int)(numbers.pop() % numbers.pop()));
+                    break;
+                default:
+                    numbers.push(Integer.parseInt(c+""));
+                    break;
+            }
+        }
+        System.out.println(numbers.pop());
+    }
+
+    public static void main(String[] args) {
+        PostfixNotation postfixNotation = new PostfixNotation("123+-");
+        postfixNotation.calculate();
+    }
+}
