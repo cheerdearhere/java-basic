@@ -321,6 +321,32 @@ public class RecentContentsIterator<T extends BoardContent> implements Iterator<
   - 따로 setter를 처리하는 경우가 많아 자주 사용되지는 않음
 
 # V. Mediator
+- 중재자 패턴: 여러 객체간 의사소통에 있어서 결합도를 줄임
+  - 컴포넌트간 소통을 캡슐화
+- 비행기 - 관제탑 - 비행기 처럼 중간 처리 단계를 둠
+- 여러 서비스가 교차하는 경우 코드 재사용성이 낮아짐
+![중재자](../img/designPatterns/mediator.png)
+- mediator 객체가 모든 연결을 중재함
+- [ex)](../../src/step05_designPatterns/mediator/before/Hotel.java)
+## A. [적용](../../src/step05_designPatterns/mediator/after/Hotel.java)
+- mediator: FrontDesk
+- Colleague: Guest가 이용하는 서비스(CleaningService, Restaurant)
+## B. 장단점
+- 장점
+  - (mediator를 인터페이스로 선언했을 때) 컴포넌트 코드를 변경하지 않고 새로운 중재자를 만들어서 사용할 수 있다. 
+  - 각각 컴포넌트 코드를 보다 간결하게 유지할 수 있다. 
+- 단점
+  - 중재자 클래스의 복잡도와 결합도가 증가한다.
+## C. java and spring
+### 1. java
+- ExecutorService & Executor
+  - mediator 역할을 담당하는 클래스
+  - but 사용하는 경우가...
+### 2. spring
+- DispatcherServlet
+  - Front-Controller 타입 운영
+  - interceptor, handlerMapper, adepter, viewResolver 등 Container를 통과하는 대상을 모두 중재 
+![dispatcherServlet](../img/designPatterns/dispatcherServlet.jpeg)
 # VI. Memento
 # VII. Observer
 # IIX. State
