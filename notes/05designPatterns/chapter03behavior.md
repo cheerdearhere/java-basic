@@ -212,8 +212,114 @@ public static void main(String[] args){
 @Value("#{2 + 5}")
 private String value;
 ```
-
 # IV. Iterator
+- Collection(또는 집합) 객체의 모든 요소를 순회하는 행동을 수행
+- Java의 Iterator는 순번이 있는 배열 자료구조를 제외하고 대다수의 순회를 담당
+- 집합 객체 내부 구조(List, Set, Map 등)를 노출시키지 않고 순회하는 방법을 제공
+- client source code를 변경하지 않고 다양한 순회 방법을 제공
+![iterator](../img/designPatterns/iterator.png)
+- [ex)](../../src/step05_designPatterns/iterator/before/Client.java)
+  - List 객체가 노출됨
+  - 내부 구조가 다른 컬랙션으로 변경되면 client 코드도 변경해야함
+## A. [적용하기](../../src/step05_designPatterns/iterator/after)
+### 1. Client에서 Iterator 사용하기
+```java
+Iterator<Post> iterator = posts.iterator();
+while(iterator.hasNext()) {
+    Post post = iterator.next();
+    System.out.println(post.getTitle());
+}
+```
+### 2. Collection Class에서 Iterator 반환하기
+```java
+public class Board{
+    // ... 
+    public Iterator<Post> getDefaultIterator(){
+      return posts.iterator();
+    }
+}
+```
+### 3. customized Iterator interface 
+- [interface를 사용해 처리](../../src/step05_designPatterns/iterator/customized/Client.java)
+```java
+public class RecentContentsIterator<T extends BoardContent> implements Iterator<T> {
+    private Iterator<T> internalIterator;
+    public RecentContentsIterator(List<T> contents) {
+        List<T> tempList = contents;
+        Collections.sort(tempList,(c1,c2)->c2.getRegIndex().compareTo(c1.getRegIndex()));
+        this.internalIterator = (Iterator<T>) tempList.iterator();
+    }
+    @Override
+    public boolean hasNext() {
+        return this.internalIterator.hasNext();
+    }
+    @Override
+    public T next() {
+        return this.internalIterator.next();
+    }
+}
+```
+## B. 장단점
+- 장점
+  - 집합 객체가 가지고 있는 요소에 손 쉽게 접근할 수 있다 
+  - client가 내부 구조를 몰라도 접근할 수 있다
+- 단점
+  - 구조가 복잡해진다(클래스 구조)
+## C. java and spring
+### 1. java
+- java.util.Enumeration: java 9 이후에는 거의 Iterator로 대체됨
+- java.util.Iterator: remove, forEachRemaining method가 지원하는 경우도 있을 수 있음
+  - remove()는 지원하지 않는 경우도 있음
+  - forEachRemaining(ConsumerFunctionalInterface)을 사용하기도 함
+  ```java
+  //컨슈머 함수형 인터페이스(내부 익명 클래스)
+  board.getPosts().iterator().forEachRemaining(new Consumer<Post>(){
+      @Override
+      public void accept(Post post){
+          System.out.println(post.getTitle());
+      }
+  });
+  
+  // 람다식
+  board.getPosts().iterator().forEachRemaining(post->System.out.println(post.getTitle()));
+  ```
+  - java StAX(Streaming API for XML)의 Iterator 기반 API
+    - 주의) java SAX(Simple API for XML)와 다름
+      - XML을 읽을때만 사용
+    - XmlEventReader, XmlEventWriter
+      - XML을 읽고 쓰기 가능
+    ```java
+    import javax.xml.namespace.QName;
+    import javax.xml.stream.XMLEventFactory;
+    import javax.xml.stream.XMLEventReader;
+    import javax.xml.stream.XMLInputFactory;
+    import javax.xml.stream.events.Attribute;
+    import javax.xml.stream.events.StartElement;
+    import javax.xml.stream.events.XMLEvent;
+  
+    public static void main(String[] args) {
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        //Book.xml 파일 읽기
+        XMLEventReader reader = xmlInputFactory.createXMLEventReader(new FileInputStream("Book.xml"));
+        
+        while (reader.hasNext()) {
+            XMLEvent nextEvent = reader.nextEvent();
+            if (nextEvent.isStartElement()) {
+                StartElement startElement = nextEvent.asStartElement();
+                QName name = startElement.getName();
+                // 파일 내에 book tag의 title 특성(attribute)의 값을 꺼냄
+                if (name.getLocalPart().equals("book")) {
+                    Attribute title = startElement.getAttributeByName(new QName("title"));
+                    System.out.println(title.getValue());
+                }
+            }
+        }
+    }
+    ```
+### 2. spring
+- CompositeIterator: 기존 iterator에 add()를 추가
+  - 따로 setter를 처리하는 경우가 많아 자주 사용되지는 않음
+
 # V. Mediator
 # VI. Memento
 # VII. Observer
