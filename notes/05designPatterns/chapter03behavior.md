@@ -348,6 +348,40 @@ public class RecentContentsIterator<T extends BoardContent> implements Iterator<
   - interceptor, handlerMapper, adepter, viewResolver 등 Container를 통과하는 대상을 모두 중재 
 ![dispatcherServlet](../img/designPatterns/dispatcherServlet.jpeg)
 # VI. Memento
+- 객체 내부의 상태를 외부에 보관하고 필요할때 복원. 
+- 내부의 상태를 외부에 저장하지만 캡슐링을 유지하는 패턴
+- [ex)](../../src/step05_designPatterns/memento/before/Client.java)
+  - 게임의 상태를 외부에 저장하고
+  - 그것을 다시 사용....
+  - but 내부의 정보가 client까지 이어짐. 캡슐링 파괴됨
+
+![메멘토](../img/designPatterns/memento.png)
+- CareTaker
+  - 메멘토를 지닌 객체로 필요시점에 원래 데이터를 복원
+- Originator
+  - 원래 데이터
+- Memento
+  - 정보를 기억하는 객체 
+## A. [적용](../../src/step05_designPatterns/memento/after/Client.java)
+- game 내부 데이터를 몰라도 정보를 보관하고 복원
+  - GameSave: memento
+  - Game: Originator
+  - Client: CareTaker
+## B. 장단점
+- 장점
+  - 객체 내부의 상태를 외부에 노출하지 않고도 상태(snapshot)를 보관할 수 있다. 
+  - Originator의 구조가 변경되어도 클라이언트에 노출되지 않음
+  - 복원이라는 하나의 기능(책임)을 별도의 클래스로 분리
+- 단점
+  - 너무 많은 사용으로인해 메모리 낭비가 될 수 있다
+  - 별도의 memento 관리 모듈이 필요
+## C. java and spring
+- 데이터를 외부에 보관해놓고 그것을 복원하는 패턴
+### 1. [java](../../src/step05_designPatterns/memento/MementoInJava.java)
+- Date: date 객체를 getTime 등 다양한 정보로 변환해 보관
+- Serializable interface: 단순히 다른 객체가 아닌 다른 파일에 넣고 보관, 재사용
+  - 객체를 직렬화(byteStream)해 다른 곳에 보관하고 다시 복원함.
+  - 대상 Originator `impleaments Serializable`
 # VII. Observer
 # IIX. State
 # IX. Strategy
