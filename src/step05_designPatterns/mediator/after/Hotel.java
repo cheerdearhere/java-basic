@@ -5,7 +5,7 @@ import java.util.List;
 public class Hotel {
     public static void main(String[] args) {
         FrontDesk defaultFrontDesk = new DefaultFrontDesk();
-        Guest guestHong = defaultFrontDesk.checkIn("hong",1L, 501);
+        Guest guestHong = (Guest) defaultFrontDesk.checkIn("hong",1L, 501);
         defaultFrontDesk.getTowers(guestHong,3);
         defaultFrontDesk.bookingRestaurant(
                 guestHong,

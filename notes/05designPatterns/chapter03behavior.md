@@ -382,8 +382,152 @@ public class RecentContentsIterator<T extends BoardContent> implements Iterator<
 - Serializable interface: 단순히 다른 객체가 아닌 다른 파일에 넣고 보관, 재사용
   - 객체를 직렬화(byteStream)해 다른 곳에 보관하고 다시 복원함.
   - 대상 Originator `impleaments Serializable`
+-  
 # VII. Observer
+- 감지하고 상태 변화를 체크
+- [Publish Subscribe pattern](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern)을 구현하는데 사용 
+- 다수 객체가 특정 객체 상태 변화를 감지하고 알림을 받는 패턴
+- [ex)](../../src/step05_designPatterns/observer/before) 간단한 채팅
+
+![옵저버](../img/designPatterns/observer.png)
+- 옵저버 등록과 해지를 통해 감지 대상(Subject)을 변경
+- subject 변경에 등록된 옵저버들이 감지
+- java의 reflection 기능을 사용해서 대체가능하긴 함
+- 공통된 기능을 사용하는 곳이라면 Subject도 interface를 사용해 공용 기능을 지정할 수 있다.
+## A. [적용](../../src/step05_designPatterns/observer/after/Client.java)
+- 최대한 정보는 Observer가 연결된 대상으로 처리
+## B. 장단점
+- 장점
+  - 상태를 변경하는 객체(publisher)와 변경을 감지하는 객체(subscriber)의 관계를 느슨하게 유지
+  - Subject의 상태 변경을 주기적으로 조회하지 않아도 변경되면 이벤트를 감지할 수 있다
+  - 런타임 중에 옵저버 추가 제거가 가능
+- 단점
+  - 복잡도
+  - 다수의 Observer 객체를 등록 후 해지하지 않으면 메모리 자원이 지속적으로 소모되어 memory leak 발생 가능
+    - 참조하는 객체가 있으면 힙 메모리의 데이터가 GC 처리되지 않는다
+    - 명시적으로 해지하는 것이 제일 좋음
+    - 만약 어렵다면 최소한 [WeakReference class](https://docs.oracle.com/javase/8/docs/api/java/lang/ref/WeakReference.html) 적용(완전 해결은 아님)
+## C. java and Spring
+### 1. java
+- [Observer Interface](../../src/step05_designPatterns/observer/ObserverInJava.java)
+  - java 9 이후부터는 권장하지 않음
+    - `setChanged();`: 계속 주시하는 것이 아닌 상태 변경시마다 체크해야함
+  ```java
+    /*
+      Deprecated
+      This class and the Observer interface have been deprecated. 
+      The event model supported by Observer and Observable is quite limited, 
+      the order of notifications delivered by Observable is unspecified, 
+      and state changes are not in one-for-one correspondence with notifications. 
+      For a richer event model, consider using the java. 
+      desktop/ java. 
+      beans package. 
+      For reliable and ordered messaging among threads, 
+      consider using one of the concurrent data structures in the java. util. concurrent package. 
+      For reactive streams style programming, see the java. util. concurrent. Flow API.
+    */
+  ```
+  - 대체하면 좋은 interface: [PropertyChangeListener interface](../../src/step05_designPatterns/observer/PropertyChangeListenerInJava.java)
+    - 유연하게 처리할 수 있음
+    - index로 처리 순서도 조절 가능
+    - 프로그램에서 설정 처리할때 사용하기 좋은 인터페이스
+- [Flow API](../../src/step05_designPatterns/observer/FlowInJava.java)
+  - WebFlux 사용시 유용한 인터페이스
+  - 동기적 처리도 가능
+  - 더 공부하고 싶다면
+    - [Reactor](https://projectreactor.io/docs/core/release/api/)
+    - [RxJava](https://reactivex.io/tutorials.html)
+### 2. spring
+```java
+@SpringBootApplication // 구동용
+public class ObserverInSpring{
+    public static void main(String[] args){
+        SpringApplication app = new SpringApplication(ObserverInSpring.class);
+        app.setWebApplicationType(WebApplicationType.NONE);
+        app.run(args);
+    }
+}
+```
+- IoC 자체가 이벤트 퍼블리셔
+```java
+public class MyEvent extends ApplicationEvent{
+    private String message; 
+    public MyEvent(Object source, String message){
+        super(source);
+        this.message = message;
+    }
+    public String getMessage(){
+        return message;
+    }
+}
+```
+- Spring boot의 기능
+```java
+@Component
+public class MyRunner implements ApplicationRunner{
+//    private ApplicationContext // 가능
+    private ApplicaionEventPublisher publisher;//좀 더 구체적인 명시
+    public MyRunner(ApplicationEventPublisher publisher){
+        this.publisher = publisher;
+    }
+    @Override
+    public void run(ApplicaionArguments args)throws Exception{
+        publisher.publishEvent(new MyEvent(this, "hello Listener! "));
+    }
+}
+```
+- 해당 이벤트 발생시 처리: generic으로 처리
+```java
+@Component
+public class MyEventListener implements ApplicaionListener<MyEvent>{
+    @Override
+    public void onApplicationEvent(MyEvent event){
+      System.out.println(event.getSource());
+      System.out.println(event.getMessage());
+    }
+}
+```
+- 사실 이벤트 소스가 필요 없기도 함.
+  - 스프링이 지향하는 비침투적 프레임워크의 방향
+```java
+public class MyEvent {
+    private String message; 
+    public MyEvent(String message){
+        this.message = message;
+    }
+    public String getMessage(){
+        return message;
+    }
+}
+```
+```java
+@Component
+public class MyEventListener{
+    
+    @EventListener(MyEvent.class)
+    public void onApplicationEvent(MyEvent event){
+      System.out.println(event.getSource());
+      System.out.println(event.getMessage());
+    }
+}
+
+```
 # IIX. State
+## A. 적용
+## B. 장단점
+## C. java and Spring
+
 # IX. Strategy
+## A. 적용
+## B. 장단점
+## C. java and Spring
+
 # X. Template method/Callback
+## A. 적용
+## B. 장단점
+## C. java and Spring
+
 # XI. Visitor
+## A. 적용
+## B. 장단점
+## C. java and Spring
