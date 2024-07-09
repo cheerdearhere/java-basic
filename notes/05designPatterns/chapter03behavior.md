@@ -513,9 +513,22 @@ public class MyEventListener{
 
 ```
 # IIX. State
-## A. 적용
+- 상태(state)에 따른 행동이 달라짐
+- [ex)](../../src/step05_designPatterns/state/before/Client.java)
+- State에 대한 공용 interface, 구현한 state의 변화에 따라 처리할 Context 
+![상태](../img/designPatterns/state.png)
+## A. [적용](../../src/step05_designPatterns/state/after/Client.java)
+- 상태에 따른 동작을 class로 나눠 분할
+- 과도한 if-else-if같은 조건문을 줄임 => 가독성
+- 각각의 책임
 ## B. 장단점
-## C. java and Spring
+- 장점
+  - 상태에 따른 동작을 개별 클래스로 옮겨 관리
+  - 기존 특정 상태에따른 동작 변경없이 새로운 상태의 동작 추가 가능
+  - 코드복잡도가 줄어듦
+  - 가독성높임
+- 단점
+  - 복잡도 증가
 
 # IX. Strategy
 ## A. 적용
