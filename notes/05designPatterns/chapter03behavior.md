@@ -531,9 +531,57 @@ public class MyEventListener{
   - 복잡도 증가
 
 # IX. Strategy
-## A. 적용
+- 알게모르게 자주 사용되는 패턴
+- 어떤 비즈니스를 수행하는데 여러 방법을 사용할수 있는 경우
+  - 캡슐링
+  - 추상화된 인터페이스 지정
+  - 개별 클래스마다 다른 전략을 선택하도록 함
+- ex) Comparator 
+- [예제코드](../../src/step05_designPatterns/strategy/before/Client.java)
+  - Strategy를 개별 ConcreteStrategy 사용하도록함
+  - Client 코드에서는 변경이 없음
+  - 어떤 매개변수나 상황에 따라 달라지는 경우 유용
+![구조](../img/designPatterns/strategy.png)
+## A. [적용](../../src/step05_designPatterns/strategy/after/Client.java)
+- Client 변경 없이 전략 추가, 변경 가능
+- 익명클래스를 사용해서도 가능
 ## B. 장단점
+- 장점
+  - 새로운 전략 추가에 기존 코드가 영향을 받지 않는다. OCP
+  - 상속 대신 위임을 사용. Implements / 단일 상속의 단점, 강요 제외 등
+  - 전략을 Runtime에 결정할 수 있다.
+- 단점
+  - 코드 복잡성
+  - 클라이언트 코드가 구체화된 전략(ConcreteStrategy)을 알아야함
+  - 클래스 수가 많아짐(단발성으로 사용될경우 익명클래스 사용으로 크게 늘어나지 않음)
 ## C. java and Spring
+### 1. java
+- Comparator interface: 비교 기준을 그때 그때 처리할 수 있다 
+  - java에서 지원하는 기본 라이브러리들은 이 함수가 기본으로 지정되어있음
+  - java 8 이후에는 기본 메서드가 많이 지원됨
+    - `Comparator.reverseOrder`
+### 2. Spring
+- 대부분 인터페이스에 전략패턴이 사용됨
+  - 전략에 따라 `Spring Bean`에 저장/사용됨
+```java
+public class StrategyInSpring(){
+  public static void main(String[] args) {
+      //sping 설정 전략
+    ApplicationContext applicationContextXml = new ClassPathXmlAppicationContext();
+    ApplicationContext applicationContextFileSystem = new FileSystemXmlAppicationContext();
+    ApplicationContext applicationContextAnnotation = new AnnotationConfigAppicationContext();
+    
+    //빈 정의 전략
+    BeanDefinitionParser parser;
+    //트랜젝선 애노테이션 전략
+    PlatformTransactionManager platformTransactionManager;
+    //캐시관리 전략
+    CacheManager cacheManager;
+  }
+}
+```
+
+
 
 # X. Template method/Callback
 ## A. 적용
