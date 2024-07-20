@@ -581,13 +581,96 @@ public class StrategyInSpring(){
 }
 ```
 
-
-
 # X. Template method/Callback
-## A. 적용
-## B. 장단점
-## C. java and Spring
+- 처리하는 알고리즘의 구조를 Template으로 만들어 Sub class를 구현하도록하는 패턴
+- [예시](../../src/step05_designPatterns/template/before/Client.java)
+- 파일을 읽어서 그것을 처리해 결과를 반환하는 방식
+- 같은 활동을 하거나 서로를 곱해서 하는 경우 로직의 상당부분이 곂침
+- 대다수 로직은 상위 템플릿에, 일부 코드를 하위에서 적용
 
+- template method 패턴: abstract class 상속으로 처리
+![templateMethod](../img/designPatterns/templateMethod.png)
+- template callback 패턴: interface 사용으로 익명내부클래스나 람다식을 활용할 수 있다
+![templateCallback](../img/designPatterns/templateCallback.png)
+## A. [적용](../../src/step05_designPatterns/template/after_template_method/Client.java)
+- template method 패턴
+  - class를 통째로 복사해서 일부만 변경하는 경우에 적용하기 좋은 패턴
+  - 변경될 부분과 변경되지 않을 부분을 나눠서 처리
+  - 고정된 부분은 default, 아니라면 abstract로 method 정의
+- template callback 패턴
+  - 콜백으로 상속 대신 위임을 사용하는 템플릿 패턴
+  - 인터페이스에 추상메서드로 구현시켰던 것을 인터페이스로 분리
+  - 인터페이스 하나에 한 기능만 담당할 경우 FunctionalInterface가 됨
+    - 익명 내부 클래스나 람다식을 이용할 수 있음
+  ```java 
+      public interface Operator {
+           int setResult(int result, int line);
+      }
+  ```
+## B. 장단점
+- GoF에는 template method
+- 장점
+  - 템플릿 코드를 재사용하고 중복 코드를 줄일 수 있다
+  - 템플릿 코드를 변경하지 않고 상속받아서 구체적 알고리즘만 변경가능
+- 단점
+  - 리스코프 치환원칙을 위반할 수 있다
+    - 리스코프 치환원칙: 상속 구조에서 상위 타입을 상속받은 모든 클래스들이 위임을 받을때 부모가 작성한 의도를 지켜야한다
+    - sub에서 super의 의도를 유지하지 못하는 경우도 발생할 수 있음
+    - 예시에서 변경되서는 안될 메서드까지 재정의할 수 있다. 
+      - 이를 방지하기 위해 `final`을 선언해 메서드 재정의를 방지
+        ```java
+            public final String getResult(){
+                //  ...
+            }
+        ```
+      - but 구현하게끔 한 메서드의 경우 의도를 깨뜨릴 수 있다
+  - 알고리즘 구조가 복잡할 수록 템플릿을 유지하기 어려워진다
+## C. java and Spring
+### 1. java
+- `HttpServlet`: doGet, doPost와 같이 HTTP 통신에 필요한 처리
+  - 코드의 제어권이 해당 클래스가 아닌 외부에 있음 -> IoC
+### 2. spring
+- Spring Configure..
+  - 최종의 SecurityConfigurer 를 구현하게 되고 그 속의 init method에 영향을 주면서 filter 과정을 변경시킬 수 있다
+```java
+    @Configuration
+    class SecurityConfig extends WebSecurityConfigurerAdepter{
+        @Override
+        protected void configure(HttpSecurity http) throws Exception{
+            http.authorizeRequests().anyRequest().permitAll();
+        }
+    }
+```
+- JDBC: 사용하는 통신 방식에 따라 Template을 선택해 사용. 
+```java
+import com.sun.net.httpserver.HttpHandler;
+
+import java.net.http.HttpHeaders;
+import java.util.Arrays;
+
+public static void main(String[] args) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    
+    //Insert
+    jdbcTemplate.excute("insert into DATA_BASE_TABLE(...) values(...)");
+    
+    //select...
+    jdbcTemplate.query("select * from DATA_BASE_TABLE");
+}
+```
+- RestAPI 마찬가지로 해당 처리 로직이 정해져있어 그것을 선택해 사용하도록함
+```java
+    RestTemplate restTemplate = new RestTemplate();
+    HttpHeaders headers = new HttpHandler();
+    
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    headers.set("X-COM-PERSIST","NO");
+    headers.set("X-COM-LOCATION","USA");
+    
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+    ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:8080/user",HttpMethod.GET, entity, String.class);
+
+```
 # XI. Visitor
 ## A. 적용
 ## B. 장단점
