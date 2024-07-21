@@ -669,9 +669,142 @@ public static void main(String[] args) {
     
     HttpEntity<String> entity = new HttpEntity<>(headers);
     ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:8080/user",HttpMethod.GET, entity, String.class);
-
 ```
+
 # XI. Visitor
-## A. 적용
+- 기존 코드를 건들이지 않고 새로운 기능을 추가할 수 있는 패턴 
+- 코드의 재사용성을 늘리고 다른 코드의 개입을 최소화 할수 있음
+- 구현과 오버라이딩을 통해 구현 가능
+- [ex)](../../src/step05_designPatterns/visitor/before/Client.java)
+- 도형에 새로운 기능을 추가하기
+  - 기능 추가 > 기기마다 수정
+  - 기기 추가 > 각 도형마다 수정
+![패턴](../img/designPatterns/visitor.png)
+- [오버라이딩만 사용](../../src/step05_designPatterns/visitor/before_overriding/Client.java)
+  - `if(device instanceOf Device)`를 줄이기 위해 오버라이딩
+  - method Overriding일때는 정적 매핑을 권장 - 추상적 객체보다는 하위 객체로
+## A. [적용](../../src/step05_designPatterns/visitor/after/Client.java)
+- device 인터페이스에 기기를 분별하는 방식으로 변경
+```java
+public interface Device {
+    void printTo(Circle circle);
+    void printTo(Rectangle rectangle);
+    void printTo(Triangle triangle);
+}
+```
+- 도형추가도 간단히
+```java
+public class Circle implements Shape {
+    @Override
+    public void accept(Device device) {
+        device.printTo(this);
+    }
+}
+```
+- double dispatch: 런타임 중에 다형성을 이용한 분기처리가 두번 이어짐
 ## B. 장단점
+- 장점
+  - 기존 코드의 수정을 최소화해서 기능을 추가할 수 있다.
+- 단점
+  - double dispatch 구조에 대한 이해가 되어야 사용할 수 있다. 
+  - element(예제에서는 Shape를 구현한 class)의 수정시에 모든 visitor를 수정
+    - Device를 구현한 모든 class
 ## C. java and Spring
+- method Overloading 보다 다른 메서드명을 사ㅓ용하는 것도 좋음
+### 1. java
+- FileVisitor
+  - main
+  ```java
+  import java.nio.file.Files;
+  import java.nio.file.Path;
+  
+  public static void main(String[] args) {
+      Path startingDirectory = Path.of("/Users/user/workspace/design-pattern");
+      // 파일 순회를 통해 검색 후 종료
+      SearchFileVisitor searchFileVisitor = new SearchFileVisitor("Triangle.java", startingDirectory);
+      Files.walkFileTree(startingDirectory, searchFileVisitor);
+  }
+  ```
+  - 적용한 visitor
+  ```java
+  import java.io.IOException;
+  import java.nio.file.*;
+  import java.nio.file.attribute.BasicFileAttributes;
+  
+  public class SearchFileVisitor implements FileVisitor<Path> {//SimpleFileVisitor 사용도 가능
+      private String fileToSearch;
+      private Path startingDirectory;
+      
+      public SearchFileVisitor(String fileToSearch, Path startingDirectory) {
+          this.fileToSearch = fileToSearch;
+          this.startingDirectory = startingDirectory;
+      }
+  
+      @Override
+      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+          return FileVisitResult.CONTINUE;
+      }
+  
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+          if (fileToSearch.equals(file.getFileName().toString())) {
+              System.out.println("found " + file.getFileName());
+              return FileVisitResult.TERMINATE;//파일을 찾으면 종료
+          }
+          return FileVisitResult.CONTINUE;
+      }
+  
+      @Override
+      public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+          exc.printStackTrace(System.out);
+          return FileVisitResult.CONTINUE;//검색 실패
+      }
+  
+      @Override
+      public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+          if (Files.isSameFile(startingDirectory, dir)) {
+              System.out.println("search end");//디렉토리가 다시 돌아왔다 == 다 순회했다
+              return FileVisitResult.TERMINATE;
+          }
+          return FileVisitResult.CONTINUE;
+      }
+  }
+  ```
+  - FileVisitResult: 디렉토리에 대한 앞으로의 진행 방식이 지정되어있음
+  ```java
+      public enum FileVisitResult {
+          /**
+          * Continue. When returned from a {@link FileVisitor#preVisitDirectory
+          * preVisitDirectory} method then the entries in the directory should also
+          * be visited.
+          */
+          CONTINUE,
+          /**
+          * Terminate.
+          */
+          TERMINATE,
+          /**
+          * Continue without visiting the entries in this directory. This result
+          * is only meaningful when returned from the {@link
+          * FileVisitor#preVisitDirectory preVisitDirectory} method; otherwise
+          * this result type is the same as returning {@link #CONTINUE}.
+          */
+          SKIP_SUBTREE,
+          /**
+          * Continue without visiting the <em>siblings</em> of this file or directory.
+          * If returned from the {@link FileVisitor#preVisitDirectory
+          * preVisitDirectory} method then the entries in the directory are also
+          * skipped and the {@link FileVisitor#postVisitDirectory postVisitDirectory}
+          * method is not invoked.
+          */
+          SKIP_SIBLINGS;
+      }
+  ```
+- SimpleFileVisitor
+- AnnotationValueVisitor
+- ElementVisitor
+### 2. Spring
+- BeanDefinitionVisitor 
+  - 스프링 내부적으로 bean 정보를 얻는 역할로 스프링 개발자가 직접적으로 뭔가 작업하지는 않는다. 
+  - 기능적 코드이니 그냥 이런것이 사용되고있다 정도..
+  - xml 시절 정의된 기능
