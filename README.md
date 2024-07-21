@@ -5,7 +5,13 @@
 [Java 중급 - 1: 내부 라이브러리](https://inf.run/x9XDk)
 
 [Java 중급 - 2: 컬렉션 라이브러리와 자료구조](https://inf.run/6YjpE)
+
+[디자인패턴 : 코딩으로 학습하는 GoF의 디자인패턴](https://inf.run/RYNoL)
+
+[Java 고급 - 1: 멀티스레드와 동시성](https://inf.run/RYNoL)
+
 ____
+
 # 1. 개요
 - 복습용 자바 기초 강의
 - 202404: 자바 중급 강의

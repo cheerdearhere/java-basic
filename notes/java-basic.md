@@ -184,4 +184,30 @@ ____
 - 책임-연쇄, 커맨드, 인터프리터, 이터레이터, 중재자(Mediator), 메멘토, 옵저버, 상태, 전략, 템플릿 메소드/콜백, 방문자
 
 # IX. 고급
-- lambda, Stream, IO, network, 멀티스레드
+## A. 멀티스레드와 동시성
+
+[프로세스와 스레드 소개](06advanced-1/introducing_process_thread.md)
+
+[스레드 생성과 실행]
+
+[스레드 제어와 생명주기]
+
+[메모리 가시성]
+
+[동기화 - synchronized/concurrent.Lock]
+
+[생산자 소비자 문제]
+
+[CAS(Compare And Swap) 동기화와 원자적 연산]
+
+[동시성 컬렉션]
+
+[스레드 풀과 Executor 프레임워크]
+
+
+
+```
+- 확정은 아님
+## B. IO, 네트워크, 리플렉션, 애너테이션
+## C. 람다, 스트림, 모던자바
+```
