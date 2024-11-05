@@ -188,7 +188,7 @@ ____
 
 [프로세스와 스레드 소개](06advanced-1/introducing_process_thread.md)
 
-[스레드 생성과 실행]
+[스레드 생성과 실행](06advanced-1/chapter01_thread_lifecycle.md)
 
 [스레드 제어와 생명주기]
 
