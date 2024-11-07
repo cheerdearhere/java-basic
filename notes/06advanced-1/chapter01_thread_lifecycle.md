@@ -169,8 +169,54 @@ public class HelloRunnable implements Runnable{
   - 그럼 뭘쓸까? 
     - 여러면에서 Runnable interface 구현이 유리하다
 ## F. 로거 만들기
+- 현재 작동하는 스레드를 체크하기 위한 [로거](../../src/step06_advanced1_multiThread_and_concurrency/chapter01_processAndThread/util/MyLogger.java) 만들기
+  - 구성: `loger(메세지)`
+  - 결과: `시간[스레드명] : 설명`
+```java
+    public static void log(Object obj) {
+        String time = LocalDateTime.now().format(formatter);
+        System.out.printf("%s[%9s] %s", time, Thread.currentThread().getName(), obj);
+    }
+```
+- `System.out.println()`을 사용해 콘솔을 조작했으나 로거를 만들어 추가적인 기능을 지정해 사용할때가 많음
+- 실무에서는 관련 라이브러리를 사용
+
 ## G. 여러 스레드 만들기
-## H. Runnable을 만드는 다양한 방법
+- 스레드는 개별적으로 사용하지만 참조하는 주소(레퍼런스)는 하나를 가리킴
+```java
+    public static void main(String[] args) {
+        log("main() start");
+
+        HelloRunnable helloRunnable = new HelloRunnable();
+        Thread thread1 = new Thread(helloRunnable);
+        thread1.start();
+        Thread thread2 = new Thread(helloRunnable);
+        thread2.start();
+        Thread thread3 = new Thread(helloRunnable);
+        thread3.start();
+
+        log("main() end");
+```
+![하나의 참조주소, 여러 스레드](../img/advanced/01multi-threadAndConcurrency/thread/single_reference_many_thread.png)
+- 더 많은 경우
+```java
+    public static void main(String[] args) {
+        log("main() start");
+
+        HelloRunnable helloRunnable = new HelloRunnable();
+        for (int i = 0; i < 100; i++) {
+            Thread thread = new Thread(helloRunnable);
+            thread.start();
+        }
+        
+        log("main() end");
+    }
+```
+- 단, 스레드 번호 순서는 보장할 수 없다. 운영체제의 영향에따라 다름
+ 
+## H. Runnable을 만드는 다양한 방법: 결과는 같음
+
+
 ## I. 문제와 풀이
 
 # II. 스레드 다루기
